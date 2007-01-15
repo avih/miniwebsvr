@@ -29,11 +29,15 @@
 
 #include "header.h"
 #include "logging.h"
+#include "config.h"
+
+#include "strl.h"
 
 const struct headerResp_struct headerResp[headerResp_size] =
 	{{1,501,"Not Implemented"}, // Default
 	{0,200,"OK"},
 	{0,201,"Created"},
+	{0,304,"Not Modified"},
 	{0,307,"Tempory Redirect"},
 	{1,400,"Bad Request"},
 	{1,403,"Forbidden"},
@@ -62,31 +66,33 @@ const struct headerExt_struct headerExt[headerExt_size] =
 
 void setHeader_generic(struct server_struct *inst,char* genstr)
 {
-	strcat(inst->header_content,genstr);
+	strlcat(inst->header_content,genstr,SERVER_BUFFER_SIZE);
 }
 
 void setHeader_filename(struct server_struct *inst,char* filename) 
 {
-	unsigned int i;
+	unsigned int i,len;
 	char ext[EXT_size];
 	char* str;
 	
 	inst->MIMEtype[0]=0;
 	str=strrchr(filename,'.');
 	
-	if ((str == NULL) || (strlen(str)>EXT_size)) return;
+	if (str == NULL) return;
+	len=strlen(str);
+	if (len>EXT_size) return;
 
-	++str;
+	++str; --len;
 
-	for (i=0;i<strlen(str);++i) ext[i]=tolower(str[i]);
-	ext[strlen(str)]=0;
+	for (i=0;i<len;++i) ext[i]=tolower(str[i]);
+	ext[len]=0;
 	
 	for (i=1;i<headerExt_size;++i) 
 	{
-		if (strcmp(ext,headerExt[i].ext)==0)
+		if (strncmp(ext,headerExt[i].ext,len)==0)
 		{
-			strcpy(inst->MIMEtype,headerExt[i].type);
-			break;
+			strlcpy(inst->MIMEtype,headerExt[i].type,MIME_size);
+			return;
 		}
 	}
 }
@@ -111,42 +117,59 @@ void clearHeader(struct server_struct *inst)
 	inst->respval=0;
 	inst->MIMEtype[0]=0;
 	inst->header_content[0]=0;
+        inst->MIMEoverride=0;
 }
 
 
-void printHeader(struct server_struct *inst)
+int printHeader(struct server_struct *inst, char* Buffer, int bufsize)
 {
-  	char Buffer[1024];
+	int bufpos,tmp;
 	time_t curtime;
 	struct tm *loctime;
+
 	// Get the current time.
 	curtime = time (NULL);
 	// Convert it to local time representation.
 	loctime = localtime (&curtime);
-	strftime(Buffer,256,"%a %b %d %I:%M:%S %Y",loctime);
-	Buffer[255]=0;
-	
-	Message("%s : %s %d %s : %s",Buffer,inst->logbuffer,headerResp[inst->respval].respval,headerResp[inst->respval].respstr,inst->MIMEtype);
-	
-	sprintf(Buffer,"HTTP/1.0 %d %s\r\n",headerResp[inst->respval].respval,headerResp[inst->respval].respstr);
-	send(inst->sock,Buffer,strlen(Buffer),0);
+	strftime(Buffer,bufsize,"%a %b %d %I:%M:%S %Y",loctime);
+	Buffer[bufsize-1]=0;  // Make sure string is null-terminated
+
+        if (!inst->MIMEoverride) inst->MIMEoverride=inst->MIMEtype;
+	Message("%s : %s %d %s : %s",Buffer,inst->logbuffer,headerResp[inst->respval].respval,headerResp[inst->respval].respstr,inst->MIMEoverride);
+
+	// OK, start buffering!
+	bufpos=snprintf(Buffer,bufsize,"HTTP/1.1 %d %s\r\n",headerResp[inst->respval].respval,headerResp[inst->respval].respstr);
+	//send(inst->sock,Buffer,strnlen(Buffer,bufsize),0);
 	if (inst->MIMEtype[0] != 0) 
 	{
-		sprintf(Buffer,"Content-Type: %s\r\n",inst->MIMEtype);
-		send(inst->sock,Buffer,strlen(Buffer),0);
+		bufpos+=snprintf(Buffer+bufpos,bufsize-bufpos,"Content-Type: %s\r\n",inst->MIMEtype);
+		//send(inst->sock,Buffer,strlen(Buffer),0);
 	}
 	if (inst->header_content[0] != 0)
 	{
-		send(inst->sock,inst->header_content,strlen(inst->header_content),0);
+		tmp=strlen(inst->header_content);
+		if (tmp<bufsize-bufpos)
+		{
+			memcpy(Buffer+bufpos,inst->header_content,tmp);
+			bufpos+=tmp;
+		}
+		//send(inst->sock,inst->header_content,strlen(inst->header_content),0);
 	}
-	sprintf(Buffer,"Server: miniweb\r\n\r\n");
-	send(inst->sock,Buffer,strlen(Buffer),0);
-	
+	bufpos+=snprintf(Buffer+bufpos,bufsize-bufpos,"Server: %s\r\n",VERSION);
+	//send(inst->sock,Buffer,strlen(Buffer),0);
+        loctime = gmtime (&curtime);
+	bufpos+=strftime(Buffer+bufpos,bufsize-bufpos,"Date: %a, %d %b %Y %I:%M:%S GMT\r\n\r\n",loctime);
+	Buffer[bufsize-1]=0;
+	//send(inst->sock,Buffer,strlen(Buffer),0);
+
 	if (headerResp[inst->respval].autogen) 
 	{
-		sprintf(Buffer,"<HTML><HEAD><TITLE>HTTP %d - %s</TITLE></HEAD><BODY><H1>HTTP %d - %s<H1><H3>MiniWeb web server</H3></BODY></HTML>"
+		bufpos+=snprintf(Buffer+bufpos,bufsize-bufpos,"<HTML><HEAD><TITLE>HTTP %d - %s</TITLE></HEAD><BODY><H1>HTTP %d - %s<H1><H3>MiniWeb web server</H3></BODY></HTML>"
 			,headerResp[inst->respval].respval,headerResp[inst->respval].respstr
 			,headerResp[inst->respval].respval,headerResp[inst->respval].respstr);
-		send(inst->sock,Buffer,strlen(Buffer),0);		
+		send(inst->sock,Buffer,bufpos,0);	
+		return 0; // Flushed buffer	
 	}
+
+	return bufpos; // Bytes in buffer that is "unflushed"
 }

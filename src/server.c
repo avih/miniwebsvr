@@ -22,16 +22,21 @@
 #include <stdlib.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <time.h>
 
+#include "config.h"
 #include "header.h"
+#include "url.h"
 
-void server_close(struct server_struct *inst) 
+#include "strl.h"
+
+void server_close(struct server_struct *inst)
 {
 	closesocket(inst->sock);
 	free(inst);
 }
 
-int server_charpos(const struct server_struct *inst, const char chr) 
+int server_charpos(const struct server_struct *inst, const char chr)
 {
 	unsigned int i;
 	
@@ -80,6 +85,8 @@ int server_readln(struct server_struct *inst, char *str, const unsigned int strs
 			}
 			
 			retval=server_charpos(inst,'\n');
+			if ((retval == -1) && ((strpos+inst->buffer_size) > strsize))
+				retval=strsize-strpos; // Limit check exceeded
 			if (retval == -1) 
 			{
 				// Consume whole buffer
@@ -90,6 +97,8 @@ int server_readln(struct server_struct *inst, char *str, const unsigned int strs
 			else 
 			{
 				// Partial buffer
+				if (retval > (strsize- strpos))
+					retval = strsize - strpos; // Limit check exceeded
 				inst->buffer_pos=retval+1; // +1 to skip the NULL terminator of the string
 				--retval; // -1 to stop before the detected endline
 				if (retval>0) memcpy(str+strpos,inst->buffer,retval);
@@ -115,62 +124,56 @@ int server_readln(struct server_struct *inst, char *str, const unsigned int strs
 
 //#define dirname "."
 
-void server_dirlist(struct server_struct *inst,char *dirname) 
+void server_dirlist(struct server_struct *inst,char *dirname,int dirlen)
 {
 	DIR *dir;
 	struct dirent *ent;
-	int retval;
-	char Buffer[1024];
-	char FBuffer[1024];
+	int retval,bufpos;
+	char Buffer[SEND_BUFFER_SIZE];
+	char FBuffer[FILENAME_SIZE];
 	char *cptr;
 	struct stat statbuf;
 
-//	setHeader_filename(inst,".html");
+	if (dirlen>FILENAME_SIZE) dirlen=FILENAME_SIZE;
 
-	retval=strlen(dirname);
-	if (dirname[retval-1] != '/') 
+	retval=strnlen(dirname,dirlen);
+	if (dirname[retval-1] != '/')
 	{
 		dirname[retval] = '/';
 		dirname[retval+1] = 0;
 	}
-
 	if ((dir = opendir(dirname)) == NULL)
 	{
-		retval=strlen(dirname);
+		retval=strnlen(dirname,dirlen);
 		if (dirname[retval-1] == '/') dirname[retval-1] = 0;
-		
-		setHeader_respval(inst,404);
-		printHeader(inst);
+
+		setHeader_respval(inst,404);  // Not Found
+		printHeader(inst,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
 		return;
-//		sprintf(Buffer,"HTTP/1.0 404 Not Found\r\nContent-Type: text/html; charset=ISO-8859-4\r\nServer: miniweb 0.02\r\n\r\n");
-//		send(inst->sock,Buffer,strlen(Buffer),0);
-		
-//		sprintf(Buffer,"<HTML><HEAD><TITLE>404 Not Found: %s</TITLE></HEAD><BODY><H1>404 Not Found: %s<H1>\n",dirname,dirname);
-//		send(inst->sock,Buffer,strlen(Buffer),0);
-	} 
-	else 
+	}
+	else
 	{
 		setHeader_filename(inst,".html");
-		setHeader_respval(inst,201);
-		printHeader(inst);
-		
-		sprintf(Buffer,"<HTML><HEAD><TITLE>Directory listing for %s</TITLE></HEAD><BODY><H1>Directory listing for '%s':</H1>\r\n",dirname,dirname);
-		send(inst->sock,Buffer,strlen(Buffer),0);
-	
+		setHeader_respval(inst,201);  // Created
+		bufpos=printHeader(inst,Buffer,SEND_BUFFER_SIZE);
+
+		bufpos+=snprintf(Buffer+bufpos,SEND_BUFFER_SIZE-bufpos,"<HTML><HEAD><TITLE>Directory listing for %s</TITLE></HEAD><BODY><H1>Directory listing for '%s':</H1>\r\n",dirname+1,dirname+1);
+		send(inst->sock,Buffer,bufpos,0);
+
 		while ((ent = readdir(dir)) != NULL)
 		if (strcmp(ent->d_name,".")!=0)
 		if ((strcmp(dirname,"./")!=0) || (ent->d_name[0]!='.'))
 		{
-			strcpy(FBuffer,dirname);
-			if (strcmp(ent->d_name,"..")!=0) 
+			strlcpy(FBuffer,dirname,FILENAME_SIZE);
+			if (strcmp(ent->d_name,"..")!=0)
 			{
-				strcat(FBuffer,ent->d_name);
+				strlcat(FBuffer,ent->d_name,FILENAME_SIZE);
 				stat(FBuffer, &statbuf);
-				
-				if (statbuf.st_mode & S_IFDIR) 
+
+				if (statbuf.st_mode & S_IFDIR)
 				{
-					retval=strlen(FBuffer);
-					if (FBuffer[retval-1] != '/') 
+					retval=strnlen(FBuffer,FILENAME_SIZE);
+					if (FBuffer[retval-1] != '/')
 					{
 						FBuffer[retval] = '/';
 						FBuffer[retval+1] = 0;
@@ -179,151 +182,157 @@ void server_dirlist(struct server_struct *inst,char *dirname)
 			}
 			else
 			{
-				retval=strlen(dirname);
+				retval=strnlen(dirname,FILENAME_SIZE);
 				if (FBuffer[retval-1] == '/') FBuffer[retval-1] = 0;
 				if ((cptr=strrchr(FBuffer,'/')) != NULL) cptr[1] = 0;
-				else strcpy(FBuffer,"/");
-				
+				else strlcpy(FBuffer,"/",FILENAME_SIZE);
+
 			}
-			
-			sprintf(Buffer,"<A href=\"%s\">%s</A><BR>\r\n",FBuffer+1,ent->d_name);
-			send(inst->sock,Buffer,strlen(Buffer),0);
+
+			bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"<A href=\"%s\">%s</A><BR>\r\n",FBuffer+1,ent->d_name);
+			send(inst->sock,Buffer,bufpos,0);
 		}
-	 
+
 		closedir(dir);
-		
-		sprintf(Buffer,"<H3>MiniWeb web server</H3></BODY></HTML>");
-		send(inst->sock,Buffer,strlen(Buffer),0);
+
+		bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"<H3>MiniWeb web server</H3></BODY></HTML>");
+		send(inst->sock,Buffer,bufpos,0);
 	}
 }
 
-DWORD WINAPI server(struct server_struct *inst) 
+DWORD WINAPI server(struct server_struct *inst)
 {
-	char Buffer[8192];
-	char filename[1024];
-	int retval,i,pos,tmp1,tmp2;
+	char Buffer[SEND_BUFFER_SIZE];
+	char filename[FILENAME_SIZE];
+	char GHBuffer[SERVER_BUFFER_SIZE];
+	int retval;
 	FILE *in;
-	
+	char *tstr;
+        struct stat statbuf;
+        struct tm *loctime;
+
 	// Initialize structure
 	inst->buffer_pos=0;
 	inst->buffer_size=0;
+
 	filename[0]='.';
 	filename[1]=0;
 	clearHeader(inst);
 
+//CHANGE replaced the parsing
 	// Parse header
-	retval = server_readln(inst,Buffer,sizeof(Buffer));
-	sscanf(Buffer,"GET %s ",filename+1);
-	
+	retval = server_readln(inst,GHBuffer,SERVER_BUFFER_SIZE);
+	// check for GET requests
+	if ( retval > 4 && 0 == strncmp(GHBuffer, "GET ", 4))
+		urldecode(GHBuffer+4, filename+1, FILENAME_SIZE-1);
+	else
+        {
+                // Unknown request type, also print request to logfile
+                snprintf(inst->logbuffer,SERVER_BUFFER_SIZE,"\"%s:%d\"",inet_ntoa(inst->sin_addr),htons(inst->sin_port));
+                inst->logbuffer[SERVER_BUFFER_SIZE-1] = 0; // snprintf does not null-delimit when full
+                inst->MIMEoverride = GHBuffer; // Override MIME type with unknown request type
+                setHeader_respval(inst,501); // Not Implemented
+                printHeader(inst,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
+
+                goto serverquit;
+        }
 	if (filename[1] == 0)
 	{
-		sprintf(inst->logbuffer,"\"%s:%d\" ",inet_ntoa(inst->sin_addr),htons(inst->sin_port));
-		setHeader_respval(inst,400);
-		printHeader(inst);
+		snprintf(inst->logbuffer,SERVER_BUFFER_SIZE,"\"%s:%d\"",inet_ntoa(inst->sin_addr),htons(inst->sin_port));
+                inst->logbuffer[SERVER_BUFFER_SIZE-1] = 0; // snprintf does not null-delimit when full
+		setHeader_respval(inst,400);  // Bad Request
+		printHeader(inst,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
 		
 		goto serverquit;
 	}
-	
-	retval = strlen(filename);
-	pos=0;
-	for (i=0;i<retval;++i) {
-		if (filename[i]=='%')
-		{
-			tmp1=filename[i+1];
-			if ((tmp1-'a') >= 0) tmp1-='a'+10;
-			else if ((tmp1-'A') >= 0) tmp1-='A'+10;
-			else if ((tmp1-'0') >= 0) tmp1-='0';
-			else tmp1 = -1;
-			
-			tmp2=filename[i+2];
-			if ((tmp2-'a') > 0) tmp2-='a'+10;
-			else if ((tmp2-'A') >= 0) tmp2-='A'+10;
-			else if ((tmp2-'0') >= 0) tmp2-='0';
-			else tmp2 = -1;
-			
-			if ((tmp1!=-1) && (tmp2!=-1)) 
-			{
-				Buffer[pos]=(char)(tmp1*16+tmp2);
-				i+=2;
-			}
-			else Buffer[pos] = '%';
-		}
-		else Buffer[pos]=filename[i];
-		++pos;
+
+	snprintf(inst->logbuffer,SERVER_BUFFER_SIZE,"\"%s:%d\" %s",inet_ntoa(inst->sin_addr),htons(inst->sin_port),filename);
+        inst->logbuffer[SERVER_BUFFER_SIZE-1] = 0; // snprintf does not null-delimit when full
+
+	// Check for special "device" called "nul"
+	tstr=strstr(filename,"/nul");
+	if (tstr!=NULL) 
+	{
+		if ((tstr[4] == '.') || (tstr[4] == 0))
+			strcpy(filename,"../");  // nul device
 	}
-	Buffer[pos]=0;
-	strcpy(filename,Buffer);
-	
-	sprintf(inst->logbuffer,"\"%s:%d\" %s",inet_ntoa(inst->sin_addr),htons(inst->sin_port),filename);
 
 	// Check for sub-root hacking, If found send a forbidden.
-	if (strstr(filename,"/..")!=NULL) 
+	if (strstr(filename,"../")!=NULL) 
 	{
-		strcat(inst->logbuffer," ; ");
-		setHeader_respval(inst,403);
-		printHeader(inst);
+		strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);
+		setHeader_respval(inst,403);  // Forbidden
+		printHeader(inst,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
 		
 		goto serverquit;
 	}
-	
-/*	while ((retval = server_readln(inst,Buffer,sizeof(Buffer))) > 0) 
-	{
-		fprintf(stderr,"'%s'\n",Buffer);
-		
-		retval = send(inst->sock,Buffer,retval,0);
-		if (retval == SOCKET_ERROR) 
-		{
-			fprintf(stderr,"send() failed: error %d\n",WSAGetLastError());
-		}
-		send(inst->sock,&nn,1,0);
-		
-	}*/
 	if ((in = fopen(filename, "rb")) == NULL)
 	{
-		strcpy(Buffer,filename);
-		retval=strlen(Buffer);
-		if (Buffer[retval-1] == '/') {
-			strcat(Buffer,"index.html");
-			in = fopen(Buffer, "rb");
+		retval=strlcpy(GHBuffer,filename,SERVER_BUFFER_SIZE);
+		if (GHBuffer[retval-1] == '/') {
+			strlcat(GHBuffer,"index.html",SERVER_BUFFER_SIZE);
+			in = fopen(GHBuffer, "rb");
 			if (in != NULL) 
 			{
-				strcat(inst->logbuffer,"[index.html]");
-				strcat(filename,"index.html");
+				strlcat(inst->logbuffer,"[index.html]",SERVER_BUFFER_SIZE);
+				strlcat(filename,"index.html",FILENAME_SIZE);
 			}
 		}
 	}
 	
-	strcat(inst->logbuffer," ; ");
-	
+	strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);
 	if (in == NULL)
 	{
-		server_dirlist(inst,filename);
+		server_dirlist(inst,filename,FILENAME_SIZE);
 	}
 	else 
 	{
-		int ret;
+		int ret,blen;
+		filename[FILENAME_SIZE-1]=0;
 		setHeader_filename(inst,filename);
-		setHeader_respval(inst,200);
+		setHeader_respval(inst,200);  // OK
+		blen=0;
 		if (!fseek(in,0,SEEK_END))
 		{
 			// Supports seek
-			sprintf(Buffer,"Content-Length: %ld\r\n",ftell(in));
+			blen=snprintf(GHBuffer,SERVER_BUFFER_SIZE,"Content-Length: %ld\r\n",ftell(in));
 			fseek(in,0,SEEK_SET);
 		}
-		setHeader_generic(inst,Buffer);
-		printHeader(inst);
-		ret=0;
-		
-		while ((retval=fread(Buffer, 1,sizeof(Buffer), in)) > 0) {
-			ret=send(inst->sock,Buffer,retval,0);
-			//printf("%d : %d\n",retval,ret);
-			if (ret<retval) 
-			{
-				fclose(in);
-				goto serverquit;
-			}
-		}
+                if (stat(filename, &statbuf) == 0) {
+                        // Supports filestats
+                        loctime = gmtime (&statbuf.st_mtime);
+                        strftime(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Last-Modified: %a, %d %b %Y %I:%M:%S GMT\r\n",loctime);
+                }
 
+		GHBuffer[SERVER_BUFFER_SIZE-1] = 0; // strnprintf does not null-delimit when full
+		setHeader_generic(inst,GHBuffer);
+		blen=printHeader(inst,Buffer,SEND_BUFFER_SIZE);
+
+		while ((retval=fread(Buffer+blen, 1,SEND_BUFFER_SIZE-blen, in)) > 0) {
+			retval+=blen;
+			ret=0;
+			blen=0;
+//			printf("1: bpos=%d\tret=%d\tretval=%d\n",blen,ret,retval);
+
+			while ((ret < retval) && (retval > 0)) 
+			{
+				ret=send(inst->sock,Buffer+blen,retval,0);
+//				printf("2: bpos=%d\tret=%d\tretval=%d\n",blen,ret,retval);
+
+				if (ret == 0) 
+				{
+//					printf("transmission error\n");
+					fclose(in);
+					goto serverquit;
+				}
+				blen+=ret;
+				retval-=ret;
+				ret=0;
+//				printf("3: bpos=%d\tret=%d\tretval=%d\n",blen,ret,retval);
+			}
+			blen=0;
+		}
+//		printf("While quit\nbpos=%d\tret=%d\tretval=%d\n\n",blen,ret,retval);
 		fclose(in);
 	}
 

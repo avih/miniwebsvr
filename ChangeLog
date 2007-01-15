@@ -1,3 +1,47 @@
+Still Planned:
+Nickolas Grigoriadis <nagrigoriadis@gmail.com>
+	Released version 0.05
+	Reports Date and Last-modified date in response header.
+	Added config option for the web "root"
+	Added support for request type HEAD
+	Supports conditinal GET's (If-Modified-Since:)
+
+
+Done:
+Fri Jan 12 2007 Nickolas Girgoriadis <nagrigoriadis@gmail.com>
+	- Went through all code trying to locate and fix possible buffer
+	  overflow problems, I fixed over twenty.
+	- While I was at it, I optimized some routines and flow, esp reducing
+	  the no of string scans
+	- Implemented output Buffering, so that header will get sent with some
+	  data appended (one packet) versus about 6-9 packets.
+	- Blocked the 'nul' virual file device (in windows), it would open a
+	  write only file as readable, then (if you are lucky) the kernel will
+	  kill the rogue process attemting to allocate an infinite amount of
+	  ram.
+	- With the improvements, a generic nikto scan over a wireless & lan
+	  network (simulate ~10ms latency), the scan time went down from 2 minutes
+	  to 14 seconds, and over a GigE link dropped from 20 seconds to 11
+	  seconds.
+	- Requests a second over wireless went up from ~200/s to ~500/s, GigE
+	  does ~700/s, and local went up from ~900/s to ~1150/s
+
+Thu Jan 11 2007 Nickolas Grigoriadis <nagrigoriadis@gmail.com>
+	Reports Date and Last-modified date in response header
+	Was parsing % in URL twice, Joined implementation
+	Several potential buffer overruns fixed
+	Imported strl(cpy/cat) for os'es that doesn't have it in libc (faster & more secure)
+	Fixed a possible race condition with signal handling
+
+Wed Jan 10 2007 Daniel Walker <daniel.john.walker@gmail.com>
+	You can now set the document root using the --root parameter
+	miniweb no parses URL's better, it now copes with % and ?
+	a potential bufer overrun has been fixed
+	it was possible to bypass the sub-root protection by typing GET ./
+
+Wed Jan 10 2007 Daniel Walker <daniel.john.walker@gmail.com>
+	Added support for command line parameters
+
 Mon Jan 01 2007 Nickolas Grigoriadis <nagrigoriadis@gmail.com>
 	Released version 0.04
 	Catches signals and exits gracefully

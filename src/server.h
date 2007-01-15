@@ -19,7 +19,9 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#define SEND_BUFFER_SIZE 16384
 #define SERVER_BUFFER_SIZE 1024
+#define FILENAME_SIZE 1024
 #define MIME_size 16
 
 struct server_struct 
@@ -40,6 +42,7 @@ struct server_struct
 	int respval;
 	char MIMEtype[MIME_size];
 	char header_content[SERVER_BUFFER_SIZE];
+        char *MIMEoverride; 
 };
 
 DWORD WINAPI server(struct server_struct *inst);

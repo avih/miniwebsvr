@@ -34,11 +34,12 @@ void Log(char* txt) {
 	if (LogStream==NULL) return;
 
 	i=0;
-	while (txt[i]) {
+	fprintf(LogStream,"%s\n",txt);
+	/*while (txt[i]) {
 		fputc(txt[i],LogStream);
 		i++;
 	}
-	fputc('\n',LogStream);
+	fputc('\n',LogStream);*/
 	fflush(LogStream);
 }
 
@@ -55,64 +56,69 @@ void StopLogging() {
 }
 
 void Message(const char *format, ...) {
-	char buffer[1024];
+	char buffer[MESSAGE_BUFFER];
 	va_list argptr;
+
 	va_start(argptr, format);
 	vsprintf(buffer, format, argptr);
 	va_end(argptr);
 
-	buffer[1023]=0;
+	buffer[MESSAGE_BUFFER-1]=0;
 	Log(buffer);
 }
 
 #ifdef _DEBUG
 void DebugMSG(const char *format, ...) {
-	char buffer[1024];
-	strcpy(buffer,"Debug: ");
+	char buffer[MESSAGE_BUFFER];
 	va_list argptr;
+
+	memcpy(buffer,"Debug: ",7);
 	va_start(argptr, format);
-	vsprintf(buffer+7, format, argptr);
+	vsnprintf(buffer+7,MESSAGE_BUFFER-7, format, argptr);
 	va_end(argptr);
 
-	buffer[1023]=0;
+	buffer[MESSAGE_BUFFER-1]=0;
 	Log(buffer);
 	printf("%s\n",buffer);
 }
 #endif // _DEBUG
 
 void BIGMessage(const char *format, ...) {
-	char buffer[1024];
+	char buffer[MESSAGE_BUFFER];
 	va_list argptr;
+
 	va_start(argptr, format);
-	vsprintf(buffer, format, argptr);
+	vsnprintf(buffer,MESSAGE_BUFFER, format, argptr);
 	va_end(argptr);
 
-	buffer[1023]=0;
+	buffer[MESSAGE_BUFFER-1]=0;
 	Log(buffer);
 	printf("%s\n",buffer);
 }
 
 void Error(const char *format, ...) {
-	char buffer[1024];
-	strcpy(buffer,"Error: ");
+	char buffer[MESSAGE_BUFFER];
 	va_list argptr;
+
+	memcpy(buffer,"Error: ",7);
 	va_start(argptr, format);
-	vsprintf(buffer+7, format, argptr);
+	vsnprintf(buffer+7,MESSAGE_BUFFER-7, format, argptr);
 	va_end(argptr);
 
-	buffer[1023]=0;
+	buffer[MESSAGE_BUFFER]=0;
 	Log(buffer);
 }
 
 void Critical(const char *format, ...) {
-	char buffer[1024];
-	strcpy(buffer,"Critical: ");
+	char buffer[MESSAGE_BUFFER];
 	va_list argptr;
+
+	memcpy(buffer,"Critical: ",10);
 	va_start(argptr, format);
-	vsprintf(buffer+10, format, argptr);
+	vsnprintf(buffer+10,MESSAGE_BUFFER-10, format, argptr);
 	va_end(argptr);
 
-	buffer[1023]=0;
+	buffer[MESSAGE_BUFFER]=0;
 	Log(buffer);
 	fprintf(stderr,"%s\n",buffer);
 }

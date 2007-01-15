@@ -9,12 +9,16 @@ The web-server supports the following:
 - Serves static web pages
 - Directory listing
 - Supports HTTP MIME encodings
-- Supports GET only
+- Supports GET/HEAD/OPTINS
 - Logging to disk
 - Small memory footprint
 - Muti-threaded
 - Written in plain C
 - Currently Win32 only
+- Command line options
+- Conditional GET:
+  -  If-Modified-Since:
+
 
 Was originally designed as a small stand-alone web-server, but I think I'll
 change the scope to a small embedded web serbver, so maybe serve pages to

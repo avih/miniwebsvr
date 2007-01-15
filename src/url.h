@@ -16,33 +16,12 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef URL_H
+#define URL_H
 
-/************************* Compile time Limits/Options ***********************/
+// Expands characters not allowed in urls to % character codes. Returns 1 on success, 0 on error.
+int urlencode(const char *source, char *dest, int dest_size);
+// Contracts % character codes. Returns 1 on success, 0 on error.
+int urldecode(const char *source, char *dest, int dest_size);
 
-#define VERSION "MiniWebsvr/0.05wip"
-#define COPYRIGHT "Copyright (C) 2007  Nickolas Antonie Grigoriadis"
-#define EMAIL "nagrigoriadis@gmail.com"
-
-/// Defines whether the server must run in multiple threads (recommended)
-#define MULTITHREADED
-
-/************************ Default for Run-time Options ***********************/
-
-#define DEFAULT_PORT 8080
-#define DEFAULT_INTERFACE NULL
-#define DEFAULT_LOGFILE "miniweb.log"
-#define DEFAULT_ROOT "."
-
-/******************** Variables containing Run-time Values *******************/
-
-extern int PORT;
-extern char* INTERFACE;
-extern char* LOGFILE;
-//CHANGE global variable for document root
-extern char* ROOT;
-
-void getconfig(int argc, char **argv);
-
-#endif // CONFIG_H
+#endif // URL_H

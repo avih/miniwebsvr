@@ -23,7 +23,7 @@
 
 #define EXT_size 8
 
-#define headerResp_size 7
+#define headerResp_size 8
 #define headerExt_size 16
 
 struct headerResp_struct
@@ -49,6 +49,7 @@ void setHeader_respval(struct server_struct *inst,int respval);
 void setHeader_generic(struct server_struct *inst,char* genstr);
 
 void clearHeader(struct server_struct *inst);
-void printHeader(struct server_struct *inst);
+// Returns the no of bytes used up in the buffer
+int printHeader(struct server_struct *inst, char* Buffer, int bufsize);
 
 #endif // HEADER_H

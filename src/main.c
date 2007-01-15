@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <signal.h>
+#include <dir.h>
 
 #include "config.h"
 #include "listener.h"
@@ -34,32 +35,50 @@ void cleanup()
 	StopLogging();
 }
 
-void catch_term(int sig) {
-	switch (sig) {
-	case SIGINT   : BIGMessage("Caught signal SIGINT");break;
-	case SIGTERM  : BIGMessage("Caught signal SIGTERM");break;
-	case SIGBREAK : BIGMessage("Caught signal SIGBREAK");break;
-	default       : BIGMessage("Caught signal %d",sig);
-	}
-	loop=0;
-	signal(sig,SIG_ACK);
+// As documented at http://www.bindview.com/Services/Razor/Papers/2001/signals.cfm
+// There exists the possibility of a race condition if 2 or more different
+// signals are sent to the process nearly the same time when using the same
+// signal handler for multiple signals.
+void catch_int(int sig)
+{
+        BIGMessage("Caught signal SIGINT");
+        loop=0;
+        signal(sig,SIG_IGN);
 }
 
-int main(int argc, char **argv) {
-	getconfig();
+void catch_term(int sig)
+{
+        BIGMessage("Caught signal SIGTERM");
+        loop=0;
+        signal(sig,SIG_IGN);
+}
+
+void catch_break(int sig)
+{
+        BIGMessage("Caught signal SIGBREAK");
+        loop=0;
+        signal(sig,SIG_IGN);
+}
+
+int main(int argc, char **argv)
+{
+	getconfig(argc, argv);
 	
 	if (atexit(&cleanup)) {
 		fprintf(stderr, "cannot set exit function\n");
 		return EXIT_FAILURE;
 	}
-	signal (SIGINT, &catch_term);
+	signal (SIGINT, &catch_int);
 	signal (SIGTERM, &catch_term);
-	signal (SIGBREAK, &catch_term);
+	signal (SIGBREAK, &catch_break);
 	
 	StartLogging(LOGFILE);
 	BIGMessage("--- %s starting ---",VERSION);
 	BIGMessage("--- This software is distributed under the GNU Lesser General Public License");
-	BIGMessage("--- Copyright (C) 2007  Nickolas Antonie Grigoriadis"); 
-	BIGMessage("--- E-Mail: nagrigoriadis@gmail.com");
+	BIGMessage("--- %s",COPYRIGHT); 
+	BIGMessage("--- E-Mail: %s",EMAIL);
+
+//CHANGE chdir to the document root
+	chdir(ROOT);        
 	return listener(INTERFACE,PORT);
 }

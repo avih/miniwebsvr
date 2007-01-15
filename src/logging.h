@@ -19,12 +19,14 @@
 #ifndef LOGGING_H
 #define LOGGING_H
 
+#define MESSAGE_BUFFER 1024
+
 void StartLogging(char* name);
 void StopLogging();
 
 void Message(const char *format, ...);
 
-#ifdef _DEBUG
+#if (defined _DEBUG) || (defined __BORLANDC__)
 void DebugMSG(const char *format, ...);
 #else // _DEBUG
 #define DebugMSG(f,...)
