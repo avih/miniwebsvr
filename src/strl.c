@@ -1,17 +1,32 @@
-/* strl(cat|cpy) implementation for systems that do not have it in libc */
-/* strl.c - strlcpy/strlcat implementation
- * Time-stamp: <2004-03-14 njk>
- * (C) 2003-2004 Nicholas J. Kain <njk@aerifal.cx>
- */
+/*  Miniweb - A small webserver
+    Copyright (C) 2007  Nickolas Antonie Grigoriadis
+    E-Mail: grigi_ at users.sourceforge.net
 
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+
+// strlcpy and strlcpy implementation from OpenBSD 
 // To find out about strl(cat/cpy) read:
 // http://www.gratisoft.us/todd/papers/strlcpy.html
-// Initial implementation of strl(cat/cpy) taken from mplayer project (GPL), need to ask them if it can be used in an LGPL project
 
 #include <string.h>
+#define STRL_C
+#include "strl.h"
 
 #if !defined strlcpy
-unsigned int strlcpy (char *dest, char *src, unsigned int size)
+STATIN unsigned int strlcpy (char *dest, char *src, unsigned int size)
 {
 	register unsigned int i;
 
@@ -25,7 +40,7 @@ unsigned int strlcpy (char *dest, char *src, unsigned int size)
 #endif
 
 #if !defined strlcat
-unsigned int strlcat (char *dest, char *src, unsigned int size)
+STATIN unsigned int strlcat (char *dest, char *src, unsigned int size)
 {
 	register char *d = dest, *s = src;
 
@@ -39,21 +54,13 @@ unsigned int strlcat (char *dest, char *src, unsigned int size)
 #endif
 
 #if !defined strnlen
-size_t strnlen (const char *s, size_t maxlen)
+STATIN size_t strnlen (const char *s, size_t maxlen)
 {
   size_t len = 0;
 
-  while (s[len] != '\0' && maxlen > 0)
-    {
-      if (s[++len] == '\0' || --maxlen == 0)
-	return len;
-      if (s[++len] == '\0' || --maxlen == 0)
-	return len;
-      if (s[++len] == '\0' || --maxlen == 0)
-	return len;
-      ++len;
-      --maxlen;
-    }
+  if (s[0] == '\0' || maxlen == 0) return 0;
+
+  while (s[++len] != '\0' && --maxlen > 0) {}
 
   return len;
 }

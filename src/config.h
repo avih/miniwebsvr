@@ -1,6 +1,6 @@
 /*  Miniweb - A small webserver
     Copyright (C) 2007  Nickolas Antonie Grigoriadis
-    E-Mail: nagrigoriadis@gmail.com
+    E-Mail: grigi_ at users.sourceforge.net
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -21,18 +21,19 @@
 
 /************************* Compile time Limits/Options ***********************/
 
-#define VERSION "MiniWebsvr/0.05wip"
+#define VERSION "MiniWebsvr/0.05svn"
 #define COPYRIGHT "Copyright (C) 2007  Nickolas Antonie Grigoriadis"
 #define EMAIL "nagrigoriadis@gmail.com"
 
 /// Defines whether the server must run in multiple threads (recommended)
 #define MULTITHREADED
+#define USE_INLINE
 
 /************************ Default for Run-time Options ***********************/
 
 #define DEFAULT_PORT 8080
 #define DEFAULT_INTERFACE NULL
-#define DEFAULT_LOGFILE "miniweb.log"
+#define DEFAULT_LOGFILE "miniwebsvr.log"
 #define DEFAULT_ROOT "."
 
 /******************** Variables containing Run-time Values *******************/

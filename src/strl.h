@@ -1,21 +1,48 @@
-/* strl(cat|cpy) implementation for systems that do not have it in libc */
-/* strl.c - strlcpy/strlcat implementation
- * Time-stamp: <2004-03-14 njk>
- * (C) 2003-2004 Nicholas J. Kain <njk@aerifal.cx>
- */
+/*  Miniweb - A small webserver
+    Copyright (C) 2007  Nickolas Antonie Grigoriadis
+    E-Mail: grigi_ at users.sourceforge.net
 
-// To find out about strl(cat/cpy) read:
-// http://www.gratisoft.us/todd/papers/strlcpy.html
-// Initial implementation taken from mplayer project (GPL), need to ask them if it can be used in an LGPL project
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
 
-#if !defined strlcpy
-extern unsigned int strlcpy (char *dest, char *src, unsigned int size);
-#endif
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
 
-#if !defined strlcat
-extern unsigned int strlcat (char *dest, char *src, unsigned int size);
-#endif
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+*/
+#ifndef STRL_H
+#define STRL_H
 
-#if !defined strnlen
-extern size_t strnlen (const char *s, size_t maxlen);
-#endif
+#include "config.h"
+
+#if defined USE_INLINE
+	#ifdef STRL_C
+	#define STATIN inline
+	#else
+	#define STATIN static inline
+	#include "strl.c"
+	#endif // STRL_C
+#else
+	#define STATIN
+
+	#if !defined strlcpy
+	extern unsigned int strlcpy (char *dest, char *src, unsigned int size);
+	#endif
+
+	#if !defined strlcat
+	extern unsigned int strlcat (char *dest, char *src, unsigned int size);
+	#endif
+
+	#if !defined strnlen
+	extern size_t strnlen (const char *s, size_t maxlen);
+	#endif
+
+#endif // USE_INLINE
+
+#endif // STRL_H

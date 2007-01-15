@@ -1,5 +1,5 @@
 Still Planned:
-Nickolas Grigoriadis <nagrigoriadis@gmail.com>
+Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	Released version 0.05
 	Reports Date and Last-modified date in response header.
 	Added config option for the web "root"
@@ -8,7 +8,11 @@ Nickolas Grigoriadis <nagrigoriadis@gmail.com>
 
 
 Done:
-Fri Jan 12 2007 Nickolas Girgoriadis <nagrigoriadis@gmail.com>
+Mon Jan 15 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- Made directory listing look more like Apache
+	- strl(cpy/cat) strnlen implementations are now optinally inlineable
+
+Fri Jan 12 2007 Nickolas Girgoriadis <grigi_@sourceforge.net>
 	- Went through all code trying to locate and fix possible buffer
 	  overflow problems, I fixed over twenty.
 	- While I was at it, I optimized some routines and flow, esp reducing
@@ -26,7 +30,7 @@ Fri Jan 12 2007 Nickolas Girgoriadis <nagrigoriadis@gmail.com>
 	- Requests a second over wireless went up from ~200/s to ~500/s, GigE
 	  does ~700/s, and local went up from ~900/s to ~1150/s
 
-Thu Jan 11 2007 Nickolas Grigoriadis <nagrigoriadis@gmail.com>
+Thu Jan 11 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	Reports Date and Last-modified date in response header
 	Was parsing % in URL twice, Joined implementation
 	Several potential buffer overruns fixed
@@ -42,22 +46,22 @@ Wed Jan 10 2007 Daniel Walker <daniel.john.walker@gmail.com>
 Wed Jan 10 2007 Daniel Walker <daniel.john.walker@gmail.com>
 	Added support for command line parameters
 
-Mon Jan 01 2007 Nickolas Grigoriadis <nagrigoriadis@gmail.com>
+Mon Jan 01 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	Released version 0.04
 	Catches signals and exits gracefully
 	Added logging
 	Added configuration framework
 	Focused on reducing bugs and memory leaks
 
-Nickolas Grigoriadis <nagrigoriadis@gmail.com>
+Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	Released version 0.03
 	Miniweb now plays better with the OS
 	Threaded, too ;)
 
-Nickolas Grigoriadis <nagrigoriadis@gmail.com>
+Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	Released version 0.02
 	- Added MIME types supprt
 	Parses % in URL correctly
 
-Nickolas Grigoriadis <nagrigoriadis@gmail.com>
+Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	Released initial version 0.01

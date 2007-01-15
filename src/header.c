@@ -1,6 +1,6 @@
 /*  Miniweb - A small webserver
     Copyright (C) 2007  Nickolas Antonie Grigoriadis
-    E-Mail: nagrigoriadis@gmail.com
+    E-Mail: grigi_ at users.sourceforge.net
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

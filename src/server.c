@@ -1,6 +1,6 @@
 /*  Miniweb - A small webserver
     Copyright (C) 2007  Nickolas Antonie Grigoriadis
-    E-Mail: nagrigoriadis@gmail.com
+    E-Mail: grigi_ at users.sourceforge.net
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -122,8 +122,6 @@ int server_readln(struct server_struct *inst, char *str, const unsigned int strs
 	return strpos-1;	
 }
 
-//#define dirname "."
-
 void server_dirlist(struct server_struct *inst,char *dirname,int dirlen)
 {
 	DIR *dir;
@@ -157,7 +155,7 @@ void server_dirlist(struct server_struct *inst,char *dirname,int dirlen)
 		setHeader_respval(inst,201);  // Created
 		bufpos=printHeader(inst,Buffer,SEND_BUFFER_SIZE);
 
-		bufpos+=snprintf(Buffer+bufpos,SEND_BUFFER_SIZE-bufpos,"<HTML><HEAD><TITLE>Directory listing for %s</TITLE></HEAD><BODY><H1>Directory listing for '%s':</H1>\r\n",dirname+1,dirname+1);
+		bufpos+=snprintf(Buffer+bufpos,SEND_BUFFER_SIZE-bufpos,"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n<HTML><HEAD><TITLE>Index of %s</TITLE></HEAD><BODY><H1>Index of %s</H1><PRE><HR>\n",dirname+1,dirname+1);
 		send(inst->sock,Buffer,bufpos,0);
 
 		while ((ent = readdir(dir)) != NULL)
@@ -189,13 +187,13 @@ void server_dirlist(struct server_struct *inst,char *dirname,int dirlen)
 
 			}
 
-			bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"<A href=\"%s\">%s</A><BR>\r\n",FBuffer+1,ent->d_name);
+			bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"<A href=\"%s\">%s</A>\n",FBuffer+1,ent->d_name);
 			send(inst->sock,Buffer,bufpos,0);
 		}
 
 		closedir(dir);
 
-		bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"<H3>MiniWeb web server</H3></BODY></HTML>");
+		bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"</PRE><HR><ADDRESS>%s Server Port %d</ADDRESS></BODY></HTML>",VERSION,PORT);
 		send(inst->sock,Buffer,bufpos,0);
 	}
 }
