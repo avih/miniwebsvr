@@ -31,7 +31,7 @@ char* ROOT;
 /// TODO: read configuration from registry
 void getconfig(int argc, char **argv) {
 	int i;
-	enum { next_param, next_port, next_logfile, next_root } next = next_param;
+	enum { next_param, next_port, next_logfile, next_root, next_interface } next = next_param;
 
 	PORT=DEFAULT_PORT;
 	INTERFACE=DEFAULT_INTERFACE;
@@ -47,9 +47,10 @@ void getconfig(int argc, char **argv) {
 			{
 				printf("Usage: %s [options]\nOptions:\n", argv[0]);
 				printf("  --help                   Display this information\n");
-				printf("  --port <port>            Listen on port <port> (default 8080)\n");
-				printf("  --log <file>             Save the log file as <file> (default: miniweb.log)\n");
-				printf("  --root <path>            Specify the document root directory\n");
+				printf("  --port <port>            Listen on port <port> (default %d)\n",DEFAULT_PORT);
+				printf("  --log <file>             Save the log file as <file> (default: %s)\n",DEFAULT_LOGFILE);
+				printf("  --root <path>            Specify the document root directory (default: %s)\n",DEFAULT_ROOT);
+				printf("  --interface <ip>         Specify the interface the server listens on (default: ALL)\n");
 				exit(0);
 			}
 			else if (0 == strcmp(argv[i], "--port"))
@@ -58,6 +59,8 @@ void getconfig(int argc, char **argv) {
 				next = next_logfile;
 			else if (0 == strcmp(argv[i], "--root"))
 				next = next_root;
+			else if (0 == strcmp(argv[i], "--interface"))
+				next = next_interface;
 			continue;
 		}
 		if (next == next_logfile)
@@ -66,6 +69,8 @@ void getconfig(int argc, char **argv) {
 			PORT = atoi(argv[i]);
 		else if (next == next_root)
 			ROOT = argv[i];
+		else if (next == next_interface)
+			INTERFACE = argv[i];
 		next = next_param;
 	}
 }
