@@ -1,0 +1,19 @@
+Mon Jan 01 2007 Nickolas Grigoriadis <nagrigoriadis@gmail.com>
+	Released version 0.04
+	Catches signals and exits gracefully
+	Added logging
+	Added configuration framework
+	Focused on reducing bugs and memory leaks
+
+Nickolas Grigoriadis <nagrigoriadis@gmail.com>
+	Released version 0.03
+	Miniweb now plays better with the OS
+	Threaded, too ;)
+
+Nickolas Grigoriadis <nagrigoriadis@gmail.com>
+	Released version 0.02
+	- Added MIME types supprt
+	Parses % in URL correctly
+
+Nickolas Grigoriadis <nagrigoriadis@gmail.com>
+	Released initial version 0.01
