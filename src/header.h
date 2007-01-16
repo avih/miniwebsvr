@@ -50,6 +50,6 @@ void setHeader_generic(struct server_struct *inst,char* genstr);
 
 void clearHeader(struct server_struct *inst);
 // Returns the no of bytes used up in the buffer
-int printHeader(struct server_struct *inst, char* Buffer, int bufsize);
+int printHeader(struct server_struct *inst, int headeronly, char* Buffer, int bufsize);
 
 #endif // HEADER_H

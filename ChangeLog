@@ -8,6 +8,11 @@ Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 
 
 Done:
+Tue Jan 16 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- Added OPTIONS
+	- Added HEAD
+	- Moved GET/HEAD logic to own file
+
 Mon Jan 15 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Made directory listing look more like Apache
 	- strl(cpy/cat) strnlen implementations are now optinally inlineable

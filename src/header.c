@@ -121,7 +121,7 @@ void clearHeader(struct server_struct *inst)
 }
 
 
-int printHeader(struct server_struct *inst, char* Buffer, int bufsize)
+int printHeader(struct server_struct *inst, int headeronly, char* Buffer, int bufsize)
 {
 	int bufpos,tmp;
 	time_t curtime;
@@ -164,9 +164,11 @@ int printHeader(struct server_struct *inst, char* Buffer, int bufsize)
 
 	if (headerResp[inst->respval].autogen) 
 	{
-		bufpos+=snprintf(Buffer+bufpos,bufsize-bufpos,"<HTML><HEAD><TITLE>HTTP %d - %s</TITLE></HEAD><BODY><H1>HTTP %d - %s<H1><H3>MiniWeb web server</H3></BODY></HTML>"
-			,headerResp[inst->respval].respval,headerResp[inst->respval].respstr
-			,headerResp[inst->respval].respval,headerResp[inst->respval].respstr);
+		if (headeronly==0) {
+			bufpos+=snprintf(Buffer+bufpos,bufsize-bufpos,"<HTML><HEAD><TITLE>HTTP %d - %s</TITLE></HEAD><BODY><H1>HTTP %d - %s<H1><H3>MiniWeb web server</H3></BODY></HTML>"
+				,headerResp[inst->respval].respval,headerResp[inst->respval].respstr
+				,headerResp[inst->respval].respval,headerResp[inst->respval].respstr);
+		}
 		send(inst->sock,Buffer,bufpos,0);	
 		return 0; // Flushed buffer	
 	}
