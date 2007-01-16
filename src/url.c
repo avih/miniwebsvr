@@ -58,32 +58,41 @@ int urldecode(const char *source, char *dest, int dest_size)
 {
 	int i;
 	int di = 0;
-        int tmp1,tmp2;
+	int tmp1,tmp2;
 
-        --dest_size;  // To allow for dest_size-1 chars and a NULL delimiter
+	--dest_size;  // To allow for dest_size-1 chars and a NULL delimiter
 
 	for (i = 0; source[i] && source[i] != '?' && source[i] != ' ' ; ++i)
 	{
 		if (source[i] == '%' && di < dest_size-2)
 		{
 			tmp1=source[i+1];
-			if ((tmp1-'a') >= 0) tmp1-='a'+10;
-			else if ((tmp1-'A') >= 0) tmp1-='A'+10;
-			else if ((tmp1-'0') >= 0) tmp1-='0';
-			else tmp1 = -1;
+			if ((tmp1-'a') >= 0) 
+				tmp1-='a'+10;
+			else if ((tmp1-'A') >= 0) 
+				tmp1-='A'+10;
+			else if ((tmp1-'0') >= 0) 
+				tmp1-='0';
+			else 
+				tmp1 = -1;
 
 			tmp2=source[i+2];
-			if ((tmp2-'a') > 0) tmp2-='a'+10;
-			else if ((tmp2-'A') >= 0) tmp2-='A'+10;
-			else if ((tmp2-'0') >= 0) tmp2-='0';
-			else tmp2 = -1;
+			if ((tmp2-'a') > 0) 
+				tmp2-='a'+10;
+			else if ((tmp2-'A') >= 0) 
+				tmp2-='A'+10;
+			else if ((tmp2-'0') >= 0) 
+				tmp2-='0';
+			else 
+				tmp2 = -1;
 
 			if ((tmp1!=-1) && (tmp2!=-1))
 			{
 				dest[di]=(char)((tmp1<<4)+tmp2);
 				i+=2;
 			}
-			else dest[di] = '%';
+			else 
+				dest[di] = '%';
 			++di;
 		}
 		else
@@ -93,7 +102,7 @@ int urldecode(const char *source, char *dest, int dest_size)
 				dest[di] = 0;
 				return 0;
 			}
-                        dest[di] = source[i];
+			dest[di] = source[i];
 			di += 1;
 		}
 	}

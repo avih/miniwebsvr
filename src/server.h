@@ -42,7 +42,7 @@ struct server_struct
 	int respval;
 	char MIMEtype[MIME_size];
 	char header_content[SERVER_BUFFER_SIZE];
-        char *MIMEoverride; 
+	char *MIMEoverride; 
 };
 
 DWORD WINAPI server(struct server_struct *inst);

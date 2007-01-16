@@ -29,9 +29,11 @@ char outbuf[BUFSIZ];
 
 /// TODO: make thread safe
 /// TODO: Optimize
-void Log(char* txt) {
+void Log(char* txt) 
+{
 	int i;
-	if (LogStream==NULL) return;
+	if (LogStream==NULL) 
+		return;
 
 	i=0;
 	fprintf(LogStream,"%s\n",txt);
@@ -43,19 +45,24 @@ void Log(char* txt) {
 	fflush(LogStream);
 }
 
-void StartLogging(char* name) {
-	if ((LogStream = fopen(name, "at")) == NULL) LogStream=stdout;
+void StartLogging(char* name) 
+{
+	if ((LogStream = fopen(name, "at")) == NULL) 
+		LogStream=stdout;
 
 	setbuf(LogStream, outbuf);  /// Optimization for speed, OS might not follow spec.
 }
 
-void StopLogging() {
+void StopLogging() 
+{
 	fflush(LogStream);
-	if (LogStream!=stdout) fclose(LogStream);
+	if (LogStream!=stdout)
+		(LogStream);
 	LogStream=NULL;
 }
 
-void Message(const char *format, ...) {
+void Message(const char *format, ...) 
+{
 	char buffer[MESSAGE_BUFFER];
 	va_list argptr;
 
@@ -68,7 +75,8 @@ void Message(const char *format, ...) {
 }
 
 #ifdef _DEBUG
-void DebugMSG(const char *format, ...) {
+void DebugMSG(const char *format, ...) 
+{
 	char buffer[MESSAGE_BUFFER];
 	va_list argptr;
 
@@ -83,7 +91,8 @@ void DebugMSG(const char *format, ...) {
 }
 #endif // _DEBUG
 
-void BIGMessage(const char *format, ...) {
+void BIGMessage(const char *format, ...) 
+{
 	char buffer[MESSAGE_BUFFER];
 	va_list argptr;
 
@@ -96,7 +105,8 @@ void BIGMessage(const char *format, ...) {
 	printf("%s\n",buffer);
 }
 
-void Error(const char *format, ...) {
+void Error(const char *format, ...) 
+{
 	char buffer[MESSAGE_BUFFER];
 	va_list argptr;
 
@@ -109,7 +119,8 @@ void Error(const char *format, ...) {
 	Log(buffer);
 }
 
-void Critical(const char *format, ...) {
+void Critical(const char *format, ...) 
+{
 	char buffer[MESSAGE_BUFFER];
 	va_list argptr;
 

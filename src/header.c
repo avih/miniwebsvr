@@ -78,13 +78,16 @@ void setHeader_filename(struct server_struct *inst,char* filename)
 	inst->MIMEtype[0]=0;
 	str=strrchr(filename,'.');
 	
-	if (str == NULL) return;
+	if (str == NULL) 
+		return;
 	len=strlen(str);
-	if (len>EXT_size) return;
+	if (len>EXT_size) 
+		return;
 
 	++str; --len;
 
-	for (i=0;i<len;++i) ext[i]=tolower(str[i]);
+	for (i=0;i<len;++i) 
+		ext[i]=tolower(str[i]);
 	ext[len]=0;
 	
 	for (i=1;i<headerExt_size;++i) 
@@ -117,7 +120,7 @@ void clearHeader(struct server_struct *inst)
 	inst->respval=0;
 	inst->MIMEtype[0]=0;
 	inst->header_content[0]=0;
-        inst->MIMEoverride=0;
+	inst->MIMEoverride=0;
 }
 
 
@@ -134,7 +137,8 @@ int printHeader(struct server_struct *inst, int headeronly, char* Buffer, int bu
 	strftime(Buffer,bufsize,"%a %b %d %I:%M:%S %Y",loctime);
 	Buffer[bufsize-1]=0;  // Make sure string is null-terminated
 
-        if (!inst->MIMEoverride) inst->MIMEoverride=inst->MIMEtype;
+	if (!inst->MIMEoverride) 
+		inst->MIMEoverride=inst->MIMEtype;
 	Message("%s : %s %d %s : %s",Buffer,inst->logbuffer,headerResp[inst->respval].respval,headerResp[inst->respval].respstr,inst->MIMEoverride);
 
 	// OK, start buffering!
@@ -145,6 +149,7 @@ int printHeader(struct server_struct *inst, int headeronly, char* Buffer, int bu
 		bufpos+=snprintf(Buffer+bufpos,bufsize-bufpos,"Content-Type: %s\r\n",inst->MIMEtype);
 		//send(inst->sock,Buffer,strlen(Buffer),0);
 	}
+	
 	if (inst->header_content[0] != 0)
 	{
 		tmp=strlen(inst->header_content);
@@ -155,9 +160,10 @@ int printHeader(struct server_struct *inst, int headeronly, char* Buffer, int bu
 		}
 		//send(inst->sock,inst->header_content,strlen(inst->header_content),0);
 	}
+	
 	bufpos+=snprintf(Buffer+bufpos,bufsize-bufpos,"Server: %s\r\n",VERSION);
 	//send(inst->sock,Buffer,strlen(Buffer),0);
-        loctime = gmtime (&curtime);
+	loctime = gmtime (&curtime);
 	bufpos+=strftime(Buffer+bufpos,bufsize-bufpos,"Date: %a, %d %b %Y %I:%M:%S GMT\r\n\r\n",loctime);
 	Buffer[bufsize-1]=0;
 	//send(inst->sock,Buffer,strlen(Buffer),0);

@@ -29,7 +29,8 @@ char* LOGFILE;
 char* ROOT;
 
 /// TODO: read configuration from registry
-void getconfig(int argc, char **argv) {
+void getconfig(int argc, char **argv) 
+{
 	int i;
 	enum { next_param, next_port, next_logfile, next_root, next_interface } next = next_param;
 

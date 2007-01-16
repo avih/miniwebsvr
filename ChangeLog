@@ -9,6 +9,7 @@ Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 
 Done:
 Tue Jan 16 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- Fixed up the indentation
 	- Added OPTIONS
 	- Added HEAD
 	- Moved GET/HEAD logic to own file

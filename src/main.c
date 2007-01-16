@@ -41,30 +41,31 @@ void cleanup()
 // signal handler for multiple signals.
 void catch_int(int sig)
 {
-        BIGMessage("Caught signal SIGINT");
-        loop=0;
-        signal(sig,SIG_IGN);
+	BIGMessage("Caught signal SIGINT");
+	loop=0;
+	signal(sig,SIG_IGN);
 }
 
 void catch_term(int sig)
 {
-        BIGMessage("Caught signal SIGTERM");
-        loop=0;
-        signal(sig,SIG_IGN);
+	BIGMessage("Caught signal SIGTERM");
+	loop=0;
+	signal(sig,SIG_IGN);
 }
 
 void catch_break(int sig)
 {
-        BIGMessage("Caught signal SIGBREAK");
-        loop=0;
-        signal(sig,SIG_IGN);
+	BIGMessage("Caught signal SIGBREAK");
+	loop=0;
+	signal(sig,SIG_IGN);
 }
 
 int main(int argc, char **argv)
 {
 	getconfig(argc, argv);
 	
-	if (atexit(&cleanup)) {
+	if (atexit(&cleanup)) 
+	{
 		fprintf(stderr, "cannot set exit function\n");
 		return EXIT_FAILURE;
 	}
@@ -78,7 +79,7 @@ int main(int argc, char **argv)
 	BIGMessage("--- %s",COPYRIGHT); 
 	BIGMessage("--- E-Mail: %s",EMAIL);
 
-//CHANGE chdir to the document root
+// chdir to the document root
 	chdir(ROOT);        
 	return listener(INTERFACE,PORT);
 }

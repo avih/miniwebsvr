@@ -53,15 +53,18 @@ STATIN size_t strlcpy(char *dst, const char *src, size_t siz)
 	size_t n = siz;
 
 	/* Copy as many bytes as will fit */
-	if (n != 0) {
-		while (--n != 0) {
+	if (n != 0) 
+	{
+		while (--n != 0) 
+		{
 			if ((*d++ = *s++) == '\0')
 				break;
 		}
 	}
 
 	/* Not enough room in dst, add NUL and traverse rest of src */
-	if (n == 0) {
+	if (n == 0) 
+	{
 		if (siz != 0)
 			*d = '\0';		/* NUL-terminate dst */
 		while (*s++)
@@ -95,8 +98,10 @@ STATIN size_t strlcat(char *dst, const char *src, size_t siz)
 
 	if (n == 0)
 		return(dlen + strlen(s));
-	while (*s != '\0') {
-		if (n != 1) {
+	while (*s != '\0') 
+	{
+		if (n != 1) 
+		{
 			*d++ = *s;
 			n--;
 		}
@@ -111,12 +116,15 @@ STATIN size_t strlcat(char *dst, const char *src, size_t siz)
 #if !defined strnlen
 STATIN size_t strnlen (const char *s, size_t maxlen)
 {
-  size_t len = 0;
+	size_t len = 0;
 
-  if (s[0] == '\0' || maxlen == 0) return 0;
+	if (s[0] == '\0' || maxlen == 0) 
+		return 0;
 
-  while (s[++len] != '\0' && --maxlen > 0) {}
+	while (s[++len] != '\0' && --maxlen > 0) 
+	{
+	}
 
-  return len;
+	return len;
 }
 #endif

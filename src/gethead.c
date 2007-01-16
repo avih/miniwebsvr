@@ -51,7 +51,8 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 	if ((dir = opendir(dirname)) == NULL)
 	{
 		retval=strnlen(dirname,dirlen);
-		if (dirname[retval-1] == '/') dirname[retval-1] = 0;
+		if (dirname[retval-1] == '/') 
+			dirname[retval-1] = 0;
 
 		setHeader_respval(inst,404);  // Not Found
 		printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
@@ -73,36 +74,38 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 
 		while ((ent = readdir(dir)) != NULL)
 		if (strcmp(ent->d_name,".")!=0)
-		if ((strcmp(dirname,"./")!=0) || (ent->d_name[0]!='.'))
-		{
-			strlcpy(FBuffer,dirname,FILENAME_SIZE);
-			if (strcmp(ent->d_name,"..")!=0)
+			if ((strcmp(dirname,"./")!=0) || (ent->d_name[0]!='.'))
 			{
-				strlcat(FBuffer,ent->d_name,FILENAME_SIZE);
-				stat(FBuffer, &statbuf);
-
-				if (statbuf.st_mode & S_IFDIR)
+				strlcpy(FBuffer,dirname,FILENAME_SIZE);
+				if (strcmp(ent->d_name,"..")!=0)
 				{
-					retval=strnlen(FBuffer,FILENAME_SIZE);
-					if (FBuffer[retval-1] != '/')
+					strlcat(FBuffer,ent->d_name,FILENAME_SIZE);
+					stat(FBuffer, &statbuf);
+
+					if (statbuf.st_mode & S_IFDIR)
 					{
-						FBuffer[retval] = '/';
-						FBuffer[retval+1] = 0;
+						retval=strnlen(FBuffer,FILENAME_SIZE);
+						if (FBuffer[retval-1] != '/')
+						{
+							FBuffer[retval] = '/';
+							FBuffer[retval+1] = 0;
+						}
 					}
 				}
-			}
-			else
-			{
-				retval=strnlen(dirname,FILENAME_SIZE);
-				if (FBuffer[retval-1] == '/') FBuffer[retval-1] = 0;
-				if ((cptr=strrchr(FBuffer,'/')) != NULL) cptr[1] = 0;
-				else strlcpy(FBuffer,"/",FILENAME_SIZE);
+				else
+				{
+					retval=strnlen(dirname,FILENAME_SIZE);
+					if (FBuffer[retval-1] == '/') 
+						FBuffer[retval-1] = 0;
+					if ((cptr=strrchr(FBuffer,'/')) != NULL) 
+						cptr[1] = 0;
+					else 
+						strlcpy(FBuffer,"/",FILENAME_SIZE);
+				}
 
+				bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"<A href=\"%s\">%s</A>\n",FBuffer+1,ent->d_name);
+				send(inst->sock,Buffer,bufpos,0);
 			}
-
-			bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"<A href=\"%s\">%s</A>\n",FBuffer+1,ent->d_name);
-			send(inst->sock,Buffer,bufpos,0);
-		}
 
 		closedir(dir);
 
@@ -111,13 +114,14 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 	}
 }
 
-void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebufsize) {
+void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebufsize) 
+{
 	char Buffer[SEND_BUFFER_SIZE];
 	char GHBuffer[SERVER_BUFFER_SIZE];
 	int retval;
 	FILE *in;
-        struct stat statbuf;
-        struct tm *loctime;
+	struct stat statbuf;
+	struct tm *loctime;
 
 	if ((in = fopen(filename, "rb")) == NULL)
 	{
@@ -151,11 +155,12 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 			blen=snprintf(GHBuffer,SERVER_BUFFER_SIZE,"Content-Length: %ld\r\n",ftell(in));
 			fseek(in,0,SEEK_SET);
 		}
-                if (stat(filename, &statbuf) == 0) {
-                        // Supports filestats
-                        loctime = gmtime (&statbuf.st_mtime);
-                        strftime(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Last-Modified: %a, %d %b %Y %I:%M:%S GMT\r\n",loctime);
-                }
+		if (stat(filename, &statbuf) == 0) 
+		{
+			// Supports filestats
+			loctime = gmtime (&statbuf.st_mtime);
+			strftime(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Last-Modified: %a, %d %b %Y %I:%M:%S GMT\r\n",loctime);
+		}
 
 		GHBuffer[SERVER_BUFFER_SIZE-1] = 0; // strnprintf does not null-delimit when full
 		setHeader_generic(inst,GHBuffer);
@@ -168,7 +173,8 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 		}
 
 
-		while ((retval=fread(Buffer+blen, 1,SEND_BUFFER_SIZE-blen, in)) > 0) {
+		while ((retval=fread(Buffer+blen, 1,SEND_BUFFER_SIZE-blen, in)) > 0) 
+		{
 			retval+=blen;
 			ret=0;
 			blen=0;

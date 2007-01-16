@@ -45,7 +45,8 @@ int server_charpos(const struct server_struct *inst, const char chr)
 	
 	for (i=inst->buffer_pos;i<inst->buffer_size;++i) 
 	{
-		if (inst->buffer[i] == chr) return i;
+		if (inst->buffer[i] == chr) 
+			return i;
 	}
 	return -1;
 }
@@ -53,7 +54,7 @@ int server_charpos(const struct server_struct *inst, const char chr)
 int server_readln(struct server_struct *inst, char *str, const unsigned int strsize) 
 {
 	unsigned int strpos;
-        int retval;
+	int retval;
 
 	// Check if in the buffer
 	if ((strpos = server_charpos(inst,'\n')) != -1) 
@@ -62,7 +63,8 @@ int server_readln(struct server_struct *inst, char *str, const unsigned int strs
 		strpos -= inst->buffer_pos+1;
 		
 		// Copy string to given buffer
-		if (strpos > strsize) strpos=strsize;
+		if (strpos > strsize) 
+			strpos=strsize;
 		memcpy(str,inst->buffer+inst->buffer_pos,strpos);
 		inst->buffer_pos+=strpos+2; 
 	} 
@@ -70,7 +72,8 @@ int server_readln(struct server_struct *inst, char *str, const unsigned int strs
 	{
 		// Copy remaining data in buffer
 		strpos=inst->buffer_size-inst->buffer_pos;
-		if (strpos > strsize) strpos=strsize;
+		if (strpos > strsize) 
+			strpos=strsize;
 		memcpy(str,inst->buffer+inst->buffer_pos,strpos);
 	
 		// Assemble rest of string out of multiple buffers
@@ -104,7 +107,8 @@ int server_readln(struct server_struct *inst, char *str, const unsigned int strs
 					retval = strsize - strpos; // Limit check exceeded
 				inst->buffer_pos=retval+1; // +1 to skip the NULL terminator of the string
 				--retval; // -1 to stop before the detected endline
-				if (retval>0) memcpy(str+strpos,inst->buffer,retval);
+				if (retval>0) 
+					memcpy(str+strpos,inst->buffer,retval);
 				strpos+=retval;
 				break;
 			}
@@ -116,11 +120,13 @@ int server_readln(struct server_struct *inst, char *str, const unsigned int strs
 	}
 	
 	// remove \r if present just before the \n
-	if (str[strpos] == '\r') --strpos;
+	if (str[strpos] == '\r') 
+		--strpos;
 	
 	// Set the NULL terminator for the string
 	++strpos;
-	if (strpos > strsize) strpos=strsize;
+	if (strpos > strsize) 
+		strpos=strsize;
 	str[strpos]=0;
 	return strpos-1;	
 }
@@ -163,20 +169,20 @@ DWORD WINAPI server(struct server_struct *inst)
 		goto serverquit;
 	}
 	else
-        {
-                // Unknown request type, also print request to logfile
-                snprintf(inst->logbuffer,SERVER_BUFFER_SIZE,"\"%s:%d\"",inet_ntoa(inst->sin_addr),htons(inst->sin_port));
-                inst->logbuffer[SERVER_BUFFER_SIZE-1] = 0; // snprintf does not null-delimit when full
-                inst->MIMEoverride = GHBuffer; // Override MIME type with unknown request type
-                setHeader_respval(inst,501); // Not Implemented
-                printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
+	{
+		// Unknown request type, also print request to logfile
+		snprintf(inst->logbuffer,SERVER_BUFFER_SIZE,"\"%s:%d\"",inet_ntoa(inst->sin_addr),htons(inst->sin_port));
+		inst->logbuffer[SERVER_BUFFER_SIZE-1] = 0; // snprintf does not null-delimit when full
+		inst->MIMEoverride = GHBuffer; // Override MIME type with unknown request type
+		setHeader_respval(inst,501); // Not Implemented
+		printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
 
-                goto serverquit;
-        }
+		goto serverquit;
+	}
 	if (filename[1] == 0)
 	{
 		snprintf(inst->logbuffer,SERVER_BUFFER_SIZE,"\"%s:%d\"",inet_ntoa(inst->sin_addr),htons(inst->sin_port));
-                inst->logbuffer[SERVER_BUFFER_SIZE-1] = 0; // snprintf does not null-delimit when full
+		inst->logbuffer[SERVER_BUFFER_SIZE-1] = 0; // snprintf does not null-delimit when full
 		setHeader_respval(inst,400);  // Bad Request
 		printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
 		
@@ -184,14 +190,14 @@ DWORD WINAPI server(struct server_struct *inst)
 	}
 
 	snprintf(inst->logbuffer,SERVER_BUFFER_SIZE,"\"%s:%d\" %s",inet_ntoa(inst->sin_addr),htons(inst->sin_port),filename);
-        inst->logbuffer[SERVER_BUFFER_SIZE-1] = 0; // snprintf does not null-delimit when full
+    inst->logbuffer[SERVER_BUFFER_SIZE-1] = 0; // snprintf does not null-delimit when full
 
 	// Check for special "device" called "nul"
 	tstr=strstr(filename,"/nul");
 	if (tstr!=NULL) 
 	{
 		if ((tstr[4] == '.') || (tstr[4] == 0))
-			strcpy(filename,"../");  // nul device
+		strcpy(filename,"../");  // nul device
 	}
 
 	// Check for sub-root hacking, If found send a forbidden.
