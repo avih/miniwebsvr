@@ -32,11 +32,11 @@
 	#define STATIN
 
 	#if !defined strlcpy
-	extern unsigned int strlcpy (char *dest, char *src, unsigned int size);
+	extern unsigned int strlcpy (char *dst, char *src, unsigned int size);
 	#endif
 
 	#if !defined strlcat
-	extern unsigned int strlcat (char *dest, char *src, unsigned int size);
+	extern unsigned int strlcat (char *dst, char *src, unsigned int size);
 	#endif
 
 	#if !defined strnlen

@@ -31,11 +31,11 @@ char outbuf[BUFSIZ];
 /// TODO: Optimize
 void Log(char* txt) 
 {
-	int i;
+//	int i;
 	if (LogStream==NULL) 
 		return;
 
-	i=0;
+//	i=0;
 	fprintf(LogStream,"%s\n",txt);
 	/*while (txt[i]) {
 		fputc(txt[i],LogStream);
@@ -57,7 +57,7 @@ void StopLogging()
 {
 	fflush(LogStream);
 	if (LogStream!=stdout)
-		(LogStream);
+		fclose(LogStream);
 	LogStream=NULL;
 }
 
@@ -67,7 +67,7 @@ void Message(const char *format, ...)
 	va_list argptr;
 
 	va_start(argptr, format);
-	vsprintf(buffer, format, argptr);
+	vsnprintf(buffer, MESSAGE_BUFFER, format, argptr);
 	va_end(argptr);
 
 	buffer[MESSAGE_BUFFER-1]=0;
