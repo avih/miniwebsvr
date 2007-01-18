@@ -9,7 +9,7 @@ The web-server supports the following:
 - Serves static web pages
 - Directory listing
 - Supports HTTP MIME encodings
-- Supports GET/HEAD/OPTINS
+- Supports GET/HEAD/OPTIONS
 - Logging to disk
 - Small memory footprint
 - Muti-threaded

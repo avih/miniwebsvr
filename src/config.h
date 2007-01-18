@@ -21,9 +21,9 @@
 
 /************************* Compile time Limits/Options ***********************/
 
-#define VERSION "MiniWebsvr/0.05svn"
-#define COPYRIGHT "Copyright (C) 2007  Nickolas Antonie Grigoriadis"
-#define EMAIL "nagrigoriadis@gmail.com"
+#define VERSION "MiniWebsvr/0.05"
+#define COPYRIGHT "Copyright (C) 2007  Nickolas Antonie Grigoriadis and Daniel John Walker"
+#define EMAIL "grigi_ at users.sourceforge.net or djwalker at users.sourceforge.net"
 
 /// Defines whether the server must run in multiple threads (recommended)
 #define MULTITHREADED
@@ -41,7 +41,6 @@
 extern int PORT;
 extern char* INTERFACE;
 extern char* LOGFILE;
-//CHANGE global variable for document root
 extern char* ROOT;
 
 void getconfig(int argc, char **argv);

@@ -118,6 +118,8 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 {
 	char Buffer[SEND_BUFFER_SIZE];
 	char GHBuffer[SERVER_BUFFER_SIZE];
+	char TMPBuffer[SERVER_BUFFER_SIZE];
+	char TimeBuffer[SERVER_BUFFER_SIZE];
 	int retval;
 	FILE *in;
 	struct stat statbuf;
@@ -144,6 +146,27 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 	}
 	else 
 	{
+		// Start Header parsing
+		// Reset some internal variables
+		TimeBuffer[0]=0;
+
+		// Read until blank line
+		while ((retval = server_readln(inst,TMPBuffer,SERVER_BUFFER_SIZE)) != 0) {
+//			printf("%s\r\n",TMPBuffer);
+			if (0 == strncmp(TMPBuffer, "If-Modified-Since: ", 19))
+			{
+				// Now extract date data 
+//				struct tm tm;
+//				char buf[255];
+
+				strlcpy(TimeBuffer,TMPBuffer+19,SERVER_BUFFER_SIZE-19);
+//				printf("%s\r\n",TMPBuffer+19);
+				//strptime(TMPBuffer+19, "%a, %d %b %Y %I:%M:%S GMT", &tm);
+				//strftime(buf, sizeof(buf), "%a, %d %b %Y %I:%M:%S GMT", &tm);
+				//puts(buf)
+			}
+		}
+
 		int ret,blen;
 		filename[filebufsize-1]=0;
 		setHeader_filename(inst,filename);
@@ -160,10 +183,17 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 			// Supports filestats
 			loctime = gmtime (&statbuf.st_mtime);
 			strftime(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Last-Modified: %a, %d %b %Y %I:%M:%S GMT\r\n",loctime);
+			if (strncmp(TimeBuffer,GHBuffer+blen+15,strlen(GHBuffer+blen+15)-2) == 0 )
+			{
+				// If-Modified-Since matches, therefore no update
+				setHeader_respval(inst,304);  // Not Modified
+				headeronly=1;
+			}
 		}
 
 		GHBuffer[SERVER_BUFFER_SIZE-1] = 0; // strnprintf does not null-delimit when full
 		setHeader_generic(inst,GHBuffer);
+
 		blen=printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE);
 
 		if (headeronly == 1) {
@@ -178,27 +208,23 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 			retval+=blen;
 			ret=0;
 			blen=0;
-//			printf("1: bpos=%d\tret=%d\tretval=%d\n",blen,ret,retval);
 
 			while ((ret < retval) && (retval > 0)) 
 			{
 				ret=send(inst->sock,Buffer+blen,retval,0);
-//				printf("2: bpos=%d\tret=%d\tretval=%d\n",blen,ret,retval);
 
 				if (ret == 0) 
 				{
-//					printf("transmission error\n");
+					// Some transmission error
 					fclose(in);
 					return;
 				}
 				blen+=ret;
 				retval-=ret;
 				ret=0;
-//				printf("3: bpos=%d\tret=%d\tretval=%d\n",blen,ret,retval);
 			}
 			blen=0;
 		}
-//		printf("While quit\nbpos=%d\tret=%d\tretval=%d\n\n",blen,ret,retval);
 		fclose(in);
 	}
 }

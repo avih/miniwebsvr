@@ -28,7 +28,6 @@ char* INTERFACE;
 char* LOGFILE;
 char* ROOT;
 
-/// TODO: read configuration from registry
 void getconfig(int argc, char **argv) 
 {
 	int i;
@@ -39,7 +38,6 @@ void getconfig(int argc, char **argv)
 	LOGFILE=DEFAULT_LOGFILE;
 	ROOT=DEFAULT_ROOT;
 
-//CHANGE now handles --root parameter
 	for (i = 1; i < argc; i += 1)
 	{
 		if (next == next_param)

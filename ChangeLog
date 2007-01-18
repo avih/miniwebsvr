@@ -1,13 +1,13 @@
-Still Planned:
-Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+Thu Jan 18 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	Released version 0.05
-	Reports Date and Last-modified date in response header.
-	Added config option for the web "root"
-	Added support for request type HEAD
-	Supports conditinal GET's (If-Modified-Since:)
+	- Fixed a bug in server_readln where it would return an array that is 
+	  one character too long. The problem was hidden because the buffer
+	  start out as zeroes.
+	- Supports conditinal GET's 
+	  If-Modified-Since: Using string comparison (Based on the assumption the client stores the string)
+	  Tested & works with Firefox, Konqueror & IE. Opera is not playing nice, not even requesting an 
+	  If-Modified-Since on forced refresh, and it's cache never expires.
 
-
-Done:
 Tue Jan 16 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Fixed up the indentation
 	- Added OPTIONS
@@ -44,13 +44,13 @@ Thu Jan 11 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	Imported strl(cpy/cat) for os'es that doesn't have it in libc (faster & more secure)
 	Fixed a possible race condition with signal handling
 
-Wed Jan 10 2007 Daniel Walker <daniel.john.walker@gmail.com>
+Wed Jan 10 2007 Daniel Walker <djwalker at users.sourceforge.net>
 	You can now set the document root using the --root parameter
 	miniweb no parses URL's better, it now copes with % and ?
 	a potential bufer overrun has been fixed
 	it was possible to bypass the sub-root protection by typing GET ./
 
-Wed Jan 10 2007 Daniel Walker <daniel.john.walker@gmail.com>
+Wed Jan 10 2007 Daniel Walker <djwalker at users.sourceforge.net>
 	Added support for command line parameters
 
 Mon Jan 01 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>

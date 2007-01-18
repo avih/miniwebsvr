@@ -35,8 +35,8 @@ struct server_struct
 	SOCKET sock;
 
 	// Incoming connection data
-    u_short sin_port;
-    struct in_addr sin_addr;
+	u_short sin_port;
+	struct in_addr sin_addr;
 	
 	// response header
 	int respval;
@@ -46,5 +46,7 @@ struct server_struct
 };
 
 DWORD WINAPI server(struct server_struct *inst);
+
+int server_readln(struct server_struct *inst, char *str, const unsigned int strsize);
 
 #endif // SERVER_H

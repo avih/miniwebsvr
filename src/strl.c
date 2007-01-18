@@ -55,7 +55,7 @@ STATIN size_t strlcpy(char *dst, const char *src, size_t siz)
 	/* Copy as many bytes as will fit */
 	if (n != 0) 
 	{
-		while (--n != 0) 
+		while (--n != 0)
 		{
 			if ((*d++ = *s++) == '\0')
 				break;
@@ -66,7 +66,7 @@ STATIN size_t strlcpy(char *dst, const char *src, size_t siz)
 	if (n == 0) 
 	{
 		if (siz != 0)
-			*d = '\0';		/* NUL-terminate dst */
+			*d = '\0';	/* NUL-terminate dst */
 		while (*s++)
 			;
 	}

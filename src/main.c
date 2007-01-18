@@ -38,7 +38,7 @@ void cleanup()
 // As documented at http://www.bindview.com/Services/Razor/Papers/2001/signals.cfm
 // There exists the possibility of a race condition if 2 or more different
 // signals are sent to the process nearly the same time when using the same
-// signal handler for multiple signals.
+// signal handler for different signals.
 void catch_int(int sig)
 {
 	BIGMessage("Caught signal SIGINT");

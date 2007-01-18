@@ -143,11 +143,9 @@ int printHeader(struct server_struct *inst, int headeronly, char* Buffer, int bu
 
 	// OK, start buffering!
 	bufpos=snprintf(Buffer,bufsize,"HTTP/1.1 %d %s\r\n",headerResp[inst->respval].respval,headerResp[inst->respval].respstr);
-	//send(inst->sock,Buffer,strnlen(Buffer,bufsize),0);
 	if (inst->MIMEtype[0] != 0) 
 	{
 		bufpos+=snprintf(Buffer+bufpos,bufsize-bufpos,"Content-Type: %s\r\n",inst->MIMEtype);
-		//send(inst->sock,Buffer,strlen(Buffer),0);
 	}
 	
 	if (inst->header_content[0] != 0)
@@ -158,15 +156,12 @@ int printHeader(struct server_struct *inst, int headeronly, char* Buffer, int bu
 			memcpy(Buffer+bufpos,inst->header_content,tmp);
 			bufpos+=tmp;
 		}
-		//send(inst->sock,inst->header_content,strlen(inst->header_content),0);
 	}
 	
 	bufpos+=snprintf(Buffer+bufpos,bufsize-bufpos,"Server: %s\r\n",VERSION);
-	//send(inst->sock,Buffer,strlen(Buffer),0);
 	loctime = gmtime (&curtime);
 	bufpos+=strftime(Buffer+bufpos,bufsize-bufpos,"Date: %a, %d %b %Y %I:%M:%S GMT\r\n\r\n",loctime);
 	Buffer[bufsize-1]=0;
-	//send(inst->sock,Buffer,strlen(Buffer),0);
 
 	if (headerResp[inst->respval].autogen) 
 	{

@@ -51,7 +51,7 @@ int server_charpos(const struct server_struct *inst, const char chr)
 	return -1;
 }
 
-int server_readln(struct server_struct *inst, char *str, const unsigned int strsize) 
+int server_readln(struct server_struct *inst, char *str, const unsigned int strsize)
 {
 	unsigned int strpos;
 	int retval;
@@ -127,7 +127,7 @@ int server_readln(struct server_struct *inst, char *str, const unsigned int strs
 	++strpos;
 	if (strpos > strsize) 
 		strpos=strsize;
-	str[strpos]=0;
+	str[strpos-1]=0;
 	return strpos-1;	
 }
 

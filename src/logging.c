@@ -27,21 +27,12 @@ FILE* LogStream=NULL;
 // For Log file buffering
 char outbuf[BUFSIZ];
 
-/// TODO: make thread safe
-/// TODO: Optimize
 void Log(char* txt) 
 {
-//	int i;
 	if (LogStream==NULL) 
 		return;
 
-//	i=0;
 	fprintf(LogStream,"%s\n",txt);
-	/*while (txt[i]) {
-		fputc(txt[i],LogStream);
-		i++;
-	}
-	fputc('\n',LogStream);*/
 	fflush(LogStream);
 }
 
