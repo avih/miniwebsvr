@@ -5,6 +5,16 @@ MiniWebsvr is a small web server that aims to be able to be used stand-alone
 or embedded into another application.
 Small footprint and light on resources is a requirement.
 
+To Use the server:
+Usage: miniwebsvr.exe [options]
+Options:
+  --help                   Display this information
+  --port <port>            Listen on port <port> (default 8080)
+  --log <file>             Save the log file as <file> (default: miniwebsvr.log)
+  --root <path>            Specify the document root directory (default: .)
+  --interface <ip>         Specify the interface the server listens on (default: ALL)
+
+
 The web-server supports the following:
 - Serves static web pages
 - Directory listing
@@ -17,7 +27,7 @@ The web-server supports the following:
 - Currently Win32 only
 - Command line options
 - Conditional GET:
-  -  If-Modified-Since:
+  - If-Modified-Since:
 
 
 Was originally designed as a small stand-alone web-server, but I think I'll
