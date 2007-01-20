@@ -23,20 +23,20 @@
 
 #if defined USE_INLINE
 	#ifdef STRL_C
-	#define STATIN inline
+	#define STATIN __inline
 	#else
-	#define STATIN static inline
+	#define STATIN static __inline
 	#include "strl.c"
 	#endif // STRL_C
 #else
 	#define STATIN
 
 	#if !defined strlcpy
-	extern unsigned int strlcpy (char *dst, char *src, unsigned int size);
+	extern size_t strlcpy(char *dst, const char *src, size_t siz);
 	#endif
 
 	#if !defined strlcat
-	extern unsigned int strlcat (char *dst, char *src, unsigned int size);
+	extern size_t strlcat(char *dst, const char *src, size_t siz);size_t strlcat (char *dst, char *src, unsigned int size);
 	#endif
 
 	#if !defined strnlen

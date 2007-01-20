@@ -120,7 +120,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 	char GHBuffer[SERVER_BUFFER_SIZE];
 	char TMPBuffer[SERVER_BUFFER_SIZE];
 	char TimeBuffer[SERVER_BUFFER_SIZE];
-	int retval;
+	int retval,ret,blen;
 	FILE *in;
 	struct stat statbuf;
 	struct tm *loctime;
@@ -167,7 +167,6 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 			}
 		}
 
-		int ret,blen;
 		filename[filebufsize-1]=0;
 		setHeader_filename(inst,filename);
 		setHeader_respval(inst,200);  // OK
