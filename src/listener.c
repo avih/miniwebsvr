@@ -16,8 +16,8 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
-#define WIN32_LEAN_AND_MEAN
-#include <winsock2.h>
+#include "os_compat.h"
+
 #include <stdio.h>
 #include <malloc.h>
 
@@ -34,9 +34,10 @@ int listener(char *interface, unsigned short port)
 
 	int ret,fromlen;
 	struct sockaddr_in local, from;
-	WSADATA wsaData;
 	SOCKET listen_socket, msgsock;
 	fd_set socket_set;
+#ifdef __WIN32__
+	WSADATA wsaData;
 
 	if ((ret=WSAStartup(0x202,&wsaData)) != 0) // Request WinSock API v2.2
 	{
@@ -44,6 +45,7 @@ int listener(char *interface, unsigned short port)
 		WSACleanup();
 		return -1;
 	}
+#endif
 	
 	local.sin_family = AF_INET;
 	local.sin_addr.s_addr = (!interface)?INADDR_ANY:inet_addr(interface); 
@@ -54,23 +56,46 @@ int listener(char *interface, unsigned short port)
 	
 	if (listen_socket == INVALID_SOCKET)
 	{
-		Critical("socket() failed with error %d",WSAGetLastError());
+		#ifdef __WIN32__
+		ret = WSAGetLastError();
+		#else
+		ret = errno;
+		#endif
+
+		Critical("socket() failed with error %d",ret);
+		#ifdef __WIN32__
 		WSACleanup();
+		#endif
 		return -1;
 	}
 
 	if (bind(listen_socket,(struct sockaddr*)&local,sizeof(local)) == SOCKET_ERROR) 
 	{
-		Critical("bind() failed with error %d",WSAGetLastError());
+		#ifdef __WIN32__
+		ret = WSAGetLastError();
+		#else
+		ret = errno;
+		#endif
+
+		Critical("bind() failed with error %d",ret);
+		#ifdef __WIN32__
 		WSACleanup();
+		#endif
 		return -1;
 	}
 
 	if (listen(listen_socket,SOMAXCONN) == SOCKET_ERROR) // Listen with backlog set to max reasonable by OS
 	{
+		#ifdef __WIN32__
+		ret = WSAGetLastError();
+		#else
+		ret = errno;
+		#endif
 		
-		Critical("listen() failed with error %d",WSAGetLastError());
+		Critical("listen() failed with error %d",ret);
+		#ifdef __WIN32__
 		WSACleanup();
+		#endif
 		return -1;
 	}
 
@@ -78,22 +103,30 @@ int listener(char *interface, unsigned short port)
 	BIGMessage("--- Listening on port %d ---",port);
 	while(loop) 
 	{
-		socket_set.fd_count=1;
-		socket_set.fd_array[0]=listen_socket;
+		FD_ZERO(&socket_set);
+		FD_SET(listen_socket,&socket_set);
 		ret=select(0,&socket_set,NULL,NULL,&timeout);
 		if (ret > 0) 
 		{
 #ifdef MULTITHREADED			
 			DWORD dwThreadId; 
-		    HANDLE hThread; 
+			HANDLE hThread; 
 #endif
 			struct server_struct *sock;
 			fromlen =sizeof(from);
 			msgsock = accept(listen_socket,(struct sockaddr*)&from, &fromlen);
 			if (msgsock == INVALID_SOCKET) 
 			{
-				Critical("accept() error %d",WSAGetLastError());
+				#ifdef __WIN32__
+				ret = WSAGetLastError();
+				#else
+				ret = errno;
+				#endif
+
+				Critical("accept() error %d",ret);
+				#ifdef __WIN32__
 				WSACleanup();
+				#endif
 				return -1;
 			}
 			
@@ -103,7 +136,7 @@ int listener(char *interface, unsigned short port)
 			sock->sin_port=from.sin_port;
 			sock->logbuffer[0]=0;
 
-#ifdef MULTITHREADED
+#ifdef MULTITHREADED	
 			hThread = CreateThread( 
 				NULL,                           // no security attributes 
 				0,                              // use default stack size  
@@ -117,7 +150,11 @@ int listener(char *interface, unsigned short port)
 		}
 	}
 	
+#ifdef __WIN32__
 	closesocket(listen_socket);
 	WSACleanup();
+#else
+	shutdown(listen_socket,SHUT_RDWR);
+#endif
 	return 0;
 }

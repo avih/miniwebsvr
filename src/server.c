@@ -16,8 +16,8 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
-#define WIN32_LEAN_AND_MEAN
-#include <winsock2.h>
+#include "os_compat.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
@@ -35,7 +35,11 @@
 
 void server_close(struct server_struct *inst)
 {
+#ifdef __WIN32__
 	closesocket(inst->sock);
+#else
+	shutdown(inst->sock,SHUT_RDWR);
+#endif
 	free(inst);
 }
 
@@ -85,7 +89,13 @@ int server_readln(struct server_struct *inst, char *str, const unsigned int strs
 
 			if (inst->buffer_size == SOCKET_ERROR) 
 			{
-				fprintf(stderr,"recv() failed: error %d\n",WSAGetLastError());
+				#ifdef __WIN32__
+				retval = WSAGetLastError();
+				#else
+				retval = errno;
+				#endif
+
+				fprintf(stderr,"recv() failed: error %d\n",retval);
 				//server_close(inst);
 				return -1;
 			}
@@ -131,7 +141,7 @@ int server_readln(struct server_struct *inst, char *str, const unsigned int strs
 	return strpos-1;	
 }
 
-DWORD WINAPI server(struct server_struct *inst)
+DWORD server(struct server_struct *inst)
 {
 	char Buffer[SEND_BUFFER_SIZE];
 	char filename[FILENAME_SIZE];

@@ -45,7 +45,7 @@ struct server_struct
 	char *MIMEoverride; 
 };
 
-DWORD WINAPI server(struct server_struct *inst);
+DWORD server(struct server_struct *inst);
 
 int server_readln(struct server_struct *inst, char *str, const unsigned int strsize);
 
