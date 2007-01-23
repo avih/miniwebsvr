@@ -25,6 +25,7 @@
 	#include <windows.h>
 	#include <winsock2.h>
 
+	#define socklen_t int
 #else // !_WINDOWS__
 	// Compile for UNIX Sockets
 	#include <sys/types.h>
@@ -32,6 +33,7 @@
 	#include <sys/select.h>
 	#include <sys/wait.h>
 	#include <netinet/in.h>
+	#include <arpa/inet.h>
 	#include <errno.h>
 
 	#define SOCKET int

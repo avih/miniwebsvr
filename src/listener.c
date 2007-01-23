@@ -30,9 +30,10 @@ int loop;
 
 int listener(char *interface, unsigned short port) 
 {
-	const struct timeval timeout = {1,0}; // 1 second poll state
+	struct timeval timeout;// = {1,0}; // 1 second poll state
 
-	int ret,fromlen;
+	int ret,on;
+	socklen_t fromlen;
 	struct sockaddr_in local, from;
 	SOCKET listen_socket, msgsock;
 	fd_set socket_set;
@@ -54,6 +55,10 @@ int listener(char *interface, unsigned short port)
 
 	listen_socket = socket(AF_INET, SOCK_STREAM,0); // TCP socket
 	
+	// Enable address reuse
+	on = 1;
+	ret = setsockopt( listen_socket, SOL_SOCKET, SO_REUSEADDR, (void*)&on, sizeof(on) );
+
 	if (listen_socket == INVALID_SOCKET)
 	{
 		#ifdef __WIN32__
@@ -105,9 +110,14 @@ int listener(char *interface, unsigned short port)
 	{
 		FD_ZERO(&socket_set);
 		FD_SET(listen_socket,&socket_set);
-		ret=select(0,&socket_set,NULL,NULL,&timeout);
+		timeout.tv_sec=1;
+		timeout.tv_usec=0;
+		printf("select(");
+		ret=select(listen_socket+1,&socket_set,NULL,NULL,&timeout);
+		printf("%d)\n",ret);
 		if (ret > 0) 
 		{
+			printf("Got IT\n");
 #ifdef MULTITHREADED			
 			DWORD dwThreadId; 
 			HANDLE hThread; 

@@ -1,3 +1,10 @@
+Tue Jan 23 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- Started port to UNIX sockets
+	- Got single-threaded listener to work
+	- GET "201 Created" types currently fail
+	- OPTIONS HEAD and GET (file) works.
+	- Fixed a few API misuses (for both Windows/UNIX)
+
 Thu Jan 18 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	Released version 0.05
 	- Fixed a bug in server_readln where it would return an array that is 
