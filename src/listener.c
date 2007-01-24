@@ -112,12 +112,9 @@ int listener(char *interface, unsigned short port)
 		FD_SET(listen_socket,&socket_set);
 		timeout.tv_sec=1;
 		timeout.tv_usec=0;
-		printf("select(");
 		ret=select(listen_socket+1,&socket_set,NULL,NULL,&timeout);
-		printf("%d)\n",ret);
 		if (ret > 0) 
 		{
-			printf("Got IT\n");
 #ifdef MULTITHREADED			
 			DWORD dwThreadId; 
 			HANDLE hThread; 
@@ -164,7 +161,7 @@ int listener(char *interface, unsigned short port)
 	closesocket(listen_socket);
 	WSACleanup();
 #else
-	shutdown(listen_socket,SHUT_RDWR);
+	close(listen_socket);
 #endif
 	return 0;
 }

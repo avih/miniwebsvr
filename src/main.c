@@ -24,8 +24,6 @@
 
 #ifdef __WIN32__
 #include <dir.h>
-#else
-#include <unistd.h>
 #endif
 
 #include "config.h"

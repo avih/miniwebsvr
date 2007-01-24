@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <time.h>
 
 #include "config.h"
@@ -152,18 +153,10 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 
 		// Read until blank line
 		while ((retval = server_readln(inst,TMPBuffer,SERVER_BUFFER_SIZE)) != 0) {
-//			printf("%s\r\n",TMPBuffer);
 			if (0 == strncmp(TMPBuffer, "If-Modified-Since: ", 19))
 			{
-				// Now extract date data 
-//				struct tm tm;
-//				char buf[255];
-
+				// Comare date string to existing
 				strlcpy(TimeBuffer,TMPBuffer+19,SERVER_BUFFER_SIZE-19);
-//				printf("%s\r\n",TMPBuffer+19);
-				//strptime(TMPBuffer+19, "%a, %d %b %Y %I:%M:%S GMT", &tm);
-				//strftime(buf, sizeof(buf), "%a, %d %b %Y %I:%M:%S GMT", &tm);
-				//puts(buf)
 			}
 		}
 
@@ -171,15 +164,16 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 		setHeader_filename(inst,filename);
 		setHeader_respval(inst,200);  // OK
 		blen=0;
-		if (!fseek(in,0,SEEK_END))
-		{
-			// Supports seek
-			blen=snprintf(GHBuffer,SERVER_BUFFER_SIZE,"Content-Length: %ld\r\n",ftell(in));
-			fseek(in,0,SEEK_SET);
-		}
 		if (stat(filename, &statbuf) == 0) 
 		{
 			// Supports filestats
+			if (statbuf.st_mode & S_IFDIR)
+			{
+				// Is Directory
+				fclose(in); // Close open handle
+				server_dirlist(inst,headeronly,filename,filebufsize);
+				return;
+			}
 			loctime = gmtime (&statbuf.st_mtime);
 			strftime(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Last-Modified: %a, %d %b %Y %I:%M:%S GMT\r\n",loctime);
 			if (strncmp(TimeBuffer,GHBuffer+blen+15,strlen(GHBuffer+blen+15)-2) == 0 )
@@ -188,6 +182,12 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 				setHeader_respval(inst,304);  // Not Modified
 				headeronly=1;
 			}
+		}
+		if (!fseek(in,0,SEEK_END))
+		{
+			// Supports seek
+			blen=snprintf(GHBuffer,SERVER_BUFFER_SIZE,"Content-Length: %ld\r\n",ftell(in));
+			fseek(in,0,SEEK_SET);
 		}
 
 		GHBuffer[SERVER_BUFFER_SIZE-1] = 0; // strnprintf does not null-delimit when full

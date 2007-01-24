@@ -38,7 +38,7 @@ void server_close(struct server_struct *inst)
 #ifdef __WIN32__
 	closesocket(inst->sock);
 #else
-	shutdown(inst->sock,SHUT_RDWR);
+	close(inst->sock);
 #endif
 	free(inst);
 }
