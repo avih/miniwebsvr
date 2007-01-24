@@ -1,3 +1,9 @@
+Wed Jan 24 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- Got single threaded server to work on Linux
+	- Implemented Address reuse (for Linux to ignore TIME_WAIT state)(to
+	  re-listen the server quickly)
+	- Disabled Nagle, as it interferes with our own buffering algorithm
+
 Tue Jan 23 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Started port to UNIX sockets
 	- Got single-threaded listener to work

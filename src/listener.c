@@ -57,7 +57,10 @@ int listener(char *interface, unsigned short port)
 	
 	// Enable address reuse
 	on = 1;
-	ret = setsockopt( listen_socket, SOL_SOCKET, SO_REUSEADDR, (void*)&on, sizeof(on) );
+	setsockopt( listen_socket, SOL_SOCKET, SO_REUSEADDR, (void*)&on, sizeof(on) );
+	// Disable Nagle 
+	// Since we are implementing our own buffering Nagle just gets in the way.
+	setsockopt( listen_socket, IPPROTO_TCP, TCP_NODELAY, (void*)&on, sizeof(on) );
 
 	if (listen_socket == INVALID_SOCKET)
 	{
@@ -110,7 +113,7 @@ int listener(char *interface, unsigned short port)
 	{
 		FD_ZERO(&socket_set);
 		FD_SET(listen_socket,&socket_set);
-		timeout.tv_sec=1;
+		timeout.tv_sec=2;  // Select has 2 second timeout (to check on exit_status)
 		timeout.tv_usec=0;
 		ret=select(listen_socket+1,&socket_set,NULL,NULL,&timeout);
 		if (ret > 0) 

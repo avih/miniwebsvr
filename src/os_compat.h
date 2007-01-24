@@ -33,6 +33,7 @@
 	#include <sys/select.h>
 	#include <sys/wait.h>
 	#include <netinet/in.h>
+	#include <netinet/tcp.h>
 	#include <arpa/inet.h>
 	#include <errno.h>
 	#include <string.h>
