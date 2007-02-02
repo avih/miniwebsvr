@@ -31,8 +31,14 @@
 #endif
 #define USE_INLINE
 
+/// Defines if a Thread Pool is to be used (recommended)
+#ifdef MULTITHREADED
+//#define THREAD_POOL
+#endif
+
 /************************ Default for Run-time Options ***********************/
 
+#define DEFAULT_THREAD_POOL_SIZE 8
 #define DEFAULT_PORT 8080
 #define DEFAULT_INTERFACE NULL
 #define DEFAULT_LOGFILE "miniwebsvr.log"
@@ -40,6 +46,9 @@
 
 /******************** Variables containing Run-time Values *******************/
 
+#ifdef THREAD_POOL
+extern int THREAD_POOL_SIZE;
+#endif
 extern int PORT;
 extern char* INTERFACE;
 extern char* LOGFILE;
@@ -47,4 +56,4 @@ extern char* ROOT;
 
 void getconfig(int argc, char **argv);
 
-#endif // CONFIG_H
+#endif // CONFIG_H                        

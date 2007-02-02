@@ -37,11 +37,13 @@ const struct headerResp_struct headerResp[headerResp_size] =
 	{{1,501,"Not Implemented"}, // Default
 	{0,200,"OK"},
 	{0,201,"Created"},
+        {0,206,"Partial Content"},
 	{0,304,"Not Modified"},
 	{0,307,"Tempory Redirect"},
 	{1,400,"Bad Request"},
 	{1,403,"Forbidden"},
-	{1,404,"Not Found"}};
+	{1,404,"Not Found"},
+        {1,416,"Requested Range Not Satisfiable"}};
 
 const struct headerExt_struct headerExt[headerExt_size] = 
 	{{"",""}, // Default type

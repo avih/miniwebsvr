@@ -121,7 +121,8 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 	char GHBuffer[SERVER_BUFFER_SIZE];
 	char TMPBuffer[SERVER_BUFFER_SIZE];
 	char TimeBuffer[SERVER_BUFFER_SIZE];
-	int retval,ret,blen;
+	int retval,ret,blen,range;
+        long int contentlength;
 	FILE *in;
 	struct stat statbuf;
 	struct tm *loctime;
@@ -150,6 +151,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 		// Start Header parsing
 		// Reset some internal variables
 		TimeBuffer[0]=0;
+                contentlength=0;
 
 		// Read until blank line
 		while ((retval = server_readln(inst,TMPBuffer,SERVER_BUFFER_SIZE)) != 0) {
@@ -158,13 +160,23 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 				// Comare date string to existing
 				strlcpy(TimeBuffer,TMPBuffer+19,SERVER_BUFFER_SIZE-19);
 			}
+
+                        if (0 == strncmp(TMPBuffer, "Range: ", 7))
+                        {
+                                range=1;
+                        }
+
+                        if (0 == strncmp(TMPBuffer, "If-Range: ", 10))
+                        {
+                                range=2;
+                        }
 		}
 
 		filename[filebufsize-1]=0;
 		setHeader_filename(inst,filename);
 		setHeader_respval(inst,200);  // OK
 		blen=0;
-		if (stat(filename, &statbuf) == 0) 
+		if (stat(filename, &statbuf) == 0)
 		{
 			// Supports filestats
 			if (statbuf.st_mode & S_IFDIR)
@@ -186,14 +198,38 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 		if (!fseek(in,0,SEEK_END))
 		{
 			// Supports seek
-			blen=snprintf(GHBuffer,SERVER_BUFFER_SIZE,"Content-Length: %ld\r\n",ftell(in));
+                        contentlength=ftell(in);
+			blen=snprintf(GHBuffer,SERVER_BUFFER_SIZE,"Content-Length: %ld\r\n",contentlength);
 			fseek(in,0,SEEK_SET);
 		}
 
-		GHBuffer[SERVER_BUFFER_SIZE-1] = 0; // strnprintf does not null-delimit when full
-		setHeader_generic(inst,GHBuffer);
+                // Partial download may only happen when "If-Modified-Since" did NOT FAIL and is seekable
+                if (range && contentlength && ((TimeBuffer[0] == 0) || (inst->respval == 304)))
+                {
+                        // OK, partial downloads MAY happen
 
-		blen=printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE);
+                        // Range-based GETs not supported right now... so return whole data
+                        setHeader_respval(inst,200);
+                        headeronly=0;
+                }
+                else if ((range == 1) && (contentlength || (TimeBuffer[0] != 0)))
+                {
+                        // "Range" with failed conditional or unseekable returns 416
+                        setHeader_respval(inst,416);
+                        headeronly=0;
+                        range=-1;
+                }
+
+                // Test for no late error
+                if (range != -1)
+                {
+              		GHBuffer[SERVER_BUFFER_SIZE-1] = 0; // strnprintf does not null-delimit when full
+                        setHeader_generic(inst,GHBuffer);
+
+		        blen=printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE);
+                }
+                else    // Late error
+                        return;
 
 		if (headeronly == 1) {
 			send(inst->sock,Buffer,blen,0);
