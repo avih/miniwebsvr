@@ -37,6 +37,7 @@ int listener(char *interface, unsigned short port)
 	struct sockaddr_in local, from;
 	SOCKET listen_socket, msgsock;
 	fd_set socket_set;
+
 #ifdef __WIN32__
 	WSADATA wsaData;
 
@@ -113,7 +114,7 @@ int listener(char *interface, unsigned short port)
 	{
 		FD_ZERO(&socket_set);
 		FD_SET(listen_socket,&socket_set);
-		timeout.tv_sec=2;  // Select has 2 second timeout (to check on exit_status)
+		timeout.tv_sec=1;  // Select has 1 second timeout (to check on exit_status)
 		timeout.tv_usec=0;
 		ret=select(listen_socket+1,&socket_set,NULL,NULL,&timeout);
 		if (ret > 0) 
@@ -146,12 +147,12 @@ int listener(char *interface, unsigned short port)
 			sock->sin_port=from.sin_port;
 			sock->logbuffer[0]=0;
 
-#ifdef MULTITHREADED	
+#ifdef MULTITHREADED
 			hThread = CreateThread( 
 				NULL,                           // no security attributes 
 				0,                              // use default stack size  
 				(LPTHREAD_START_ROUTINE)server,	// thread function 
-				sock,                           // argument to thread function 
+				sock,                           // argument to thread function
 				0,                              // use default creation flags 
 				&dwThreadId);                   // returns the thread identifier 
 #else
@@ -159,12 +160,26 @@ int listener(char *interface, unsigned short port)
 #endif
 		}
 	}
-	
+
+        // Stop listening asap
+
 #ifdef __WIN32__
 	closesocket(listen_socket);
-	WSACleanup();
 #else
 	close(listen_socket);
 #endif
+
+#ifdef MULTITHREADED
+        // OK, now wait for threads to complete...
+/*        while ()
+        {
+        }*/
+#endif
+
+#ifdef __WIN32__
+        // Turn off WinSock
+	WSACleanup();
+#endif
+
 	return 0;
 }

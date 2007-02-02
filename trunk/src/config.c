@@ -24,6 +24,7 @@
 
 #include "config.h"
 
+int THREAD_POOL_SIZE;
 int PORT;
 char* INTERFACE;
 char* LOGFILE;
@@ -32,12 +33,15 @@ char* ROOT;
 void getconfig(int argc, char **argv) 
 {
 	int i;
-	enum { next_param, next_port, next_logfile, next_root, next_interface } next = next_param;
+	enum { next_param, next_port, next_logfile, next_root, next_interface, next_threads } next = next_param;
 
 	PORT=DEFAULT_PORT;
 	INTERFACE=DEFAULT_INTERFACE;
 	LOGFILE=DEFAULT_LOGFILE;
 	ROOT=DEFAULT_ROOT;
+#ifdef THREAD_POOL
+        THREAD_POOL_SIZE=DEFAULT_THREAD_POOL_SIZE;
+#endif
 
 	for (i = 1; i < argc; i += 1)
 	{
@@ -51,6 +55,9 @@ void getconfig(int argc, char **argv)
 				printf("  --log <file>             Save the log file as <file> (default: %s)\n",DEFAULT_LOGFILE);
 				printf("  --root <path>            Specify the document root directory (default: %s)\n",DEFAULT_ROOT);
 				printf("  --interface <ip>         Specify the interface the server listens on (default: ALL)\n");
+#ifdef THREAD_POOL
+                                printf("  --threads <thread_nos>   Specify number of threads in thread pool (default %d)\n",DEFAULT_THREAD_POOL_SIZE);
+#endif
 				exit(0);
 			}
 			else if (0 == strcmp(argv[i], "--port"))
@@ -61,6 +68,10 @@ void getconfig(int argc, char **argv)
 				next = next_root;
 			else if (0 == strcmp(argv[i], "--interface"))
 				next = next_interface;
+#ifdef THREAD_POOL
+                        else if (0 == strcmp(argv[i], "--threads"))
+                                next = next_threads;
+#endif
 			continue;
 		}
 		if (next == next_logfile)
@@ -71,6 +82,10 @@ void getconfig(int argc, char **argv)
 			ROOT = argv[i];
 		else if (next == next_interface)
 			INTERFACE = argv[i];
+#ifdef THREAD_POOL
+		else if (next == next_threads)
+			THREAD_POOL_SIZE = atoi(argv[i]);
+#endif
 		next = next_param;
 	}
 }
