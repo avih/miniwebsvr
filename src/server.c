@@ -150,6 +150,8 @@ DWORD server(struct server_struct *inst)
 	int headeronly;
 	char *tstr;
 
+        DebugMSG("--==|New Request|==--");
+
 	// Initialize structure
 	inst->buffer_pos=0;
 	inst->buffer_size=0;
@@ -162,6 +164,7 @@ DWORD server(struct server_struct *inst)
 
 	// Parse header
 	retval = server_readln(inst,GHBuffer,SERVER_BUFFER_SIZE);
+        DebugMSG("%s",GHBuffer);
 	// check for GET requests
 	if ( retval >= 4 && 0 == strncmp(GHBuffer, "GET ", 4))
 	{

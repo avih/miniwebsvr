@@ -71,9 +71,8 @@ void DebugMSG(const char *format, ...)
 	char buffer[MESSAGE_BUFFER];
 	va_list argptr;
 
-	memcpy(buffer,"Debug: ",7);
 	va_start(argptr, format);
-	vsnprintf(buffer+7,MESSAGE_BUFFER-7, format, argptr);
+	vsnprintf(buffer,MESSAGE_BUFFER, format, argptr);
 	va_end(argptr);
 
 	buffer[MESSAGE_BUFFER-1]=0;

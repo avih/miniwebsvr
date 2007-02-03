@@ -164,6 +164,7 @@ int printHeader(struct server_struct *inst, int headeronly, char* Buffer, int bu
 	loctime = gmtime (&curtime);
 	bufpos+=strftime(Buffer+bufpos,bufsize-bufpos,"Date: %a, %d %b %Y %I:%M:%S GMT\r\n\r\n",loctime);
 	Buffer[bufsize-1]=0;
+        DebugMSG("\n%s",Buffer);
 
 	if (headerResp[inst->respval].autogen) 
 	{
