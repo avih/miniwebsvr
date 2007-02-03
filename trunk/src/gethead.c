@@ -133,7 +133,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 		if (GHBuffer[retval-1] == '/') {
 			strlcat(GHBuffer,"index.html",SERVER_BUFFER_SIZE);
 			in = fopen(GHBuffer, "rb");
-			if (in != NULL) 
+			if (in != NULL)
 			{
 				strlcat(inst->logbuffer,"[index.html]",SERVER_BUFFER_SIZE);
 				strlcat(filename,"index.html",FILENAME_SIZE);
@@ -141,8 +141,8 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 		}
 	}
 
-	strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);
-	if (in == NULL)
+        strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);
+        if (in == NULL)
 	{
 		server_dirlist(inst,headeronly,filename,filebufsize);
 	}
@@ -152,9 +152,11 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 		// Reset some internal variables
 		TimeBuffer[0]=0;
                 contentlength=0;
+                range=0;
 
 		// Read until blank line
 		while ((retval = server_readln(inst,TMPBuffer,SERVER_BUFFER_SIZE)) != 0) {
+                        DebugMSG("%s",TMPBuffer);
 			if (0 == strncmp(TMPBuffer, "If-Modified-Since: ", 19))
 			{
 				// Comare date string to existing
@@ -209,7 +211,14 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
                         // OK, partial downloads MAY happen
 
                         // Range-based GETs not supported right now... so return whole data
-                        setHeader_respval(inst,200);
+                        if (range == 1)
+                        {
+                                setHeader_respval(inst,416);
+                                headeronly=0;
+                                range=-1;
+                        }
+                        else
+                                setHeader_respval(inst,200);
                         headeronly=0;
                 }
                 else if ((range == 1) && (contentlength || (TimeBuffer[0] != 0)))
@@ -228,8 +237,12 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 
 		        blen=printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE);
                 }
-                else    // Late error
+                else
+                {
+                        // Late error
+                        printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE);
                         return;
+                }
 
 		if (headeronly == 1) {
 			send(inst->sock,Buffer,blen,0);
