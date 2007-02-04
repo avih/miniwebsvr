@@ -28,6 +28,7 @@
 #include "config.h"
 #include "header.h"
 #include "gethead.h"
+#include "logging.h"
 
 #include "strl.h"
 
@@ -152,7 +153,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 		// Reset some internal variables
 		TimeBuffer[0]=0;
                 contentlength=0;
-                range=0;
+		range=0;
 
 		// Read until blank line
 		while ((retval = server_readln(inst,TMPBuffer,SERVER_BUFFER_SIZE)) != 0) {

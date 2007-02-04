@@ -30,6 +30,7 @@
 
 #include "gethead.h"
 #include "options.h"
+#include "logging.h"
 
 #include "strl.h"
 
