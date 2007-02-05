@@ -2,6 +2,11 @@
 <html>
 <head>
 <title>MiniWebsvr</title>
+<meta name="classification" content="Web Services">
+<meta name="description" content="MiniWebSvr is a small webserver that aims to one day be embeddable.">
+<meta name="keywords" content="webserver, small, development, http, programming, software, windows, linux, unix, embedded">
+<meta name="distribution" content="Global">
+<meta name="rating" content="General">
 <style type="text/css">
 <!--
 body
