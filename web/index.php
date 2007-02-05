@@ -2,16 +2,36 @@
 <html>
 <head>
 <title>MiniWebsvr</title>
+<style type="text/css">
+<!--
+body
+{
+	font-family:Arial, Helvetica, sans-serif;
+}
+
+h1, h2, h3, b, hr, a
+{
+	color: #663300;
+}
+
+a:hover
+{
+	color: #663300;
+	text-decoration: none;
+}
+
+-->
+</style>
 </head>
 <body>
-<h1>MiniWebsvr</h1>
-<hr>
+<img src="images/logo.jpg" width="249" height="63" alt="MiniWebsvr">
+<hr  noshade="noshade" size="1">
 Welcome to the MiniWebsvr home page.<br>
 SourceFORGE.net project page:
 <a href="http://sourceforge.net/projects/miniwebsvr/">http://sourceforge.net/projects/miniwebsvr/</a>
 <br>
 
-<hr>
+<hr  noshade="noshade" size="1">
 <h2>Pie in the sky aim of the project:</h2>
 <ul>
 <li> Create a small ibrary you link into your app
@@ -27,7 +47,7 @@ SourceFORGE.net project page:
 </ul>
 <br>
 
-<hr>
+<hr  noshade="noshade" size="1">
 <h2>Actual status of MiniWebsvr:</h2>
 Currently still a stand-alone server, that serves static pages only.<br>
 Supports:<br>
@@ -44,13 +64,13 @@ Supports:<br>
 ** In SVN repository<br>
 <br>
 
-<hr>
+<hr  noshade="noshade" size="1">
 <h2>Latest version:</h2>
 Version 0.05, available for download:
 <a href="http://sourceforge.net/project/showfiles.php?group_id=187000">MiniWebsvr version 0.05</a><br>
 <br> 
 
-<hr>
+<hr  noshade="noshade" size="1">
 <h2>Roadmap:</h2>
 This is a Roadmap meant to communicate with people the status of MiniWebsvr.<br>
 <br>
@@ -122,7 +142,7 @@ Features that we intend to implement, but have not given it much thought (as it 
 </ul>
 <br>
 
-<hr>
+<hr  noshade="noshade" size="1">
 <a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=187000&amp;type=5" width="210" height="62" border="0" alt="SourceForge.net Logo" /></a>
 </body>
 </html>
