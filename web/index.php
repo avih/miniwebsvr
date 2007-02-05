@@ -24,7 +24,7 @@ a:hover
 </style>
 </head>
 <body>
-<img src="images/logo.jpg" width="249" height="63" alt="MiniWebsvr">
+<img src="images/logo.png" width="295" height="63" alt="MiniWebsvr">
 <hr  noshade="noshade" size="1">
 Welcome to the MiniWebsvr home page.<br>
 SourceFORGE.net project page:
