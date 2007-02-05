@@ -44,6 +44,7 @@ SourceFORGE.net project page:
 <li> HOOK to override a whole directory, and that returns the sub-path and paremeters to a func
 </ul>
 <li> This library provides you with a parse/generate XML functionality so that you can easily pass data up and down (kinda like SOAP, but I prefer simplicity) 
+<li> User space (Authenticated), so that you can use it for reliable data transfer
 </ul>
 <br>
 
@@ -81,24 +82,28 @@ Key:
 <li type=square>Partial implementation
 </ul>
 <br>
-<b>0.04 -> First LGPL release</b><br>
+<b>0.04 Released (Jan 1 2007) &rarr; First LGPL release</b><br>
 
 <ul>
 <li>Add support for HEAD
 <li>Add support for OPTIONS
 <li>Harden server by preventing buffer-overflow vulnerabilities
 <li>Add support for Conditional GET's (If-Modified-Since)
+<li>Add support for command-line options
 </ul>
 
-<b>0.05 Released</b><br>
+<b>0.05 Released (Jan 18 2007)</b><br>
 
 <ul>
 <li>Port to UNIX sockets
 <li type=square>Add support for range-bound downloads (Support Resume)
 <li type=square>Implement fixed-size thread pool
-  <ul>
-  <li type=circle>Implement self-adjusting size thread pool
-  </ul>
+</ul>
+
+<b>Requirements for 0.0.6 met (Alpha)</b><br>
+
+<ul>
+<li type=circle>Implement self-adjusting size thread pool
 <li type=circle>Add support for Pipelining (In a safe, compliant way)
 <li type=circle>Add vhost support (For HTTP/1.0 and HTTP/1.1)
 </ul>
@@ -118,11 +123,14 @@ Version 0.1.0 should have a featureset to be a complete static content server<br
   <li type=circle>Implement Directory Listing using XML Generator
   <li type=circle>Re-implement strign handling to suit
   </ul>
+<li type=circle> Add preliminary HOOK support 
 </ul>
 
 <b>Requirements for 0.2.0 met (Stable)</b><br>
 
-
+<br>
+At this stage we plan to do the next round of unstable code changes.<br>
+<br>
 Features that we intend to implement, but have not given it much thought (as it is quite a bit into the future):<br>
 
 <ul>

@@ -1,6 +1,6 @@
-/*  Miniweb - A small webserver
-    Copyright (C) 2007  Nickolas Antonie Grigoriadis
-    E-Mail: grigi_ at users.sourceforge.net
+/*  MiniWebSvr - A small webserver
+    Copyright (C) 2007  Daniel John Walker and Nickolas Antonie Grigoriadis
+    E-Mail: djwalker at users.sourceforge.net and grigi_ at users.sourceforge.net
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -21,9 +21,9 @@
 
 /************************* Compile time Limits/Options ***********************/
 
-#define VERSION "MiniWebsvr/0.05"
-#define COPYRIGHT "Copyright (C) 2007  Nickolas Antonie Grigoriadis and Daniel John Walker"
-#define EMAIL "grigi_ at users.sourceforge.net or djwalker at users.sourceforge.net"
+#define VERSION "MiniWebSvr/0.0.6svn"
+#define COPYRIGHT "Copyright (C) 2007  Nickolas Antonie Grigoriadis"
+#define EMAIL "grigi_ at users.sourceforge.net"
 
 /// Defines whether the server must run in multiple threads (recommended)
 #ifdef __WIN32__
@@ -53,7 +53,8 @@ extern int PORT;
 extern char* INTERFACE;
 extern char* LOGFILE;
 extern char* ROOT;
+extern char MiniWebSvrlogo_data[2316];
 
 void getconfig(int argc, char **argv);
 
-#endif // CONFIG_H                        
+#endif // CONFIG_H

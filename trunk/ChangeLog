@@ -1,3 +1,12 @@
+Sat Feb 3 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- MiniWebSvr now handles range errors properly
+	- #ifdef _DEBUG then prints out headers as debug info...
+
+Fri Feb 2 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- Added initial support for Thread Pools
+	- Added initial support for Range-Based downloads
+	- Changed polling back to 1 second
+
 Wed Jan 24 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Got single threaded server to work on Linux
 	- Implemented Address reuse (for Linux to ignore TIME_WAIT state)(to

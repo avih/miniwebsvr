@@ -1,4 +1,4 @@
-Welcome to the MiniWebsvr project
+Welcome to the MiniWebSvr project
 ---------------------------------
 
 MiniWebsvr is a small web server that aims to be able to be used stand-alone
@@ -24,7 +24,7 @@ The web-server supports the following:
 - Small memory footprint
 - Muti-threaded
 - Written in plain C
-- Currently Win32 only
+- Win32 and UNIX(Single-Threaded only)
 - Command line options
 - Conditional GET:
   - If-Modified-Since:
@@ -35,3 +35,8 @@ change the scope to a small embedded web serbver, so maybe serve pages to
 browsers to support an game, maybe provide live stats of the game world
 (would be usefull for an online game) or used for downloading in-game content
 to a client. So eventually it will be an embedded HTTP server.
+
+
+MiniWebServer is mostly developed by Nickolas Antonie Grigoriadis with contributions from:
+- Daniel John Walker <djwalker at users.sourceforge.net>
+- Johan Strydom <fyrewolfe at users.sourceforge.net>
