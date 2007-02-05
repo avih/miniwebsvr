@@ -1,6 +1,6 @@
-/*  Miniweb - A small webserver
-    Copyright (C) 2007  Nickolas Antonie Grigoriadis
-    E-Mail: grigi_ at users.sourceforge.net
+/*  MiniWebSvr - A small webserver
+    Copyright (C) 2007  Daniel John Walker and Nickolas Antonie Grigoriadis
+    E-Mail: djwalker at users.sourceforge.net and grigi_ at users.sourceforge.net
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
