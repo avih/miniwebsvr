@@ -116,13 +116,13 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 	}
 }
 
-void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebufsize) 
+void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebufsize)
 {
 	char Buffer[SEND_BUFFER_SIZE];
 	char GHBuffer[SERVER_BUFFER_SIZE];
 	char TMPBuffer[SERVER_BUFFER_SIZE];
 	char TimeBuffer[SERVER_BUFFER_SIZE];
-	int retval,ret,blen,range;
+	int retval,ret,blen,range,rangefrom,rangeto;
         long int contentlength;
 	FILE *in;
 	struct stat statbuf;
@@ -153,6 +153,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 		// Reset some internal variables
 		TimeBuffer[0]=0;
                 contentlength=0;
+                rangefrom=0;
 		range=0;
 
 		// Read until blank line
@@ -166,7 +167,18 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 
                         if (0 == strncmp(TMPBuffer, "Range: ", 7))
                         {
-                                range=1;
+                                char *range2;
+                                char *range1 = strstr(TMPBuffer,"bytes=");
+                                if (range1)
+                                {
+                                        rangeto=0;
+                                        sscanf(range1,"bytes=%d-",&rangefrom);
+                                        range2 = strstr(range1,"-");
+                                        if (range2)
+                                                sscanf(range2,"-%d",&rangeto);
+                                        DebugMSG("RANGE: %s (%d - %d)",range1,rangefrom,rangeto);
+                                        range=1;
+                                }
                         }
 
                         if (0 == strncmp(TMPBuffer, "If-Range: ", 10))
@@ -198,13 +210,21 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 				headeronly=1;
 			}
 		}
+
 		if (!fseek(in,0,SEEK_END))
 		{
 			// Supports seek
                         contentlength=ftell(in);
-			blen=snprintf(GHBuffer,SERVER_BUFFER_SIZE,"Content-Length: %ld\r\n",contentlength);
-			fseek(in,0,SEEK_SET);
+//			blen=snprintf(GHBuffer,SERVER_BUFFER_SIZE,"Content-Length: %ld\r\n",contentlength);
+//			fseek(in,0,SEEK_SET);
 		}
+
+                // Is a Partial request? Force a full DL, unless below changes it
+                if (range)
+                {
+                        setHeader_respval(inst,200);  // OK
+                        headeronly=0;
+                }
 
                 // Partial download may only happen when "If-Modified-Since" did NOT FAIL and is seekable
                 if (range && contentlength && ((TimeBuffer[0] == 0) || (inst->respval == 304)))
@@ -214,20 +234,40 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
                         // Range-based GETs not supported right now... so return whole data
                         if (range == 1)
                         {
-                                setHeader_respval(inst,416);
-                                headeronly=0;
-                                range=-1;
+                                if ((rangefrom >= contentlength) || (rangeto >= contentlength))
+                                {
+                                        // Cannot satisfy "Range" request
+                                        setHeader_respval(inst,416);  // Requested Range Not Satisfiable
+                                        range=-1;
+                                }
+                                else
+                                {
+                                        // Range request IS valid
+                                        setHeader_respval(inst,206);  // Partial Content
+                                }
                         }
-                        else
-                                setHeader_respval(inst,200);
-                        headeronly=0;
                 }
                 else if ((range == 1) && (contentlength || (TimeBuffer[0] != 0)))
                 {
                         // "Range" with failed conditional or unseekable returns 416
-                        setHeader_respval(inst,416);
+                        setHeader_respval(inst,416);  // Requested Range Not Satisfiable
                         headeronly=0;
                         range=-1;
+                }
+
+                if (range > 0)
+                {
+                        fseek(in,rangefrom,SEEK_SET);
+                        if (rangeto)
+                                contentlength = rangeto - rangefrom;
+                        else
+                                contentlength-=rangefrom;
+                }
+
+                if (contentlength > 0)
+                {
+			blen=snprintf(GHBuffer,SERVER_BUFFER_SIZE,"Content-Length: %ld\r\n",contentlength);
+			fseek(in,rangefrom,SEEK_SET);
                 }
 
                 // Test for no late error
@@ -245,35 +285,79 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
                         return;
                 }
 
-		if (headeronly == 1) {
+                
+                if (headeronly == 1)
+                {
 			send(inst->sock,Buffer,blen,0);
 			fclose(in);
 			return;
 		}
 
 
-		while ((retval=fread(Buffer+blen, 1,SEND_BUFFER_SIZE-blen, in)) > 0) 
-		{
-			retval+=blen;
-			ret=0;
-			blen=0;
+                if (contentlength > 0)
+                {
+                        // I know exactly how much I need to read
+                        contentlength += blen; // Add existing buffer, and then only keep track of data sent over socket
+                        DebugMSG("c+b: %d",contentlength);
+                        retval=fread(Buffer+blen, 1,SEND_BUFFER_SIZE-blen, in);
+                        retval+=blen;
+                        do
+        		{
+//        			retval+=blen;
+        			ret=0;
+        			blen=0;
+                                contentlength -= retval;
 
-			while ((ret < retval) && (retval > 0)) 
-			{
-				ret=send(inst->sock,Buffer+blen,retval,0);
+        			while ((ret < retval) && (retval > 0))
+        			{
+        				ret=send(inst->sock,Buffer+blen,retval,0);
 
-				if (ret == 0) 
-				{
-					// Some transmission error
-					fclose(in);
-					return;
-				}
-				blen+=ret;
-				retval-=ret;
-				ret=0;
-			}
-			blen=0;
-		}
+                                        DebugMSG("%d - %d",contentlength,ret);
+        				if (ret <= 0)
+        				{
+        					// Some transmission error
+        					fclose(in);
+                                                DebugMSG("Transmission ended prematurely");
+        					return;
+        				}
+        				blen+=ret;
+	        			retval-=ret;
+        				ret=0;
+		        	}
+        			blen=0;
+                                if (contentlength < SEND_BUFFER_SIZE)
+                                        blen =  SEND_BUFFER_SIZE - contentlength; // To ensure that I only read as much as is left.
+        		}
+        		while ((contentlength > 0) && ((retval=fread(Buffer, 1,SEND_BUFFER_SIZE-blen, in)) > 0));
+                }
+                else
+                {
+                        // I DONT know how much I need to read
+        		while ((retval=fread(Buffer+blen, 1,SEND_BUFFER_SIZE-blen, in)) > 0)
+        		{
+        			retval+=blen;
+        			ret=0;
+        			blen=0;
+
+        			while ((ret < retval) && (retval > 0))
+        			{
+        				ret=send(inst->sock,Buffer+blen,retval,0);
+
+                                        DebugMSG("%d",ret);
+        				if (ret <= 0)
+        				{
+        					// Some transmission error
+        					fclose(in);
+                                                DebugMSG("Transmission ended prematurely");
+        					return;
+        				}
+        				blen+=ret;
+	        			retval-=ret;
+        				ret=0;
+		        	}
+        			blen=0;
+        		}
+                }
 		fclose(in);
 	}
 }
