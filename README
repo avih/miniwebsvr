@@ -1,4 +1,4 @@
-Welcome to the MiniWebSvr project
+Welcome to the MiniWebsvr project
 ---------------------------------
 
 MiniWebsvr is a small web server that aims to be able to be used stand-alone
@@ -28,6 +28,7 @@ The web-server supports the following:
 - Command line options
 - Conditional GET:
   - If-Modified-Since:
+- Range-bound downloads (Download resuming) (Only HTTP/1.0 "Range", not HTTP/1.1 "If-Range")
 
 
 Was originally designed as a small stand-alone web-server, but I think I'll
@@ -37,6 +38,6 @@ browsers to support an game, maybe provide live stats of the game world
 to a client. So eventually it will be an embedded HTTP server.
 
 
-MiniWebServer is mostly developed by Nickolas Antonie Grigoriadis with contributions from:
+MiniWebsvr is mostly developed by Nickolas Antonie Grigoriadis with contributions from:
 - Daniel John Walker <djwalker at users.sourceforge.net>
 - Johan Strydom <fyrewolfe at users.sourceforge.net>

@@ -1,4 +1,4 @@
-/*  MiniWebSvr - A small webserver
+/*  MiniWebsvr - A small webserver
     Copyright (C) 2007  Nickolas Antonie Grigoriadis
     E-Mail: grigi_ at users.sourceforge.net
 

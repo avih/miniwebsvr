@@ -1,3 +1,7 @@
+Wed Feb 7 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+    - HTTP/1.0 style "Range" requests are implmented and tested
+    - Added a ton of debug info
+
 Sat Feb 3 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- MiniWebSvr now handles range errors properly
 	- #ifdef _DEBUG then prints out headers as debug info...
