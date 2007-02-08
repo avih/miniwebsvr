@@ -178,15 +178,19 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
                                         if (range2)
                                                 sscanf(range2,"-%ld",&rangeto);
                                         DebugMSG("RANGE: %s (%ld - %ld)",range1,rangefrom,rangeto);
-                                        range=1;
+                                        range+=1;
                                 }
                         }
 
                         if (0 == strncmp(TMPBuffer, "If-Range: ", 10))
                         {
-                                range=2;
+                                range+=2;
                         }
 		}
+
+		// Check that If-Range was done with Range
+		if (range == 2)
+			range = 0; // If-Range without Range is invalid
 
 		filename[filebufsize-1]=0;
 		setHeader_filename(inst,filename);
@@ -203,8 +207,8 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 				return;
 			}
 			loctime = gmtime (&statbuf.st_mtime);
-			blen=strftime(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Last-Modified: %a, %d %b %Y %I:%M:%S GMT\r\n",loctime);
-			if (strncmp(TimeBuffer,GHBuffer+blen+15,strlen(GHBuffer+blen+15)-2) == 0 )
+			blen=strftime(GHBuffer,SERVER_BUFFER_SIZE,"Last-Modified: %a, %d %b %Y %I:%M:%S GMT\r\n",loctime);
+			if (strncmp(TimeBuffer,GHBuffer+15,strlen(GHBuffer+15)-2) == 0 )
 			{
 				// If-Modified-Since matches, therefore no update
 				setHeader_respval(inst,304);  // Not Modified
@@ -233,20 +237,27 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
                         // OK, partial downloads MAY happen
 
                         // Range-based GETs not supported right now... so return whole data
-                        if (range == 1)
+//                        if (range == 1)
+//                        {
+                        if ((rangefrom >= contentlength) || (rangeto >= contentlength))
                         {
-                                if ((rangefrom >= contentlength) || (rangeto >= contentlength))
-                                {
-                                        // Cannot satisfy "Range" request
+				// Cannot satisfy "Range" request
+				if (range == 1) 
+				{
                                         setHeader_respval(inst,416);  // Requested Range Not Satisfiable
                                         range=-1;
                                 }
-                                else
-                                {
-                                        // Range request IS valid
-                                        setHeader_respval(inst,206);  // Partial Content
-                                }
+				else
+				{
+					range=0;  // Act as if no range request;
+				}
+			}
+                        else
+                        {
+                        	// Range request IS valid
+                                setHeader_respval(inst,206);  // Partial Content
                         }
+//                        }
                 }
                 else if ((range == 1) && (contentlength || (TimeBuffer[0] != 0)))
                 {
