@@ -1,4 +1,8 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<?$ldate = gmdate("D, d M Y H:i:s",getlastmod())." GMT";
+$headers = apache_request_headers();
+if ($headers['If-Modified-Since'] == $ldate) header("HTTP/1.1 304 Not Modified");
+header("Last-Modified: $ldate");
+?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <html>
 <head>
 <title>MiniWebsvr</title>
@@ -61,20 +65,37 @@ Supports:<br>
 <li> OPTIONS
 <li> HEAD
 <li> GET
-<li> If-Modified-Since*
+<li> If-Modified-Since<sup>*</sup>
 <li> Optionally threaded server
 <li> Microsoft(r) Windows(r)
-<li> UNIX variants, such as Linux**
+<li> UNIX variants, such as Linux<sup>**</sup>
+<li> Resuming downloads<sup>* **</sup>
 </ul>
 * Saves on bandwidth!<br>
 ** In SVN repository<br>
 <br>
 
 <hr  noshade="noshade" size="1">
-<h2>Latest version:</h2>
+<h2>Latest release:</h2>
 Version 0.05, available for download:
 <a href="http://sourceforge.net/project/showfiles.php?group_id=187000">MiniWebsvr version 0.05</a><br>
 <br> 
+
+<hr  noshade="noshade" size="1">
+<h2>Getting the SVN version:</h2>
+The SVN version is constantly in development, and MAY NOT WORK.<br>
+To get access to the svn version point your favourite SVN client to:<br>
+<pre>https://miniwebsvr.svn.sourceforge.net/svnroot/miniwebsvr/trunk</pre>
+To compile the sources:<br>
+Add all C files in the <code>src/</code> directory to your project, or:<br>
+<br>
+Using MinGW (Windows):
+<pre>gcc -o miniwebsvr.exe src/*.c -Wall -lws2_32 -O2 -fomit-frame-pointer -march=i486 -mtune=i686 -s</pre>
+Using GCC:
+<pre>gcc -o miniwebsvr src/*.c -Wall -O2 -fomit-frame-pointer -march=i486 -mtune=i686 -s</pre>
+<br>
+To enable debug information just define &quot;_DEBUG&quot;<br>
+<br>
 
 <hr  noshade="noshade" size="1">
 <h2>Roadmap:</h2>
@@ -101,7 +122,7 @@ Key:
 
 <ul>
 <li>Port to UNIX sockets
-<li type=square>Add support for range-bound downloads (Support Resume)
+<li>Add support for range-bound downloads (Support Resume) <sub>(HTTP/1.0 style &quot;Range:&quot; supported)</sub>
 <li type=square>Implement fixed-size thread pool
 </ul>
 
