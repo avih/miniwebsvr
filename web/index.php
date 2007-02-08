@@ -1,7 +1,10 @@
 <?$ldate = gmdate("D, d M Y H:i:s",getlastmod())." GMT";
 $headers = apache_request_headers();
-if ($headers['If-Modified-Since'] == $ldate) header("HTTP/1.1 304 Not Modified");
 header("Last-Modified: $ldate");
+if ($headers['If-Modified-Since'] == $ldate) {
+	header("HTTP/1.1 304 Not Modified");
+	exit();
+}
 ?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
 <html>
 <head>
