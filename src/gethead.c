@@ -122,8 +122,8 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 	char GHBuffer[SERVER_BUFFER_SIZE];
 	char TMPBuffer[SERVER_BUFFER_SIZE];
 	char TimeBuffer[SERVER_BUFFER_SIZE];
-	int retval,ret,blen,range,rangefrom,rangeto;
-        long int contentlength;
+	int retval,ret,blen,range;
+        long int contentlength,rangefrom,rangeto;
 	FILE *in;
 	struct stat statbuf;
 	struct tm *loctime;
@@ -155,6 +155,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
                 contentlength=0;
                 rangefrom=0;
 		range=0;
+		GHBuffer[0]=0;
 
 		// Read until blank line
 		while ((retval = server_readln(inst,TMPBuffer,SERVER_BUFFER_SIZE)) != 0) {
@@ -172,11 +173,11 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
                                 if (range1)
                                 {
                                         rangeto=0;
-                                        sscanf(range1,"bytes=%d-",&rangefrom);
+                                        sscanf(range1,"bytes=%ld-",&rangefrom);
                                         range2 = strstr(range1,"-");
                                         if (range2)
-                                                sscanf(range2,"-%d",&rangeto);
-                                        DebugMSG("RANGE: %s (%d - %d)",range1,rangefrom,rangeto);
+                                                sscanf(range2,"-%ld",&rangeto);
+                                        DebugMSG("RANGE: %s (%ld - %ld)",range1,rangefrom,rangeto);
                                         range=1;
                                 }
                         }
@@ -202,7 +203,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 				return;
 			}
 			loctime = gmtime (&statbuf.st_mtime);
-			strftime(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Last-Modified: %a, %d %b %Y %I:%M:%S GMT\r\n",loctime);
+			blen=strftime(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Last-Modified: %a, %d %b %Y %I:%M:%S GMT\r\n",loctime);
 			if (strncmp(TimeBuffer,GHBuffer+blen+15,strlen(GHBuffer+blen+15)-2) == 0 )
 			{
 				// If-Modified-Since matches, therefore no update
@@ -215,7 +216,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 		{
 			// Supports seek
                         contentlength=ftell(in);
-//			blen=snprintf(GHBuffer,SERVER_BUFFER_SIZE,"Content-Length: %ld\r\n",contentlength);
+//			blen=snprintf(GHBuffer+blen,SERVER_BUFFER_SIZE,"Content-Length: %ld\r\n",contentlength);
 //			fseek(in,0,SEEK_SET);
 		}
 
@@ -255,6 +256,14 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
                         range=-1;
                 }
 
+                if (contentlength > 0)
+                {
+			long int rangeto2 = rangeto;
+			if (!rangeto2)
+				rangeto2 = contentlength-1;
+			blen+=snprintf(GHBuffer+blen,SERVER_BUFFER_SIZE,"Content-Range: bytes %ld-%ld/%ld\r\n",rangefrom,rangeto2,contentlength);
+		}
+
                 if (range > 0)
                 {
                         fseek(in,rangefrom,SEEK_SET);
@@ -266,7 +275,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 
                 if (contentlength > 0)
                 {
-			blen=snprintf(GHBuffer,SERVER_BUFFER_SIZE,"Content-Length: %ld\r\n",contentlength);
+			blen+=snprintf(GHBuffer+blen,SERVER_BUFFER_SIZE,"Content-Length: %ld\r\n",contentlength);
 			fseek(in,rangefrom,SEEK_SET);
                 }
 
@@ -312,7 +321,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
         			{
         				ret=send(inst->sock,Buffer+blen,retval,0);
 
-                                        DebugMSG("%d - %d",contentlength,ret);
+//                                        DebugMSG("%d - %d",contentlength,ret);
         				if (ret <= 0)
         				{
         					// Some transmission error
@@ -343,7 +352,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
         			{
         				ret=send(inst->sock,Buffer+blen,retval,0);
 
-                                        DebugMSG("%d",ret);
+//                                        DebugMSG("%d",ret);
         				if (ret <= 0)
         				{
         					// Some transmission error
