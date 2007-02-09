@@ -52,7 +52,7 @@ SourceFORGE.net project page:
 <ul>
 <li> HOOK to override the default directory listing func
 <li> HOOK to call a func with given parameters when a certain resource (file) is called
-<li> HOOK to define fixed-content, and baybe even override disk IO with some VFS (so you can serve static content out of your own bundled resource file or a DB, etc...)
+<li> HOOK to define fixed-content, and maybe even override disk IO with some VFS (so you can serve static content out of your own bundled resource file or a DB, etc...)
 <li> HOOK to override a whole directory, and that returns the sub-path and paremeters to a func
 </ul>
 <li> This library provides you with a parse/generate XML functionality so that you can easily pass data up and down (kinda like SOAP, but I prefer simplicity) 
@@ -128,7 +128,7 @@ Key:
 <li>Add support for range-bound downloads (Support Resume)
 </ul>
 
-<b>Requirements for 0.0.6 met (Alpha)</b><br>
+<b>0.0.6 Released (Feb 9 2007)</sub></b><br>
 
 <ul>
 <li type=square>Implement fixed-size thread pool
@@ -168,7 +168,7 @@ Features that we intend to implement, but have not given it much thought (as it 
   <ul>
   <li type=circle>HOOK to override the default directory listing func
   <li type=circle>HOOK to call a func with given parameters when a certain resource (file) is called
-  <li type=circle>HOOK to define fixed-content, and baybe even override disk IO with some VFS (so you can serve static content out of your own bundled resource file or a DB, etc...)
+  <li type=circle>HOOK to define fixed-content, and maybe even override disk IO with some VFS (so you can serve static content out of your own bundled resource file or a DB, etc...)
   <li type=circle>HOOK to override a whole directory, and that returns the sub-path and paremeters to a func
   </ul>
 <li type=circle>POST support
