@@ -24,11 +24,11 @@ The web-server supports the following:
 - Small memory footprint
 - Muti-threaded
 - Written in plain C
-- Win32 and UNIX(Single-Threaded only)
+- Win32 and UNIX
 - Command line options
 - Conditional GET:
   - If-Modified-Since:
-- Range-bound downloads (Download resuming) (Only HTTP/1.0 "Range", not HTTP/1.1 "If-Range")
+- Range-bound downloads (Download resuming)
 
 
 Was originally designed as a small stand-alone web-server, but I think I'll

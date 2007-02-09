@@ -120,8 +120,12 @@ int listener(char *interface, unsigned short port)
 		if (ret > 0) 
 		{
 #ifdef MULTITHREADED			
-			DWORD dwThreadId; 
 			HANDLE hThread; 
+#ifdef __WIN32__
+			DWORD dwThreadId; 
+#else
+			pthread_attr_t attr;
+#endif
 #endif
 			struct server_struct *sock;
 			fromlen =sizeof(from);
@@ -148,6 +152,7 @@ int listener(char *interface, unsigned short port)
 			sock->logbuffer[0]=0;
 
 #ifdef MULTITHREADED
+#ifdef __WIN32__
 			hThread = CreateThread( 
 				NULL,                           // no security attributes 
 				0,                              // use default stack size  
@@ -155,6 +160,11 @@ int listener(char *interface, unsigned short port)
 				sock,                           // argument to thread function
 				0,                              // use default creation flags 
 				&dwThreadId);                   // returns the thread identifier 
+#else
+			pthread_attr_init(&attr);
+			pthread_attr_setdetachstate(&attr,1);
+			pthread_create(&hThread,&attr,(void*)server,sock);
+#endif
 #else
 			server(sock);
 #endif
@@ -169,7 +179,7 @@ int listener(char *interface, unsigned short port)
 	close(listen_socket);
 #endif
 
-#ifdef MULTITHREADED
+#ifdef THREAD_POOL
         // OK, now wait for threads to complete...
 /*        while ()
         {

@@ -125,13 +125,13 @@ Key:
 
 <ul>
 <li>Port to UNIX sockets
-<li>Add support for range-bound downloads (Support Resume) <sub>(HTTP/1.0 style &quot;Range:&quot; supported)</sub>
-<li type=square>Implement fixed-size thread pool
+<li>Add support for range-bound downloads (Support Resume)
 </ul>
 
 <b>Requirements for 0.0.6 met (Alpha)</b><br>
 
 <ul>
+<li type=square>Implement fixed-size thread pool
 <li type=circle>Implement self-adjusting size thread pool
 <li type=circle>Add support for Pipelining (In a safe, compliant way)
 <li type=circle>Add vhost support (For HTTP/1.0 and HTTP/1.1)
