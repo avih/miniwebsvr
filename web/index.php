@@ -70,18 +70,17 @@ Supports:<br>
 <li> GET
 <li> If-Modified-Since<sup>*</sup>
 <li> Optionally threaded server
-<li> Microsoft(r) Windows(r)
-<li> UNIX variants, such as Linux<sup>**</sup>
-<li> Resuming downloads<sup>* **</sup>
+<li> Microsoft<sup>(r)</sup> Windows<sup>(r)</sup>
+<li> UNIX variants, such as Linux
+<li> Resuming downloads<sup>*</sup>
 </ul>
 * Saves on bandwidth!<br>
-** In SVN repository<br>
 <br>
 
 <hr  noshade="noshade" size="1">
 <h2>Latest release:</h2>
-Version 0.05, available for download:
-<a href="http://sourceforge.net/project/showfiles.php?group_id=187000">MiniWebsvr version 0.05</a><br>
+The latest release is version 0.0.6, available for download:
+<a href="http://sourceforge.net/project/showfiles.php?group_id=187000&package_id=218154&release_id=485186">MiniWebsvr version 0.0.6</a><br>
 <br> 
 
 <hr  noshade="noshade" size="1">
