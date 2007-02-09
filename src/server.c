@@ -142,7 +142,11 @@ int server_readln(struct server_struct *inst, char *str, const unsigned int strs
 	return strpos-1;	
 }
 
+#ifdef __WIN32__
 DWORD server(struct server_struct *inst)
+#else
+void* server(struct server_struct *inst)
+#endif
 {
 	char Buffer[SEND_BUFFER_SIZE];
 	char filename[FILENAME_SIZE];
@@ -229,5 +233,10 @@ DWORD server(struct server_struct *inst)
 serverquit:
 
 	server_close(inst);
+#ifndef __WIN32__
+	pthread_exit(NULL);
+	return NULL;
+#else
 	return 0;
+#endif
 }

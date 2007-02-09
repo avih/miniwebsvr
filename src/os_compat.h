@@ -38,11 +38,13 @@
 	#include <errno.h>
 	#include <string.h>
 	#include <unistd.h>
+	#include <pthread.h>
 
 	#define SOCKET int
 	#define DWORD unsigned int
 	#define SOCKET_ERROR -1
 	#define INVALID_SOCKET -1
+	#define HANDLE pthread_t
 
 #endif // !__WINDOWS__
 

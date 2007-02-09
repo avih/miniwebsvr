@@ -26,9 +26,7 @@
 #define EMAIL "grigi_ at users.sourceforge.net"
 
 /// Defines whether the server must run in multiple threads (recommended)
-#ifdef __WIN32__
 #define MULTITHREADED
-#endif
 #define USE_INLINE
 
 /// Defines if a Thread Pool is to be used (recommended)

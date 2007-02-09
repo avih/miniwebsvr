@@ -1,6 +1,13 @@
+Fri Feb 9 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- Pthread implementation is working fine now
+
+Thu Feb 8 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- Range requests(download resuming) is fully functional
+	- Started implementing pthreads support
+
 Wed Feb 7 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
-    - HTTP/1.0 style "Range" requests are implmented and tested
-    - Added a ton of debug info
+	- HTTP/1.0 style "Range" requests are implmented and tested
+	- Added a ton of debug info
 
 Sat Feb 3 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- MiniWebSvr now handles range errors properly

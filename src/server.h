@@ -45,7 +45,11 @@ struct server_struct
 	char *MIMEoverride; 
 };
 
+#ifdef __WIN32__
 DWORD server(struct server_struct *inst);
+#else
+void* server(struct server_struct *inst);
+#endif
 
 int server_readln(struct server_struct *inst, char *str, const unsigned int strsize);
 
