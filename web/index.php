@@ -44,6 +44,12 @@ SourceFORGE.net project page:
 <br>
 
 <hr  noshade="noshade" size="1">
+<h2>What is MiniWebsvr:</h2>
+MiniWebsvr is a small web server that aims to one day be embeddable.<br>
+Small footprint and light on resources is a major requirement.<br>
+<br>
+
+<hr  noshade="noshade" size="1">
 <h2>Pie in the sky aim of the project:</h2>
 <ul>
 <li> Create a small ibrary you link into your app
@@ -179,6 +185,7 @@ Features that we intend to implement, but have not given it much thought (as it 
 <br>
 
 <hr  noshade="noshade" size="1">
+<a href="http://www.linuxlinks.com"><img src="images/linuxlinks.gif" alt="Linux Links" border="0" height="24" width="86"><br>
 <a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=187000&amp;type=5" width="210" height="62" border="0" alt="SourceForge.net Logo" /></a>
 </body>
 </html>
