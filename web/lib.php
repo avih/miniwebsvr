@@ -55,6 +55,7 @@ a.sidebar:hover { color: yellow; }
 	<a class=sidebar href="/features.php">Features</a><br>
 	<a class=sidebar href="/download.php">Download</a><br>
 	<a class=sidebar href="/roadmap.php">Roadmap</a><br>
+	<a class=sidebar href="/security.php">Advisory</a><br>
 	<a class=sidebar href="http://sourceforge.net/projects/miniwebsvr/">SF.net page</a><br>
 	<br>
 	Hosted by<br>SourceForge:<br>
