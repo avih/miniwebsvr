@@ -71,7 +71,7 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 			return;
 		}
 
-		bufpos+=snprintf(Buffer+bufpos,SEND_BUFFER_SIZE-bufpos,"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n<HTML><HEAD><TITLE>Index of %s</TITLE></HEAD><BODY><H1>Index of %s</H1><PRE><HR>\n",dirname+1,dirname+1);
+		bufpos+=snprintf(Buffer+bufpos,SEND_BUFFER_SIZE-bufpos,"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n<HTML><HEAD><TITLE>Index of %s</TITLE></HEAD><BODY><H1>Index of %s</H1><PRE><HR>\n",dirname+2,dirname+2);
 		send(inst->sock,Buffer,bufpos,0);
 
 		while ((ent = readdir(dir)) != NULL)
@@ -105,7 +105,7 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 						strlcpy(FBuffer,"/",FILENAME_SIZE);
 				}
 
-				bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"<A href=\"%s\">%s</A>\n",FBuffer+1,ent->d_name);
+				bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"<A href=\"%s\">%s</A>\n",FBuffer+2,ent->d_name);
 				send(inst->sock,Buffer,bufpos,0);
 			}
 
@@ -192,7 +192,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 		if (range == 2)
 			range = 0; // If-Range without Range is invalid
 
-		filename[filebufsize-1]=0;
+		filename[filebufsize-2]=0;
 		setHeader_filename(inst,filename);
 		setHeader_respval(inst,200);  // OK
 		blen=0;

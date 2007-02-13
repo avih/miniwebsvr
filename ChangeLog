@@ -1,5 +1,9 @@
+Tue Feb 13 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- Implemented more comprehensive sub-root protection
+
 Fri Feb 9 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Pthread implementation is working fine now
+	- Released version 0.0.6
 
 Thu Feb 8 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Range requests(download resuming) is fully functional

@@ -162,7 +162,8 @@ void* server(struct server_struct *inst)
 	inst->buffer_size=0;
 
 	filename[0]='.';
-	filename[1]=0;
+	filename[1]='/';
+	filename[2]=0;
 	clearHeader(inst);
 
 	headeronly=1;	// Disable data by default
@@ -173,12 +174,12 @@ void* server(struct server_struct *inst)
 	// check for GET requests
 	if ( retval >= 4 && 0 == strncmp(GHBuffer, "GET ", 4))
 	{
-		urldecode(GHBuffer+4, filename+1, FILENAME_SIZE-1);
+		urldecode(GHBuffer+4, filename+2, FILENAME_SIZE-2);
 		headeronly=0;
 	} 
 	else if ( retval >= 5 && 0 == strncmp(GHBuffer, "HEAD ", 5))
 	{
-		urldecode(GHBuffer+5, filename+1, FILENAME_SIZE-1);
+		urldecode(GHBuffer+5, filename+2, FILENAME_SIZE-2);
 		//headeronly=1;
 	} 
 	else if ( retval >= 8 && 0 == strncmp(GHBuffer, "OPTIONS ", 8)) 
@@ -197,7 +198,7 @@ void* server(struct server_struct *inst)
 
 		goto serverquit;
 	}
-	if (filename[1] == 0)
+	if (filename[2] == 0)
 	{
 		snprintf(inst->logbuffer,SERVER_BUFFER_SIZE,"\"%s:%d\"",inet_ntoa(inst->sin_addr),htons(inst->sin_port));
 		inst->logbuffer[SERVER_BUFFER_SIZE-1] = 0; // snprintf does not null-delimit when full
@@ -207,7 +208,7 @@ void* server(struct server_struct *inst)
 		goto serverquit;
 	}
 
-	snprintf(inst->logbuffer,SERVER_BUFFER_SIZE,"\"%s:%d\" %s",inet_ntoa(inst->sin_addr),htons(inst->sin_port),filename);
+	snprintf(inst->logbuffer,SERVER_BUFFER_SIZE,"\"%s:%d\" %s",inet_ntoa(inst->sin_addr),htons(inst->sin_port),filename+2);
     inst->logbuffer[SERVER_BUFFER_SIZE-1] = 0; // snprintf does not null-delimit when full
 
 	// Check for special "device" called "nul"
@@ -215,11 +216,13 @@ void* server(struct server_struct *inst)
 	if (tstr!=NULL) 
 	{
 		if ((tstr[4] == '.') || (tstr[4] == 0))
-		strcpy(filename,"../");  // nul device
+		strcpy(filename,"/../");  // nul device
 	}
 
 	// Check for sub-root hacking, If found send a forbidden.
-	if (strstr(filename,"../")!=NULL) 
+	tstr=strstr(filename,"/..");
+//	DebugMSG("%d",(int)retval[3]);
+	if ((tstr!=NULL) && ((tstr[3] == 0) || (tstr[3] == '/')))
 	{
 		strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);
 		setHeader_respval(inst,403);  // Forbidden
