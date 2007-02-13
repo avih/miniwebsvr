@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.google.com/schemas/sitemap/0.84">
- <url>
-  <loc>http://miniwebsvr.sourceforge.net/</loc>
-  <lastmod>2007-02-12</lastmod>
-  <changefreq>weekly</changefreq>
-  <priority>0.8</priority>
- </url>
+<url>
+<loc>http://miniwebsvr.sourceforge.net/</loc>
+<lastmod>2007-02-13</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.5</priority>
+</url>
+<url>
+<loc>http://miniwebsvr.sourceforge.net/features.php</loc>
+<lastmod>2007-02-13</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.5</priority>
+</url>
+<url>
+<loc>http://miniwebsvr.sourceforge.net/download.php</loc>
+<lastmod>2007-02-13</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
+<loc>http://miniwebsvr.sourceforge.net/roadmap.php</loc>
+<lastmod>2007-02-13</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.3</priority>
+</url>
 </urlset>
 
