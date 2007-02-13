@@ -19,8 +19,6 @@
 #ifndef URL_H
 #define URL_H
 
-// Expands characters not allowed in urls to % character codes. Returns 1 on success, 0 on error.
-int urlencode(const char *source, char *dest, int dest_size);
 // Contracts % character codes. Returns 1 on success, 0 on error.
 int urldecode(const char *source, char *dest, int dest_size);
 

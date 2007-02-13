@@ -22,38 +22,6 @@
 
 #include "url.h"
 
-/*int urlencode(const char *source, char *dest, int dest_size)
-{
-	int i;
-	int di = 0;
-	for (i = 0; source[i]; i += 1)
-	{
-		if (((source[i] | ' ')  >= 'a' && (source[i] | ' ')  <= 'z') || (source[i] == '/'))
-		{
-			if (di + 1 >= dest_size)
-			{
-				dest[di] = 0;
-				return 0;
-			}
-			dest[di] = source[i];
-			di += 1;
-		}
-		else
-		{
-			if (di + 3 >= dest_size)
-			{
-				dest[di] = 0;
-				return 0;
-			}
-			snprintf(dest+di,dest_size-di,"%%%2x", source[i]);
-                        dest[dest_size-1]=0; // snprintf does not null-delimit when full
-			di += 3;
-		}
-	}
-	dest[di] = 0;
-	return 1;
-}*/
-
 int urldecode(const char *source, char *dest, int dest_size)
 {
 	int i;
@@ -64,44 +32,45 @@ int urldecode(const char *source, char *dest, int dest_size)
 
 	for (i = 0; source[i] && source[i] != '?' && source[i] != ' ' ; ++i)
 	{
-		if (source[i] == '%' && di < dest_size-2)
+		if (di >= dest_size)
+		{
+			if (di == dest_size)
+				dest[di] = 0;
+			return 1;
+		}
+		if (source[i] == '%' && source[i+1] && source[i+2])
 		{
 			tmp1=source[i+1];
-			if ((tmp1-'a') >= 0) 
-				tmp1-='a'+10;
-			else if ((tmp1-'A') >= 0) 
-				tmp1-='A'+10;
-			else if ((tmp1-'0') >= 0) 
+			if ((tmp1-'a') >= 0)
+				tmp1-='a'-10;
+			else if ((tmp1-'A') >= 0)
+				tmp1-='A'-10;
+			else if ((tmp1-'0') >= 0)
 				tmp1-='0';
-			else 
-				tmp1 = -1;
+			else
+				tmp1 = 16;
 
 			tmp2=source[i+2];
-			if ((tmp2-'a') > 0) 
-				tmp2-='a'+10;
-			else if ((tmp2-'A') >= 0) 
-				tmp2-='A'+10;
-			else if ((tmp2-'0') >= 0) 
+			if ((tmp2-'a') >= 0)
+				tmp2-='a'-10;
+			else if ((tmp2-'A') >= 0)
+				tmp2-='A'-10;
+			else if ((tmp2-'0') >= 0)
 				tmp2-='0';
-			else 
-				tmp2 = -1;
+			else
+				tmp2 = 16;
 
-			if ((tmp1!=-1) && (tmp2!=-1))
+			if ((tmp1<16) && (tmp2<16))
 			{
 				dest[di]=(char)((tmp1<<4)+tmp2);
 				i+=2;
 			}
-			else 
+			else
 				dest[di] = '%';
-			++di;
+			di += 1;
 		}
 		else
 		{
-			if (di >= dest_size)
-			{
-				dest[di] = 0;
-				return 0;
-			}
 			dest[di] = source[i];
 			di += 1;
 		}

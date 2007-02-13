@@ -1,3 +1,6 @@
+Tue Feb 13 2007 Daniel Walker <djwalker at users.sourceforge.net>
+	- Fixed some errors with parsing % in URLs
+
 Tue Feb 13 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Implemented more comprehensive sub-root protection
 
