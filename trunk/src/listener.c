@@ -22,15 +22,29 @@
 #include <malloc.h>
 
 #include "config.h"
-#include "listener.h"
 #include "server.h"
+#include "listener.h"
 #include "logging.h"
 
 int loop;
 
+#ifdef THREAD_POOL
+struct server_struct** pool;
+pthread_t* thread_pool;
+
+pthread_cond_t new_request = PTHREAD_COND_INITIALIZER;
+pthread_cond_t thread_free = PTHREAD_COND_INITIALIZER;
+
+pthread_mutex_t pool_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t thread_pool_mutex = PTHREAD_MUTEX_INITIALIZER;
+#endif
+
 int listener(char *interface, unsigned short port) 
 {
 	struct timeval timeout;// = {1,0}; // 1 second poll state
+#if defined(THREAD_POOL) && !defined(__WIN32__)
+	struct timespec tp; // stores absolute time for pthread_cond_timedwait
+#endif
 
 	int ret,on;
 	socklen_t fromlen;
@@ -107,7 +121,27 @@ int listener(char *interface, unsigned short port)
 		#endif
 		return -1;
 	}
+#ifdef THREAD_POOL
+	pool = malloc(THREAD_POOL_SIZE*sizeof(struct server_struct));
+	thread_pool = malloc(THREAD_POOL_SIZE*sizeof(pthread_t));
+	if((pool == NULL)||(thread_pool == NULL))
+	{
+		DebugMSG("Can't allocate memory for thread pool need");
+		return -1;
+	}
+	
+	memset(pool, 0, sizeof(struct server_struct)*THREAD_POOL_SIZE);
+	memset(thread_pool, 0, sizeof(pthread_t)*THREAD_POOL_SIZE);
 
+	size_t i = 0;
+		
+	for(i = 0; i < THREAD_POOL_SIZE; i++)
+	{
+		pthread_create(&thread_pool[i], NULL, (void*)&worker, (void*)i);
+		pthread_detach(thread_pool[i]);
+	}
+	
+#endif
 	loop=1;
 	BIGMessage("--- Listening on port %d ---",port);
 	while(loop) 
@@ -119,14 +153,16 @@ int listener(char *interface, unsigned short port)
 		ret=select(listen_socket+1,&socket_set,NULL,NULL,&timeout);
 		if (ret > 0) 
 		{
-#ifdef MULTITHREADED			
+#ifdef MULTITHREADED
+#ifndef THREAD_POOL
 			HANDLE hThread; 
 #ifdef __WIN32__
 			DWORD dwThreadId; 
 #else
 			pthread_attr_t attr;
-#endif
-#endif
+#endif // __WIN32__
+#endif // THREAD_POOL
+#endif // MULTITHREAD
 			struct server_struct *sock;
 			fromlen =sizeof(from);
 			msgsock = accept(listen_socket,(struct sockaddr*)&from, &fromlen);
@@ -150,7 +186,18 @@ int listener(char *interface, unsigned short port)
 			sock->sin_addr=from.sin_addr;
 			sock->sin_port=from.sin_port;
 			sock->logbuffer[0]=0;
-
+#ifdef THREAD_POOL
+#ifdef __WIN32__
+#else
+			while(!push_request(sock) && loop) // try every second or when "thread_free" fires
+			{
+				clock_gettime(CLOCK_REALTIME, &tp);
+				++tp.tv_sec;		// 1 sec
+				pthread_cond_timedwait(&thread_free, &thread_pool_mutex, &tp); 
+			}
+			pthread_cond_signal(&new_request);
+#endif // __WIN32__
+#else
 #ifdef MULTITHREADED
 #ifdef __WIN32__
 			hThread = CreateThread( 
@@ -160,14 +207,15 @@ int listener(char *interface, unsigned short port)
 				sock,                           // argument to thread function
 				0,                              // use default creation flags 
 				&dwThreadId);                   // returns the thread identifier 
-#else
+#else // __WIN32__
 			pthread_attr_init(&attr);
 			pthread_attr_setdetachstate(&attr,1);
 			pthread_create(&hThread,&attr,(void*)server,sock);
-#endif
-#else
+#endif // __WIN32__
+#else // MULTITHREAD
 			server(sock);
-#endif
+#endif // MULTITHREAD
+#endif // THREAD_POOL
 		}
 	}
 
@@ -180,10 +228,17 @@ int listener(char *interface, unsigned short port)
 #endif
 
 #ifdef THREAD_POOL
+#ifndef __WIN32__
+	// Send broadcast signal so that threads unblock.
+	pthread_cond_broadcast(&new_request);
+
         // OK, now wait for threads to complete...
-/*        while ()
-        {
-        }*/
+	for(i = 0; i < THREAD_POOL_SIZE; i++)
+	{
+		pthread_cancel(thread_pool[i]);
+	}
+	sleep(2); // 2 seconds are enough to complete request.. or NOT??
+#endif
 #endif
 
 #ifdef __WIN32__
@@ -193,3 +248,55 @@ int listener(char *interface, unsigned short port)
 
 	return 0;
 }
+
+#ifdef THREAD_POOL
+#ifndef __WIN32__
+void* worker(int n)
+{
+	int pos;
+	DebugMSG("Worker %d started!", n);
+	while(loop) // Global variable of "loop" indicates that server is running, if not set, quit
+	{
+		pthread_cond_wait(&new_request, &pool_mutex);
+		pos = pop_request();
+		
+		if(pos != -1)
+			server(pool[pos]);
+		else
+			continue;
+		pool[pos]=NULL;
+		pthread_cond_signal(&thread_free);
+	}
+
+	return NULL;
+}
+
+int push_request(struct server_struct* request)
+{
+	int i, added = 0;
+
+	pthread_mutex_lock(&pool_mutex);
+	for(i = 0; (i < THREAD_POOL_SIZE)&&(!added); i++)
+	{
+		if(pool[i] == NULL)
+		{
+			pool[i] = request;
+			added = 1;
+		}
+	}
+	pthread_mutex_unlock(&pool_mutex);
+	return added;
+}
+
+int pop_request()
+{
+	int i, iret = -1;
+	for(i = 0; (i < THREAD_POOL_SIZE)&&(iret==-1); i++)
+	{
+ 		if(pool[i] != NULL) 
+			iret=i;
+ 	}
+	return iret;
+}
+#endif
+#endif

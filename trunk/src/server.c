@@ -237,7 +237,9 @@ serverquit:
 
 	server_close(inst);
 #ifndef __WIN32__
+#ifndef THREAD_POOL
 	pthread_exit(NULL);
+#endif
 	return NULL;
 #else
 	return 0;

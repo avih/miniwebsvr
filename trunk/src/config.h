@@ -31,7 +31,9 @@
 
 /// Defines if a Thread Pool is to be used (recommended)
 #ifdef MULTITHREADED
-//#define THREAD_POOL
+#ifndef __WIN32__
+#define THREAD_POOL
+#endif
 #endif
 
 /************************ Default for Run-time Options ***********************/
