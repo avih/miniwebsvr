@@ -30,7 +30,7 @@ void* worker(int n);
 #ifdef SERVER_H // i need server_struct definition here
 
 int push_request(struct server_struct* request);
-int pop_request();
+struct server_struct* pop_request();
 #endif // SERVER_H
 #endif // __WIN32__
 #endif // THREAD_POOL

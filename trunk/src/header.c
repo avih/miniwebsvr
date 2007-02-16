@@ -173,7 +173,7 @@ int printHeader(struct server_struct *inst, int headeronly, char* Buffer, int bu
 				,headerResp[inst->respval].respval,headerResp[inst->respval].respstr
 				,headerResp[inst->respval].respval,headerResp[inst->respval].respstr);
 		}
-		send(inst->sock,Buffer,bufpos,0);	
+		send(inst->sock,Buffer,bufpos,SEND_FLAG);	
 		return 0; // Flushed buffer	
 	}
 

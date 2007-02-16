@@ -67,12 +67,12 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 		bufpos=printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE);
 
 		if (headeronly == 1) {
-			send(inst->sock,Buffer,bufpos,0);
+			send(inst->sock,Buffer,bufpos,SEND_FLAG);
 			return;
 		}
 
 		bufpos+=snprintf(Buffer+bufpos,SEND_BUFFER_SIZE-bufpos,"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n<HTML><HEAD><TITLE>Index of %s</TITLE></HEAD><BODY><H1>Index of %s</H1><PRE><HR>\n",dirname+2,dirname+2);
-		send(inst->sock,Buffer,bufpos,0);
+		send(inst->sock,Buffer,bufpos,SEND_FLAG);
 
 		while ((ent = readdir(dir)) != NULL)
 		if (strcmp(ent->d_name,".")!=0)
@@ -106,13 +106,13 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 				}
 
 				bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"<A href=\"%s\">%s</A>\n",FBuffer+2,ent->d_name);
-				send(inst->sock,Buffer,bufpos,0);
+				send(inst->sock,Buffer,bufpos,SEND_FLAG);
 			}
 
 		closedir(dir);
 
 		bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"</PRE><HR><ADDRESS>%s Server Port %d</ADDRESS></BODY></HTML>",VERSION,PORT);
-		send(inst->sock,Buffer,bufpos,0);
+		send(inst->sock,Buffer,bufpos,SEND_FLAG);
 	}
 }
 
@@ -308,7 +308,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
                 
                 if (headeronly == 1)
                 {
-			send(inst->sock,Buffer,blen,0);
+			send(inst->sock,Buffer,blen,SEND_FLAG);
 			fclose(in);
 			return;
 		}
@@ -330,7 +330,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 
         			while ((ret < retval) && (retval > 0))
         			{
-        				ret=send(inst->sock,Buffer+blen,retval,0);
+        				ret=send(inst->sock,Buffer+blen,retval,SEND_FLAG);
 
 //                                        DebugMSG("%d - %d",contentlength,ret);
         				if (ret <= 0)
@@ -361,7 +361,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 
         			while ((ret < retval) && (retval > 0))
         			{
-        				ret=send(inst->sock,Buffer+blen,retval,0);
+        				ret=send(inst->sock,Buffer+blen,retval,SEND_FLAG);
 
 //                                        DebugMSG("%d",ret);
         				if (ret <= 0)
