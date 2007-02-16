@@ -121,6 +121,7 @@ int listener(char *interface, unsigned short port)
 		#endif
 		return -1;
 	}
+	loop = 1;
 #ifdef THREAD_POOL
 	pool = malloc(THREAD_POOL_SIZE*sizeof(struct server_struct));
 	thread_pool = malloc(THREAD_POOL_SIZE*sizeof(pthread_t));
@@ -142,7 +143,6 @@ int listener(char *interface, unsigned short port)
 	}
 	
 #endif
-	loop=1;
 	BIGMessage("--- Listening on port %d ---",port);
 	while(loop) 
 	{
@@ -195,7 +195,6 @@ int listener(char *interface, unsigned short port)
 				++tp.tv_sec;		// 1 sec
 				pthread_cond_timedwait(&thread_free, &thread_pool_mutex, &tp); 
 			}
-			pthread_cond_signal(&new_request);
 #endif // __WIN32__
 #else
 #ifdef MULTITHREADED
@@ -230,14 +229,25 @@ int listener(char *interface, unsigned short port)
 #ifdef THREAD_POOL
 #ifndef __WIN32__
 	// Send broadcast signal so that threads unblock.
-	pthread_cond_broadcast(&new_request);
+//	pthread_cond_broadcast(&new_request); // you did'nt need it. 2 lines forward you use pthread_cancel, so it stop thread, because pthread_cond_wait is cancellation point.
 
-        // OK, now wait for threads to complete...
+        // OK, Cancel all threads
 	for(i = 0; i < THREAD_POOL_SIZE; i++)
 	{
 		pthread_cancel(thread_pool[i]);
 	}
-	sleep(2); // 2 seconds are enough to complete request.. or NOT??
+
+        // OK, now wait for threads to complete...
+	for(i = 0; i < THREAD_POOL_SIZE; i++)
+	{
+		void* blah;
+		pthread_join(thread_pool[i],&blah);
+	}
+
+	// No need to sleep, since all threads are done by this time. (pthread_join guarentees it)
+	//sleep(2); // 2 seconds are enough to complete request.. or NOT??
+
+	free(pool); // We have to free what we allocate
 #endif
 #endif
 
@@ -253,21 +263,25 @@ int listener(char *interface, unsigned short port)
 #ifndef __WIN32__
 void* worker(int n)
 {
-	int pos;
+	struct server_struct *request;
 	DebugMSG("Worker %d started!", n);
 	while(loop) // Global variable of "loop" indicates that server is running, if not set, quit
 	{
-		pthread_cond_wait(&new_request, &pool_mutex);
-		pos = pop_request();
-		
-		if(pos != -1)
-			server(pool[pos]);
-		else
-			continue;
-		pool[pos]=NULL;
+		pthread_mutex_lock(&pool_mutex); // You should lock mutex before pthread_cond_wait call..
+		request = pop_request();
+		if (request == NULL) {
+			// No more jobs, go to sleep now
+			pthread_cond_wait(&new_request, &pool_mutex); // On pthread_cond_signal event pthread_cond_wait lock's mutex via pthread_mutex_lock
+			request = pop_request(); 
+		}
+		pthread_mutex_unlock(&pool_mutex); // so, you must unlock it.
+
+		if(request != NULL)
+			server(request);
 		pthread_cond_signal(&thread_free);
 	}
 
+	pthread_exit(NULL);
 	return NULL;
 }
 
@@ -285,18 +299,24 @@ int push_request(struct server_struct* request)
 		}
 	}
 	pthread_mutex_unlock(&pool_mutex);
+	if (added) 
+		pthread_cond_signal(&new_request);
 	return added;
 }
 
-int pop_request()
+struct server_struct* pop_request()
 {
-	int i, iret = -1;
-	for(i = 0; (i < THREAD_POOL_SIZE)&&(iret==-1); i++)
+	int i;
+	struct server_struct *request = NULL;
+	for(i = 0; (i < THREAD_POOL_SIZE)&&(request == NULL); i++)
 	{
- 		if(pool[i] != NULL) 
-			iret=i;
+ 		if(pool[i] != NULL)
+		{
+			request = pool[i];
+			pool[i] = NULL;
+		}
  	}
-	return iret;
+	return request;
 }
 #endif
 #endif

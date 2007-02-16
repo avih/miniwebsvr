@@ -26,6 +26,9 @@
 	#include <winsock2.h>
 
 	#define socklen_t int
+
+	#define SEND_FLAG 0	// Windows does not have a similar flag?
+
 #else // !_WINDOWS__
 	// Compile for UNIX Sockets
 	#include <sys/types.h>
@@ -45,6 +48,8 @@
 	#define SOCKET_ERROR -1
 	#define INVALID_SOCKET -1
 	#define HANDLE pthread_t
+
+	#define SEND_FLAG MSG_NOSIGNAL
 
 #endif // !__WINDOWS__
 
