@@ -8,7 +8,7 @@ Small footprint and light on resources is a major requirement.<br>
 <h2>Pie in the sky aim of the project:</h2>
 
 <ul>
-<li> Create a small ibrary you link into your app
+<li> Create a small library you link into your app
 <li> The configuration can be pushed from the app or have its own handlers to read conf files.
 <li> This library provides you with HOOKS, into the server, so you can write your own functions that will override some functionality, e.g.
 <ul>
