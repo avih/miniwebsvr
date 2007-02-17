@@ -16,26 +16,38 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
-#ifndef LOGGING_H
-#define LOGGING_H
 
-#define MESSAGE_BUFFER 1024
+#ifndef PTHREADS_H
+#define PTHREADS_H
 
-void StartLogging(char* name);
-void StopLogging();
+extern int THREAD_POOL_SIZE;
+extern int loop;
 
-void Message(const char *format, ...);
+struct pool_item
+{
+	struct server_struct* item;
+	int working;
+};
 
-#if (defined _DEBUG) || (defined __BORLANDC__)
-void DebugMSG(const char *format, ...);
-#else // _DEBUG
-#define DebugMSG(f,...)
-#endif // _DEBUG
+struct pool_item* pool;
+pthread_t* thread_pool;
 
-void BIGMessage(const char *format, ...);
+pthread_cond_t new_request = PTHREAD_COND_INITIALIZER;
+pthread_cond_t thread_free = PTHREAD_COND_INITIALIZER;
 
-void Error(const char *format, ...);
+pthread_mutex_t pool_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t thread_pool_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-void Critical(const char *format, ...);
 
-#endif // LOGGING_H
+int threads_init();
+void threads_shutdown();
+
+void threads_loop();
+
+void* worker(int n);
+
+int push_request(struct server_struct* request);
+int pop_request();
+
+
+#endif

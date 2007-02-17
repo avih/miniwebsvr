@@ -272,7 +272,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 			long int rangeto2 = rangeto;
 			if (!rangeto2)
 				rangeto2 = contentlength-1;
-			blen+=snprintf(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Content-Range: bytes %ld-%ld/%ld\r\n",rangefrom,rangeto2,contentlength);
+			blen+=snprintf(GHBuffer+blen,SERVER_BUFFER_SIZE,"Content-Range: bytes %ld-%ld/%ld\r\n",rangefrom,rangeto2,contentlength);
 		}
 
                 if (range > 0)
@@ -286,7 +286,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 
                 if (contentlength > 0)
                 {
-			blen+=snprintf(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Content-Length: %ld\r\n",contentlength);
+			blen+=snprintf(GHBuffer+blen,SERVER_BUFFER_SIZE,"Content-Length: %ld\r\n",contentlength);
 			fseek(in,rangefrom,SEEK_SET);
                 }
 
