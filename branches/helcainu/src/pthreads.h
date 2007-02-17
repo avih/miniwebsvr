@@ -21,6 +21,7 @@
 #define PTHREADS_H
 
 extern int THREAD_POOL_SIZE;
+extern int THREAD_POOL_ADJUST;
 extern int loop;
 
 struct pool_item
@@ -30,7 +31,12 @@ struct pool_item
 };
 
 struct pool_item* pool;
+
 pthread_t* thread_pool;
+pthread_t spawned_thread;
+
+int scount = 0;
+int spawned = 0;
 
 pthread_cond_t new_request = PTHREAD_COND_INITIALIZER;
 pthread_cond_t thread_free = PTHREAD_COND_INITIALIZER;
@@ -44,7 +50,7 @@ void threads_shutdown();
 
 void threads_loop();
 
-void* worker(int n);
+void worker(int n);
 
 int push_request(struct server_struct* request);
 int pop_request();

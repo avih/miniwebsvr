@@ -24,7 +24,11 @@
 
 #include "config.h"
 
+#ifdef THREAD_POOL
 int THREAD_POOL_SIZE;
+int THREAD_POOL_ADJUST;
+#endif
+
 int PORT;
 char* INTERFACE;
 char* LOGFILE;
@@ -33,7 +37,7 @@ char* ROOT;
 void getconfig(int argc, char **argv) 
 {
 	int i;
-	enum { next_param, next_port, next_logfile, next_root, next_interface, next_threads } next = next_param;
+	enum { next_param, next_port, next_logfile, next_root, next_interface, next_threads, next_threads_adjust } next = next_param;
 
 	PORT=DEFAULT_PORT;
 	INTERFACE=DEFAULT_INTERFACE;
@@ -41,6 +45,7 @@ void getconfig(int argc, char **argv)
 	ROOT=DEFAULT_ROOT;
 #ifdef THREAD_POOL
         THREAD_POOL_SIZE=DEFAULT_THREAD_POOL_SIZE;
+	THREAD_POOL_ADJUST=DEFAULT_THREAD_POOL_ADJUST;
 #endif
 
 	for (i = 1; i < argc; i += 1)
@@ -57,6 +62,7 @@ void getconfig(int argc, char **argv)
 				printf("  --interface <ip>         Specify the interface the server listens on (default: ALL)\n");
 #ifdef THREAD_POOL
                                 printf("  --threads <thread_nos>   Specify number of threads in thread pool (default %d)\n",DEFAULT_THREAD_POOL_SIZE);
+				printf("  --threads-adjust <num>   Specify number of threads that can be spawned under heavy load (default %d)\n",DEFAULT_THREAD_POOL_ADJUST);
 #endif
 				exit(0);
 			}
@@ -71,6 +77,8 @@ void getconfig(int argc, char **argv)
 #ifdef THREAD_POOL
                         else if (0 == strcmp(argv[i], "--threads"))
                                 next = next_threads;
+			else if (0 == strcmp(argv[i], "--threads-adjust"))
+				next = next_threads_adjust;
 #endif
 			continue;
 		}
@@ -85,6 +93,8 @@ void getconfig(int argc, char **argv)
 #ifdef THREAD_POOL
 		else if (next == next_threads)
 			THREAD_POOL_SIZE = atoi(argv[i]);
+		else if (next == next_threads_adjust)
+			THREAD_POOL_ADJUST = atoi(argv[i]);
 #endif
 		next = next_param;
 	}
