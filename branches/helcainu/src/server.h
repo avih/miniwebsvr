@@ -20,7 +20,7 @@
 #define SERVER_H
 
 #define SEND_BUFFER_SIZE 16384
-#define SERVER_BUFFER_SIZE 2048
+#define SERVER_BUFFER_SIZE 1024
 #define FILENAME_SIZE 1024
 #define MIME_size 16
 

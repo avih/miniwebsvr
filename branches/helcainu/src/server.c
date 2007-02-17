@@ -41,7 +41,9 @@ void server_close(struct server_struct *inst)
 #else
 	close(inst->sock);
 #endif
+#ifndef THREAD_POOL
 	free(inst);
+#endif
 }
 
 int server_charpos(const struct server_struct *inst, const char chr)
