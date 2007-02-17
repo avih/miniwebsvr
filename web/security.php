@@ -9,10 +9,18 @@ Suffers from a directory traversal flaw, using a specially crafted url <code>"ht
 <b>Risk:</b><br>
 Medium (You can only list the folder contents one level up, not view the file contents)<br>
 <b>Credits to:</b><br>
-Daniel Nyström<br>
+Daniel Nystr&ouml;m<br>
 <b>Resolution:</b><br>
-
 Fix submitted to SVN repository, will be fixed in next version.<br>
+<br>
+<b>Description:</b><br>
+Suffers from multiple 0-Day exploits, accessing almost any of the special MS-DOS device files (NUL fixed in 0.05) under windows can cause the CPU usage to rise to 100%<br>
+<b>Risk:</b><br>
+Less Critical (Denial of service)<br>
+<b>Credits to:</b><br>
+shinnai and rgod<br>
+<b>Resolution:</b><br>
+None yet, but since NUL devices are already blocked, I'll just extend the solution to all special devices, as listed here: <a href="http://en.wikipedia.org/wiki/Device_file">http://en.wikipedia.org/wiki/Device_file</a><br>
 
 <br>
 
