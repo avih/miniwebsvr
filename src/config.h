@@ -39,6 +39,10 @@
 /************************ Default for Run-time Options ***********************/
 
 #define DEFAULT_THREAD_POOL_SIZE 8
+#define DEFAULT_THREAD_POOL_ADJUST 0
+
+#define ADJUST_POOL_AT 25
+
 #define DEFAULT_PORT 8080
 #define DEFAULT_INTERFACE NULL
 #define DEFAULT_LOGFILE "miniwebsvr.log"
@@ -48,6 +52,7 @@
 
 #ifdef THREAD_POOL
 extern int THREAD_POOL_SIZE;
+extern int THREAD_POOL_ADJUST;
 #endif
 extern int PORT;
 extern char* INTERFACE;
