@@ -55,7 +55,6 @@ int threads_init()
 void threads_add(struct server_struct* sock)
 {
 	int wait = 0;
-
 	while(!push_request(sock) && loop) 
 	{
 		pthread_mutex_lock(&pool_mutex);
@@ -66,17 +65,30 @@ void threads_add(struct server_struct* sock)
 		{
 			wait = 1;
 			scount++;
-			if((scount == ADJUST_POOL_AT)&&(spawned < THREAD_POOL_ADJUST))
+			if((scount == THREAD_SPAWN_AT)&&(spawned < THREAD_POOL_ADJUST))
 			{
 				pthread_mutex_lock(&thread_pool_mutex);
 				spawned++;
 				DebugMSG("thread_pool adjusted to %d: 1 spawned", THREAD_POOL_SIZE + spawned);
 				pthread_mutex_unlock(&thread_pool_mutex);
 				pthread_create(&spawned_thread, NULL, (void*)&worker, (void*)(-1));
-				scount = 0;
+				pthread_detach(spawned_thread);
 			}
+			if(scount == THREAD_SPAWN_AT)
+				scount = 0;
 		}
 
+	}
+	if((THREAD_POOL_ADJUST > 0)&&(!wait))
+	{
+		if(dcount == THREAD_KILL_AT)
+		{
+			dcount = 0;
+		}
+		if(spawned > 0)
+		{
+			dcount++;
+		}
 	}
 
 	pthread_cond_signal(&new_request);
@@ -129,12 +141,18 @@ void worker(int n)
 		if(n == -1)
 		{
 			pthread_mutex_lock(&thread_pool_mutex);
-			spawned--;
-			pthread_mutex_unlock(&thread_pool_mutex);
-			pthread_exit(NULL);
+			if(dcount == THREAD_KILL_AT)
+			{
+				dcount = 0;
+				spawned--;
+				DebugMSG("thread_pool adjusted to %d: 1 killed", THREAD_POOL_SIZE + spawned);
+				pthread_mutex_unlock(&thread_pool_mutex);
+				pthread_exit(NULL);
+			}
+			else
+				pthread_mutex_unlock(&thread_pool_mutex);
 		}
-		else
-			pthread_cond_signal(&thread_free);
+		pthread_cond_signal(&thread_free);
 	}
 
 }
