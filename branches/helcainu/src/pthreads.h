@@ -38,6 +38,8 @@ pthread_t spawned_thread;
 int scount = 0;
 int spawned = 0;
 
+int dcount = 0;
+
 pthread_cond_t new_request = PTHREAD_COND_INITIALIZER;
 pthread_cond_t thread_free = PTHREAD_COND_INITIALIZER;
 
