@@ -209,19 +209,10 @@ void* server(struct server_struct *inst)
 	}
 
 	snprintf(inst->logbuffer,SERVER_BUFFER_SIZE,"\"%s:%d\" %s",inet_ntoa(inst->sin_addr),htons(inst->sin_port),filename+2);
-    inst->logbuffer[SERVER_BUFFER_SIZE-1] = 0; // snprintf does not null-delimit when full
-
-	// Check for special "device" called "nul"
-	tstr=strstr(filename,"/nul");
-	if (tstr!=NULL) 
-	{
-		if ((tstr[4] == '.') || (tstr[4] == 0))
-		strcpy(filename,"/../");  // nul device
-	}
+	inst->logbuffer[SERVER_BUFFER_SIZE-1] = 0; // snprintf does not null-delimit when full
 
 	// Check for sub-root hacking, If found send a forbidden.
 	tstr=strstr(filename,"/..");
-//	DebugMSG("%d",(int)retval[3]);
 	if ((tstr!=NULL) && ((tstr[3] == 0) || (tstr[3] == '/')))
 	{
 		strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);

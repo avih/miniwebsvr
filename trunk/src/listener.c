@@ -193,7 +193,9 @@ int listener(char *interface, unsigned short port)
 			{
 				clock_gettime(CLOCK_REALTIME, &tp);
 				++tp.tv_sec;		// 1 sec
+				pthread_mutex_lock(&thread_pool_mutex);
 				pthread_cond_timedwait(&thread_free, &thread_pool_mutex, &tp); 
+				pthread_mutex_unlock(&thread_pool_mutex);
 			}
 #endif // __WIN32__
 #else
