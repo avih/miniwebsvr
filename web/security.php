@@ -20,7 +20,7 @@ Less Critical (Denial of service)<br>
 <b>Credits to:</b><br>
 shinnai and rgod<br>
 <b>Resolution:</b><br>
-None yet, but since NUL devices are already blocked, I'll just extend the solution to all special devices, as listed here: <a href="http://en.wikipedia.org/wiki/Device_file">http://en.wikipedia.org/wiki/Device_file</a><br>
+Fix submitted to SVN repository, will be fixed in next version.<br>
 
 <br>
 

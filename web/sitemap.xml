@@ -19,6 +19,12 @@
 <priority>0.8</priority>
 </url>
 <url>
+<loc>http://miniwebsvr.sourceforge.net/security.php</loc>
+<lastmod>2007-02-13</lastmod>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
 <loc>http://miniwebsvr.sourceforge.net/roadmap.php</loc>
 <lastmod>2007-02-13</lastmod>
 <changefreq>monthly</changefreq>

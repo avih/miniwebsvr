@@ -31,7 +31,8 @@ Key:
 <b>0.0.6 Released (Feb 9 2007)</sub></b><br>
 
 <ul>
-<li type=square>Implement fixed-size thread pool
+<li>Implement fixed-size thread pool<sub>(PThreads implementation only)</sub>
+<li type=square>Implement custom default index
 
 <li type=circle>Implement self-adjusting size thread pool
 <li type=circle>Add support for Pipelining (In a safe, compliant way)
