@@ -146,7 +146,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 			return;
 		}
 	}
-
+	
 	if ((in = fopen(filename, "rb")) == NULL)
 	{
 		retval=strlcpy(GHBuffer,filename,SERVER_BUFFER_SIZE);
@@ -161,10 +161,12 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 			}
 		}
 	}
-
-
         strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);
         if (in == NULL)
+	{
+		server_dirlist(inst,headeronly,filename,filebufsize);
+	}
+	else if(statbuf.st_mode & S_IFDIR)
 	{
 		server_dirlist(inst,headeronly,filename,filebufsize);
 	}
