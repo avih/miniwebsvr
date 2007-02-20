@@ -43,6 +43,7 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 	char FBuffer[FILENAME_SIZE];
 	char *cptr;
 	struct stat statbuf;
+	int isdir;
 
 	if (dirlen>FILENAME_SIZE) dirlen=FILENAME_SIZE;
 
@@ -80,6 +81,7 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 		if (strcmp(ent->d_name,".")!=0)
 			if ((strcmp(dirname,"./")!=0) || (ent->d_name[0]!='.'))
 			{
+				isdir=0;
 				strlcpy(FBuffer,dirname,FILENAME_SIZE);
 				if (strcmp(ent->d_name,"..")!=0)
 				{
@@ -93,6 +95,7 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 						{
 							FBuffer[retval] = '/';
 							FBuffer[retval+1] = 0;
+							isdir=1;
 						}
 					}
 				}
@@ -105,9 +108,10 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 						cptr[1] = 0;
 					else 
 						strlcpy(FBuffer,"/",FILENAME_SIZE);
+					isdir=1;
 				}
 
-				bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"<A href=\"%s\">%s</A>\n",FBuffer+2,ent->d_name);
+				bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"<A href=\"%s\">%s%s</A>\n",FBuffer+2,ent->d_name,(isdir?"/":""));
 				send(inst->sock,Buffer,bufpos,SEND_FLAG);
 			}
 
@@ -129,6 +133,19 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 	FILE *in;
 	struct stat statbuf;
 	struct tm *loctime;
+        int statret;
+
+	if ((statret=stat(filename, &statbuf)) == 0)
+	{
+		// Supports filestats
+                if (!((statbuf.st_mode & (S_IFREG | S_IFDIR)) && (statbuf.st_ctime != -1))) {
+			// Not a regular file OR a directory OR has no creation time!!!!
+			strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);
+			setHeader_respval(inst,403);  // Forbidden
+			printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
+			return;
+		}
+	}
 
 	if ((in = fopen(filename, "rb")) == NULL)
 	{
@@ -140,9 +157,11 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 			{
 				strlcat(inst->logbuffer,"[index.html]",SERVER_BUFFER_SIZE);
 				strlcat(filename,"index.html",FILENAME_SIZE);
+                                statret=stat(filename, &statbuf);
 			}
 		}
 	}
+
 
         strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);
         if (in == NULL)
@@ -198,32 +217,21 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 		setHeader_filename(inst,filename);
 		setHeader_respval(inst,200);  // OK
 		blen=0;
-		if (stat(filename, &statbuf) == 0)
-		{
-			// Supports filestats
-			if (statbuf.st_mode & S_IFDIR)
-			{
-				// Is Directory
-				fclose(in); // Close open handle
-				server_dirlist(inst,headeronly,filename,filebufsize);
-				return;
-			}
-			loctime = gmtime (&statbuf.st_mtime);
-			blen=strftime(GHBuffer,SERVER_BUFFER_SIZE,"Last-Modified: %a, %d %b %Y %I:%M:%S GMT\r\n",loctime);
-			if (strncmp(TimeBuffer,GHBuffer+15,strlen(GHBuffer+15)-2) == 0 )
-			{
-				// If-Modified-Since matches, therefore no update
-				setHeader_respval(inst,304);  // Not Modified
-				headeronly=1;
-			}
-		}
+                if (!statret) {
+		        loctime = gmtime (&statbuf.st_mtime);
+                        blen=strftime(GHBuffer,SERVER_BUFFER_SIZE,"Last-Modified: %a, %d %b %Y %I:%M:%S GMT\r\n",loctime);
+		        if (strncmp(TimeBuffer,GHBuffer+15,strlen(GHBuffer+15)-2) == 0 )
+		        {
+			        // If-Modified-Since matches, therefore no update
+			        setHeader_respval(inst,304);  // Not Modified
+			        headeronly=1;
+                        }
+                }
 
 		if (!fseek(in,0,SEEK_END))
 		{
 			// Supports seek
                         contentlength=ftell(in);
-//			blen=snprintf(GHBuffer+blen,SERVER_BUFFER_SIZE,"Content-Length: %ld\r\n",contentlength);
-//			fseek(in,0,SEEK_SET);
 		}
 
                 // Is a Partial request? Force a full DL, unless below changes it
@@ -238,9 +246,6 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
                 {
                         // OK, partial downloads MAY happen
 
-                        // Range-based GETs not supported right now... so return whole data
-//                        if (range == 1)
-//                        {
                         if ((rangefrom >= contentlength) || (rangeto >= contentlength))
                         {
 				// Cannot satisfy "Range" request
@@ -259,7 +264,6 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
                         	// Range request IS valid
                                 setHeader_respval(inst,206);  // Partial Content
                         }
-//                        }
                 }
                 else if ((range == 1) && (contentlength || (TimeBuffer[0] != 0)))
                 {
@@ -307,7 +311,6 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
                         return;
                 }
 
-                
                 if (headeronly == 1)
                 {
 			send(inst->sock,Buffer,blen,SEND_FLAG);
@@ -325,7 +328,6 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
                         retval+=blen;
                         do
         		{
-//        			retval+=blen;
         			ret=0;
         			blen=0;
                                 contentlength -= retval;
