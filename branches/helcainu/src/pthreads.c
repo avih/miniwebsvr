@@ -27,22 +27,24 @@
 
 #include "pthreads.h"
 
+extern server_config config;
+
 int threads_init()
 {
-	pool = malloc(THREAD_POOL_SIZE*sizeof(struct pool_item));
-	thread_pool = malloc(THREAD_POOL_SIZE*sizeof(pthread_t)+THREAD_POOL_ADJUST*(sizeof(pthread_t)));
+	pool = malloc(config.thread_pool_size*sizeof(struct pool_item));
+	thread_pool = malloc(config.thread_pool_size*sizeof(pthread_t)+config.thread_pool_adjust*(sizeof(pthread_t)));
 	if((pool == NULL)||(thread_pool == NULL))
 	{
 		DebugMSG("Can't allocate memory for thread pool need");
 		return -1;
 	}
 	
-	memset(pool, 0, sizeof(struct pool_item)*THREAD_POOL_SIZE);
-	memset(thread_pool, 0, sizeof(pthread_t)*THREAD_POOL_SIZE + sizeof(pthread_t)*THREAD_POOL_ADJUST);
+	memset(pool, 0, sizeof(struct pool_item)*config.thread_pool_size);
+	memset(thread_pool, 0, sizeof(pthread_t)*config.thread_pool_size + sizeof(pthread_t)*config.thread_pool_adjust);
 
 	size_t i = 0;
 		
-	for(i = 0; i < THREAD_POOL_SIZE; i++)
+	for(i = 0; i < config.thread_pool_size; i++)
 	{
 		pthread_create(&thread_pool[i], NULL, (void*)&worker, (void*)i);
 	}
@@ -61,7 +63,7 @@ void threads_add(struct server_struct* sock)
 		pthread_cond_wait(&thread_free, &pool_mutex);
 		pthread_mutex_unlock(&pool_mutex);
 
-		if(THREAD_POOL_ADJUST > 0)
+		if(config.thread_pool_adjust > 0)
 		{
 			wait = 1;
 			scount++;
@@ -69,7 +71,7 @@ void threads_add(struct server_struct* sock)
 			{
 				pthread_mutex_lock(&thread_pool_mutex);
 				spawned++;
-				DebugMSG("thread_pool adjusted to %d: 1 spawned", THREAD_POOL_SIZE + spawned);
+				DebugMSG("thread_pool adjusted to %d: 1 spawned", config.thread_pool_size + spawned);
 				pthread_mutex_unlock(&thread_pool_mutex);
 				pthread_create(&spawned_thread, NULL, (void*)&worker, (void*)(-1));
 				pthread_detach(spawned_thread);
@@ -79,7 +81,7 @@ void threads_add(struct server_struct* sock)
 		}
 
 	}
-	if((THREAD_POOL_ADJUST > 0)&&(!wait))
+	if((config.thread_pool_adjust > 0)&&(!wait))
 	{
 		if(dcount == THREAD_KILL_AT)
 		{
@@ -97,11 +99,11 @@ void threads_add(struct server_struct* sock)
 void threads_shutdown()
 {
 	int i;
-	for(i = 0; i < THREAD_POOL_SIZE; i++)
+	for(i = 0; i < config.thread_pool_size; i++)
 	{
 		pthread_cancel(thread_pool[i]);
 	}
-	for(i = 0; i < THREAD_POOL_SIZE; i++)
+	for(i = 0; i < config.thread_pool_size; i++)
 	{
 		pthread_join(thread_pool[i], NULL);
 	}
@@ -145,7 +147,7 @@ void worker(int n)
 			{
 				dcount = 0;
 				spawned--;
-				DebugMSG("thread_pool adjusted to %d: 1 killed", THREAD_POOL_SIZE + spawned);
+				DebugMSG("thread_pool adjusted to %d: 1 killed", config.thread_pool_size + spawned);
 				pthread_mutex_unlock(&thread_pool_mutex);
 				pthread_exit(NULL);
 			}
@@ -161,7 +163,7 @@ int push_request(struct server_struct* request)
 {
 	int i, added = 0;
 	pthread_mutex_lock(&pool_mutex);
-	for(i = 0; (i < THREAD_POOL_SIZE)&&(!added); i++)
+	for(i = 0; (i < config.thread_pool_size)&&(!added); i++)
 	{
 		if(pool[i].item == NULL)
 		{
@@ -179,7 +181,7 @@ int push_request(struct server_struct* request)
 int pop_request()
 {
 	int i, iret = -1;
-	for(i = 0; (i < THREAD_POOL_SIZE)&&(iret==-1); i++)
+	for(i = 0; (i < config.thread_pool_size)&&(iret==-1); i++)
 	{
 		if((pool[i].working == 0)&&(pool[i].item != NULL))
 			iret=i;

@@ -21,12 +21,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <signal.h>
-
-#ifdef __WIN32__
-#include <dir.h>
-#endif
+#include <pthread.h>
 
 #include "config.h"
+
 #include "listener.h"
 #include "logging.h"
 
@@ -39,55 +37,13 @@ void cleanup()
 	StopLogging();
 }
 
-
 server_config config;
 
-// As documented at http://www.bindview.com/Services/Razor/Papers/2001/signals.cfm
-// There exists the possibility of a race condition if 2 or more different
-// signals are sent to the process nearly the same time when using the same
-// signal handler for different signals.
-void catch_int(int sig)
+pthread_t server_start()
 {
-	BIGMessage("Caught signal SIGINT");
-	loop=0;
-	signal(sig,SIG_IGN);
-}
-
-void catch_term(int sig)
-{
-	BIGMessage("Caught signal SIGTERM");
-	loop=0;
-	signal(sig,SIG_IGN);
-}
-
-#ifdef __WIN32__
-void catch_break(int sig)
-{
-	BIGMessage("Caught signal SIGBREAK");
-	loop=0;
-	signal(sig,SIG_IGN);
-}
-#else
-void catch_hup(int sig)
-{
-	BIGMessage("Caught signal SIGHUP");
-	loop=0;
-	signal(sig,SIG_IGN);
-}
-
-void catch_quit(int sig)
-{
-	BIGMessage("Caught signal SIGQUIT");
-	loop=0;
-	signal(sig,SIG_IGN);
-}
-#endif
-
-int main(int argc, char **argv)
-{
-	getconfig(argc, argv);
+//	getconfig(argc, argv);
 	
-	if (atexit(&cleanup)) 
+/*	if (atexit(&cleanup)) 
 	{
 		fprintf(stderr, "cannot set exit function\n");
 		return EXIT_FAILURE;
@@ -101,13 +57,21 @@ int main(int argc, char **argv)
 	signal (SIGQUIT, &catch_quit);
 #endif
 	
-	StartLogging(config.logfile);
+	StartLogging(LOGFILE);
 	BIGMessage("--- %s starting ---",VERSION);
 	BIGMessage("--- This software is distributed under the GNU Lesser General Public License");
 	BIGMessage("--- %s",COPYRIGHT); 
 	BIGMessage("--- E-Mail: %s",EMAIL);
 
 // chdir to the document root
-	chdir(config.root);        
-	return listener();
+
+	chdir(ROOT);*/
+#ifdef __WIN32__
+#else
+	if(config.logger_hook == &mwb_Log)
+	{
+		StartLogging(config.logfile);
+	}
+	return pthread_create(NULL, NULL, (void*)listener(), NULL);
+#endif
 }

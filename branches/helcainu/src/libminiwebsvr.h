@@ -16,11 +16,32 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
-#ifndef LISTENER_H
-#define LISTENER_H
 
-extern int loop;
+#ifndef LIBMINIWEBSVR_H
+#define LIBMINIWEBSVR_H
+#define LIB
 
-int listener();
+typedef void (*HOOK_logger)(char*);
 
-#endif // LISTENER_H
+
+struct server_config_struct
+{	
+	int port;
+	char* interface;
+	char* logfile;
+	char* root;
+
+#ifdef MULTITHREADED
+	int thread_pool_size;
+	int thread_pool_adjust;
+#endif
+#ifdef LIB
+	HOOK_logger logger_hook;
+#endif
+};
+
+typedef struct server_config_struct server_config;
+
+
+#endif
+

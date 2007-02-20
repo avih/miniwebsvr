@@ -32,6 +32,12 @@ void DebugMSG(const char *format, ...);
 #define DebugMSG(f,...)
 #endif // _DEBUG
 
+#ifdef LIB
+void mwb_Log(char* txt);
+#else
+void Log(char* txt);
+#endif
+
 void BIGMessage(const char *format, ...);
 
 void Error(const char *format, ...);
