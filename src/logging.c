@@ -21,13 +21,26 @@
 #include <string.h>
 
 #include "logging.h"
+#include "config.h"
 
 // The log stream
 FILE* LogStream=NULL;
 // For Log file buffering
 char outbuf[BUFSIZ];
 
-void Log(char* txt) 
+#ifdef LIB
+extern server_config config;
+
+void inline Log(char* txt)
+{
+	if(config.logger_hook != NULL)
+		config.logger_hook(txt);
+}
+
+void mwb_Log(char* txt) 
+#else
+void Log(char* txt)
+#endif
 {
 	if (LogStream==NULL) 
 		return;
@@ -35,7 +48,6 @@ void Log(char* txt)
 	fprintf(LogStream,"%s\n",txt);
 	fflush(LogStream);
 }
-
 void StartLogging(char* name) 
 {
 	if ((LogStream = fopen(name, "at")) == NULL) 
@@ -77,7 +89,9 @@ void DebugMSG(const char *format, ...)
 
 	buffer[MESSAGE_BUFFER-1]=0;
 	Log(buffer);
+#ifndef LIB
 	printf("%s\n",buffer);
+#endif
 }
 #endif // _DEBUG
 
@@ -92,7 +106,9 @@ void BIGMessage(const char *format, ...)
 
 	buffer[MESSAGE_BUFFER-1]=0;
 	Log(buffer);
+#ifndef LIB
 	printf("%s\n",buffer);
+#endif
 }
 
 void Error(const char *format, ...) 

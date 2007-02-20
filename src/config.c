@@ -23,29 +23,34 @@
 #include <string.h>
 
 #include "config.h"
+#include "logging.h"
 
-#ifdef THREAD_POOL
+#ifdef MULTITHREADED
 int THREAD_POOL_SIZE;
 int THREAD_POOL_ADJUST;
 #endif
 
-int PORT;
-char* INTERFACE;
-char* LOGFILE;
-char* ROOT;
+//int PORT;
+//char* INTERFACE;
+//char* LOGFILE;
+//char* ROOT;
+
+extern server_config config;
+
+#ifndef LIB
 
 void getconfig(int argc, char **argv) 
 {
 	int i;
 	enum { next_param, next_port, next_logfile, next_root, next_interface, next_threads, next_threads_adjust } next = next_param;
 
-	PORT=DEFAULT_PORT;
-	INTERFACE=DEFAULT_INTERFACE;
-	LOGFILE=DEFAULT_LOGFILE;
-	ROOT=DEFAULT_ROOT;
-#ifdef THREAD_POOL
-        THREAD_POOL_SIZE=DEFAULT_THREAD_POOL_SIZE;
-	THREAD_POOL_ADJUST=DEFAULT_THREAD_POOL_ADJUST;
+	config.port=DEFAULT_PORT;
+	config.interface=DEFAULT_INTERFACE;
+	config.logfile=DEFAULT_LOGFILE;
+	config.root=DEFAULT_ROOT;
+#ifdef MULTITHREADED
+        config.thread_pool_size=DEFAULT_THREAD_POOL_SIZE;
+	config.thread_pool_adjust=DEFAULT_THREAD_POOL_ADJUST;
 #endif
 
 	for (i = 1; i < argc; i += 1)
@@ -60,7 +65,7 @@ void getconfig(int argc, char **argv)
 				printf("  --log <file>             Save the log file as <file> (default: %s)\n",DEFAULT_LOGFILE);
 				printf("  --root <path>            Specify the document root directory (default: %s)\n",DEFAULT_ROOT);
 				printf("  --interface <ip>         Specify the interface the server listens on (default: ALL)\n");
-#ifdef THREAD_POOL
+#ifdef MULTITHREADED
                                 printf("  --threads <thread_nos>   Specify number of threads in thread pool (default %d)\n",DEFAULT_THREAD_POOL_SIZE);
 				printf("  --threads-adjust <num>   Specify number of threads that can be spawned under heavy load (default %d)\n",DEFAULT_THREAD_POOL_ADJUST);
 #endif
@@ -74,7 +79,7 @@ void getconfig(int argc, char **argv)
 				next = next_root;
 			else if (0 == strcmp(argv[i], "--interface"))
 				next = next_interface;
-#ifdef THREAD_POOL
+#ifdef MULTITHREADED
                         else if (0 == strcmp(argv[i], "--threads"))
                                 next = next_threads;
 			else if (0 == strcmp(argv[i], "--threads-adjust"))
@@ -83,20 +88,53 @@ void getconfig(int argc, char **argv)
 			continue;
 		}
 		if (next == next_logfile)
-			LOGFILE = argv[i];
+			config.logfile = argv[i];
 		else if (next == next_port)
-			PORT = atoi(argv[i]);
+			config.port = atoi(argv[i]);
 		else if (next == next_root)
-			ROOT = argv[i];
+			config.root = argv[i];
 		else if (next == next_interface)
-			INTERFACE = argv[i];
-#ifdef THREAD_POOL
+			config.interface = argv[i];
+#ifdef MULTITHREADED
 		else if (next == next_threads)
-			THREAD_POOL_SIZE = atoi(argv[i]);
+			config.thread_pool_size = atoi(argv[i]);
 		else if (next == next_threads_adjust)
-			THREAD_POOL_ADJUST = atoi(argv[i]);
+			config.thread_pool_adjust = atoi(argv[i]);
 #endif
 		next = next_param;
 	}
 }
 
+#else // LIB
+
+server_config* initconfig()
+{
+/*
+	PORT=DEFAULT_PORT;
+	INTERFACE=DEFAULT_INTERFACE;
+	LOGFILE=DEFAULT_LOGFILE;
+	ROOT=DEFAULT_ROOT;
+#ifdef MULTITHREADED
+        THREAD_POOL_SIZE=DEFAULT_THREAD_POOL_SIZE;
+	THREAD_POOL_ADJUST=DEFAULT_THREAD_POOL_ADJUST;
+#endif
+
+ */
+	config.port = DEFAULT_PORT;
+	config.interface = DEFAULT_INTERFACE;
+	config.logfile = DEFAULT_LOGFILE;
+	config.root = DEFAULT_ROOT;
+
+#ifdef MULTITHREADED
+	config.thread_pool_size = DEFAULT_THREAD_POOL_SIZE;
+	config.thread_pool_adjust = DEFAULT_THREAD_POOL_ADJUST;
+#endif
+
+	config.logger_hook = &mwb_Log;
+
+	return &config;
+}
+
+
+
+#endif

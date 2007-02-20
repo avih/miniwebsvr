@@ -26,22 +26,18 @@
 #define EMAIL "grigi_ at users.sourceforge.net"
 
 /// Defines whether the server must run in multiple threads (recommended)
+/// MULTITHREADED is synonym for THREAD_POOL
+/// Old MULTITHREADED functionality is DEPRECATED now.
 #define MULTITHREADED
 #define USE_INLINE
 
-/// Defines if a Thread Pool is to be used (recommended)
-#ifdef MULTITHREADED
-#ifndef __WIN32__
-#define THREAD_POOL
-#endif
-#endif
 
 /************************ Default for Run-time Options ***********************/
 
 #define DEFAULT_THREAD_POOL_SIZE 8
 #define DEFAULT_THREAD_POOL_ADJUST 0
 
-#define THREAD_SPAWN_AT 50
+#define THREAD_SPAWN_AT 25
 #define THREAD_KILL_AT 15
 
 #define DEFAULT_PORT 8080
@@ -51,16 +47,26 @@
 
 /******************** Variables containing Run-time Values *******************/
 
-#ifdef THREAD_POOL
-extern int THREAD_POOL_SIZE;
-extern int THREAD_POOL_ADJUST;
-#endif
-extern int PORT;
-extern char* INTERFACE;
-extern char* LOGFILE;
-extern char* ROOT;
-extern char MiniWebSvrlogo_data[2316];
-
 void getconfig(int argc, char **argv);
+
+typedef void (*HOOK_logger)(char*);
+
+struct server_config_struct
+{
+	int port;
+	char* interface;
+	char* logfile;
+	char* root;
+
+#ifdef MULTITHREADED
+	int thread_pool_size;
+	int thread_pool_adjust;
+#endif
+#ifdef LIB
+	HOOK_logger logger_hook;
+#endif
+};
+
+typedef struct server_config_struct server_config;
 
 #endif // CONFIG_H

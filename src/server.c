@@ -41,7 +41,7 @@ void server_close(struct server_struct *inst)
 #else
 	close(inst->sock);
 #endif
-#ifndef THREAD_POOL
+#ifndef MULTITHREADED
 	free(inst);
 #endif
 }
@@ -239,7 +239,7 @@ serverquit:
 
 	server_close(inst);
 #ifndef __WIN32__
-#ifndef THREAD_POOL
+#ifndef MULTITHREADED
 	pthread_exit(NULL);
 #endif
 	return NULL;

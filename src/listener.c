@@ -28,7 +28,9 @@
 
 int loop;
 
-int listener(char *interface, unsigned short port) 
+extern server_config config;
+
+int listener() 
 {
 	struct timeval timeout;// = {1,0}; // 1 second poll state
 
@@ -50,9 +52,9 @@ int listener(char *interface, unsigned short port)
 #endif
 	
 	local.sin_family = AF_INET;
-	local.sin_addr.s_addr = (!interface)?INADDR_ANY:inet_addr(interface); 
+	local.sin_addr.s_addr = (!config.interface)?INADDR_ANY:inet_addr(config.interface); 
 
-	local.sin_port = htons(port);
+	local.sin_port = htons(config.port);
 
 	listen_socket = socket(AF_INET, SOCK_STREAM,0); // TCP socket
 	
@@ -108,13 +110,13 @@ int listener(char *interface, unsigned short port)
 		return -1;
 	}
 	loop = 1;
-#ifdef THREAD_POOL
+#ifdef MULTITHREADED
 	if(!threads_init())
 	{
 		return -1;
 	}
 #endif
-	BIGMessage("--- Listening on port %d ---",port);
+	BIGMessage("--- Listening on port %d ---", config.port);
 	while(loop) 
 	{
 		FD_ZERO(&socket_set);
@@ -124,16 +126,6 @@ int listener(char *interface, unsigned short port)
 		ret=select(listen_socket+1,&socket_set,NULL,NULL,&timeout);
 		if (ret > 0) 
 		{
-#ifdef MULTITHREADED
-#ifndef THREAD_POOL
-			HANDLE hThread; 
-#ifdef __WIN32__
-			DWORD dwThreadId; 
-#else
-			pthread_attr_t attr;
-#endif // __WIN32__
-#endif // THREAD_POOL
-#endif // MULTITHREAD
 			struct server_struct *sock;
 			fromlen =sizeof(from);
 			msgsock = accept(listen_socket,(struct sockaddr*)&from, &fromlen);
@@ -157,30 +149,14 @@ int listener(char *interface, unsigned short port)
 			sock->sin_addr=from.sin_addr;
 			sock->sin_port=from.sin_port;
 			sock->logbuffer[0]=0;
-#ifdef THREAD_POOL
+#ifdef MULTITHREADED
 #ifdef __WIN32__
 #else
 			threads_add(sock);
 #endif // __WIN32__
-#else
-#ifdef MULTITHREADED
-#ifdef __WIN32__
-			hThread = CreateThread( 
-				NULL,                           // no security attributes 
-				0,                              // use default stack size  
-				(LPTHREAD_START_ROUTINE)server,	// thread function 
-				sock,                           // argument to thread function
-				0,                              // use default creation flags 
-				&dwThreadId);                   // returns the thread identifier 
-#else // __WIN32__
-			pthread_attr_init(&attr);
-			pthread_attr_setdetachstate(&attr,1);
-			pthread_create(&hThread,&attr,(void*)server,sock);
-#endif // __WIN32__
 #else // MULTITHREAD
 			server(sock);
 #endif // MULTITHREAD
-#endif // THREAD_POOL
 		}
 	}
 
@@ -192,8 +168,9 @@ int listener(char *interface, unsigned short port)
 	close(listen_socket);
 #endif
 
-#ifdef THREAD_POOL
-#ifndef __WIN32__
+#ifdef MULTITHREADED
+#ifdef __WIN32__
+#else
 	threads_shutdown();
 #endif
 #endif

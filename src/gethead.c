@@ -32,6 +32,8 @@
 
 #include "strl.h"
 
+extern server_config config;
+
 void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int dirlen)
 {
 	DIR *dir;
@@ -111,7 +113,7 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 
 		closedir(dir);
 
-		bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"</PRE><HR><ADDRESS>%s Server Port %d</ADDRESS></BODY></HTML>",VERSION,PORT);
+		bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"</PRE><HR><ADDRESS>%s Server Port %d</ADDRESS></BODY></HTML>",VERSION,config.port);
 		send(inst->sock,Buffer,bufpos,SEND_FLAG);
 	}
 }
