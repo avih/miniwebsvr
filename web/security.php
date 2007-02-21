@@ -1,4 +1,4 @@
-<? nclude "lib.php"; startpage(); ?>
+<? include "lib.php"; startpage(); ?>
 <h2>Security Advisory</h2>
 This page lists the security issues that the author knows about, and their resolutions.<br>
 <br>

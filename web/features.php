@@ -1,4 +1,4 @@
-<? nclude "lib.php"; startpage(); ?>
+<? include "lib.php"; startpage(); ?>
 <h2>Features of MiniWebsvr:</h2>
 Currently still a stand-alone server, that serves static pages only.<br>
 Supports:<br>

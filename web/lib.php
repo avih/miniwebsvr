@@ -27,6 +27,10 @@ h1, h2, h3, b, a {
 	color: #663300;
 }
 
+tr.top {
+	background:#efefef;
+}
+
 a:hover {
 	color: #663300;
 	text-decoration: none;
@@ -45,7 +49,7 @@ a.sidebar:hover { color: yellow; }
 </head>
 <body>
 <table cellspacing=0 cellpadding=8 width="100%">
-<tr><td bgcolor="#EFEFEF">&nbsp;</td><td bgcolor="#EFEFEF">
+<tr class=top><td>&nbsp;</td><td>
 	<img src="images/logo.png" width="295" height="63" alt="MiniWebsvr">
 </td></tr>
 <tr><td class=sidebar>
