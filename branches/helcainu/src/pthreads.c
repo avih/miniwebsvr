@@ -18,6 +18,7 @@
 */
 
 #include <pthread.h>
+#include <malloc.h>
 
 #include "os_compat.h"
 
@@ -99,13 +100,19 @@ void threads_add(struct server_struct* sock)
 void threads_shutdown()
 {
 	int i;
-	for(i = 0; i < config.thread_pool_size; i++)
-	{
-		pthread_cancel(thread_pool[i]);
-	}
+
+	// Wake up all threads (that are locked and wating)
+	pthread_cond_broadcast(&new_request);
+
+	// Do NOT use pthread_cancel, as it will occasionally allow pthread_cont_wait to complete, and the lock will still be set.
+	// A thread cannot die in a pthread_cond_wait whilst the lock is set.
+	// Use of pthread_cancel can result in deadlock.
+	// On my system 4 in 5 tries are deadlocked!
+	
 	for(i = 0; i < config.thread_pool_size; i++)
 	{
 		pthread_join(thread_pool[i], NULL);
+		DebugMSG("Worker %d joined!", i);
 	}
 	free(thread_pool);
 	free(pool);
@@ -118,21 +125,25 @@ void worker(int n)
 	while(loop) // Global variable of "loop" indicates that server is running, if not set, quit
 	{
 		pthread_mutex_lock(&pool_mutex);
-		pthread_cond_wait(&new_request, &pool_mutex); 
-		index = pop_request(); 
-		if(index == -1)
+		index = pop_request();
+		while (index == -1)
 		{
-			pthread_mutex_unlock(&pool_mutex);
-			continue;
-		}
-		else
-		{
-			pool[index].working=1;
-			pthread_mutex_unlock(&pool_mutex);
+			pthread_cond_wait(&new_request, &pool_mutex);
+			index = pop_request();
+			
+			if (!loop) 
+			{
+				pthread_mutex_unlock(&pool_mutex);
+				DebugMSG("Worker %d exit", n);
+				pthread_exit(NULL);
+				return;
+			}
 		}
 
-		if(index != -1)
-			server(pool[index].item);
+		// at this stage index is valid
+		pool[index].working=1;
+		pthread_mutex_unlock(&pool_mutex);
+		server(pool[index].item);
 
 		pthread_mutex_lock(&pool_mutex);
 		free(pool[index].item);
@@ -150,13 +161,16 @@ void worker(int n)
 				DebugMSG("thread_pool adjusted to %d: 1 killed", config.thread_pool_size + spawned);
 				pthread_mutex_unlock(&thread_pool_mutex);
 				pthread_exit(NULL);
+				return;
 			}
 			else
 				pthread_mutex_unlock(&thread_pool_mutex);
 		}
 		pthread_cond_signal(&thread_free);
 	}
-
+	DebugMSG("Worker %d exit", n);
+	pthread_exit(NULL);
+	return;
 }
 
 int push_request(struct server_struct* request)
