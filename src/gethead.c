@@ -166,6 +166,10 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 	{
 		server_dirlist(inst,headeronly,filename,filebufsize);
 	}
+        else if(statbuf.st_mode & S_IFDIR)
+        {
+ 	  	server_dirlist(inst,headeronly,filename,filebufsize);
+        }
 	else 
 	{
 		// Start Header parsing
