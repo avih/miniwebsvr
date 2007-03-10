@@ -11,7 +11,7 @@ Medium (You can only list the folder contents one level up, not view the file co
 <b>Credits to:</b><br>
 Daniel Nystr&ouml;m<br>
 <b>Resolution:</b><br>
-Fix submitted to SVN repository, will be fixed in next version.<br>
+Fixed in 0.0.7<br>
 <br>
 <b>Description:</b><br>
 Suffers from multiple 0-Day exploits, accessing almost any of the special MS-DOS device files (NUL fixed in 0.05) under windows can cause the CPU usage to rise to 100%<br>
@@ -20,7 +20,7 @@ Less Critical (Denial of service)<br>
 <b>Credits to:</b><br>
 shinnai and rgod<br>
 <b>Resolution:</b><br>
-Fix submitted to SVN repository, will be fixed in next version.<br>
+Fixed in o.o.7<br>
 
 <br>
 

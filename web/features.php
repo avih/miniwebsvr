@@ -13,6 +13,7 @@ Supports:<br>
 
 <li> UNIX variants, such as Linux
 <li> Resuming downloads<sup>*</sup>
+<li> Thread pooling (PThreads implementation only)
 </ul>
 * Saves on bandwidth!<br>
 <br>
