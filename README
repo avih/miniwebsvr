@@ -13,6 +13,8 @@ Options:
   --log <file>             Save the log file as <file> (default: miniwebsvr.log)
   --root <path>            Specify the document root directory (default: .)
   --interface <ip>         Specify the interface the server listens on (default: ALL)
+  --threads <thread_nos>   Specify number of threads in thread pool (default 8)
+
 
 
 The web-server supports the following:
@@ -29,6 +31,7 @@ The web-server supports the following:
 - Conditional GET:
   - If-Modified-Since:
 - Range-bound downloads (Download resuming)
+- Thread pooling (PThreads only)
 
 
 Was originally designed as a small stand-alone web-server, but I think I'll
@@ -38,6 +41,7 @@ browsers to support an game, maybe provide live stats of the game world
 to a client. So eventually it will be an embedded HTTP server.
 
 
-MiniWebsvr is mostly developed by Nickolas Antonie Grigoriadis with contributions from:
+MiniWebsvr is mostly developed by Nickolas Antonie Grigoriadis <grigi_ at users.sourceforge.net> with contributions from:
 - Daniel John Walker <djwalker at users.sourceforge.net>
 - Johan Strydom <fyrewolfe at users.sourceforge.net>
+- Sergey Sytchewoj <brumal at users.sourceforge.net>
