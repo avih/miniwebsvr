@@ -143,7 +143,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 			printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
 			return;
 		}
-	}
+
 
 	if ((in = fopen(filename, "rb")) == NULL)
 	{
@@ -159,7 +159,9 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 			}
 		}
 	}
-
+        } else {
+          in=NULL;
+        }
 
         strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);
         if (in == NULL)
