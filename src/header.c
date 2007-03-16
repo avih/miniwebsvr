@@ -46,7 +46,8 @@ const struct headerResp_struct headerResp[headerResp_size] =
         {1,416,"Requested Range Not Satisfiable"}};
 
 const struct headerExt_struct headerExt[headerExt_size] = 
-	{{"",""}, // Default type
+	{
+	{"",""}, // Default type
 	{"html","text/html"},
 	{"htm","text/html"},
 	
@@ -64,7 +65,10 @@ const struct headerExt_struct headerExt[headerExt_size] =
 	{"png","image/png"},
 	{"bmp","image/bmp"},
 	{"gif","image/gif"},
-	{"ico","image/x-icon"}};	
+	{"ico","image/x-icon"},
+	
+	{"php","text/html"}
+	};	
 
 void setHeader_generic(struct server_struct *inst,char* genstr)
 {
@@ -126,7 +130,7 @@ void clearHeader(struct server_struct *inst)
 }
 
 
-int printHeader(struct server_struct *inst, int headeronly, char* Buffer, int bufsize)
+int printHeader(struct server_struct *inst, int headeronly, char* Buffer, int bufsize, int endheader)
 {
 	int bufpos,tmp;
 	time_t curtime;
@@ -162,7 +166,14 @@ int printHeader(struct server_struct *inst, int headeronly, char* Buffer, int bu
 	
 	bufpos+=snprintf(Buffer+bufpos,bufsize-bufpos,"Server: %s\r\n",VERSION);
 	loctime = gmtime (&curtime);
-	bufpos+=strftime(Buffer+bufpos,bufsize-bufpos,"Date: %a, %d %b %Y %I:%M:%S GMT\r\n\r\n",loctime);
+	if(endheader==1)
+	{
+		bufpos+=strftime(Buffer+bufpos,bufsize-bufpos,"Date: %a, %d %b %Y %I:%M:%S GMT\r\n\r\n",loctime);
+	}
+	else
+	{
+		bufpos+=strftime(Buffer+bufpos,bufsize-bufpos,"Date: %a, %d %b %Y %I:%M:%S GMT\r\n",loctime);
+	}
 	Buffer[bufsize-1]=0;
         DebugMSG("\n%s",Buffer);
 
