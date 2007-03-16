@@ -49,7 +49,19 @@
 
 void getconfig(int argc, char **argv);
 
+#ifdef LIB
 typedef void (*HOOK_logger)(char*);
+typedef void (*HOOK_file)(void*, char*, char*, int);
+
+struct hook_list_struct
+{
+	HOOK_file hook;
+	char* fileext;
+	struct hook_list_struct* next;
+};
+
+typedef struct hook_list_struct hook_list;
+#endif
 
 struct server_config_struct
 {
@@ -64,6 +76,7 @@ struct server_config_struct
 #endif
 #ifdef LIB
 	HOOK_logger logger_hook;
+	hook_list* filehooks;
 #endif
 };
 

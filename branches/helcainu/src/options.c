@@ -43,6 +43,6 @@ void OPTIONS(struct server_struct *inst)
 	snprintf(GHBuffer,SERVER_BUFFER_SIZE,"Allow: GET,HEAD\r\nPublic: OPTIONS,GET,HEAD\r\n");
 	GHBuffer[SERVER_BUFFER_SIZE-1] = 0; // strnprintf does not null-delimit when full
 	setHeader_generic(inst,GHBuffer);
-	bufpos=printHeader(inst,1,Buffer,SEND_BUFFER_SIZE);
+	bufpos=printHeader(inst,1,Buffer,SEND_BUFFER_SIZE,1);
 	send(inst->sock,Buffer,bufpos,SEND_FLAG);
 }

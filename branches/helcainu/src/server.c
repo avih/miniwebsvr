@@ -196,7 +196,7 @@ void* server(struct server_struct *inst)
 		inst->logbuffer[SERVER_BUFFER_SIZE-1] = 0; // snprintf does not null-delimit when full
 		inst->MIMEoverride = GHBuffer; // Override MIME type with unknown request type
 		setHeader_respval(inst,501); // Not Implemented
-		printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
+		printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE,1); // No need to read return value as it will flush the buffer
 
 		goto serverquit;
 	}
@@ -205,7 +205,7 @@ void* server(struct server_struct *inst)
 		snprintf(inst->logbuffer,SERVER_BUFFER_SIZE,"\"%s:%d\"",inet_ntoa(inst->sin_addr),htons(inst->sin_port));
 		inst->logbuffer[SERVER_BUFFER_SIZE-1] = 0; // snprintf does not null-delimit when full
 		setHeader_respval(inst,400);  // Bad Request
-		printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
+		printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE,1); // No need to read return value as it will flush the buffer
 		
 		goto serverquit;
 	}
@@ -219,7 +219,7 @@ void* server(struct server_struct *inst)
 	{
 		strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);
 		setHeader_respval(inst,403);  // Forbidden
-		printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
+		printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE,1); // No need to read return value as it will flush the buffer
 		
 		goto serverquit;
 	}

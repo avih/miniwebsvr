@@ -26,6 +26,11 @@
 #include <time.h>
 
 #include "config.h"
+
+#ifdef LIB
+#include "server.h"
+#include "hooks.h"
+#endif
 #include "header.h"
 #include "gethead.h"
 #include "logging.h"
@@ -60,14 +65,14 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 			dirname[retval-1] = 0;
 
 		setHeader_respval(inst,404);  // Not Found
-		printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
+		printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE,1); // No need to read return value as it will flush the buffer
 		return;
 	}
 	else
 	{
 		setHeader_filename(inst,".html");
 		setHeader_respval(inst,201);  // Created
-		bufpos=printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE);
+		bufpos=printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE,1);
 
 		if (headeronly == 1) {
 			send(inst->sock,Buffer,bufpos,SEND_FLAG);
@@ -142,7 +147,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 			// Not a regular file OR a directory OR has no creation time!!!!
 			strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);
 			setHeader_respval(inst,403);  // Forbidden
-			printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
+			printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE,1); // No need to read return value as it will flush the buffer
 			return;
 		}
 	}
@@ -168,8 +173,15 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 	}
 	else if(statbuf.st_mode & S_IFDIR)
 	{
+		fclose(in);
 		server_dirlist(inst,headeronly,filename,filebufsize);
 	}
+#ifdef LIB
+	else if(check_hook(filename, inst))
+	{
+		fclose(in);
+	}
+#endif
 	else 
 	{
 		// Start Header parsing
@@ -304,12 +316,12 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
               		GHBuffer[SERVER_BUFFER_SIZE-1] = 0; // strnprintf does not null-delimit when full
                         setHeader_generic(inst,GHBuffer);
 
-		        blen=printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE);
+		        blen=printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE,1);
                 }
                 else
                 {
                         // Late error
-                        printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE);
+                        printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE,1);
                         return;
                 }
 

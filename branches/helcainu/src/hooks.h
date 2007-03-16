@@ -1,6 +1,6 @@
 /*  MiniWebsvr - A small webserver
-    Copyright (C) 2007  Nickolas Antonie Grigoriadis
-    E-Mail: grigi_ at users.sourceforge.net
+    Copyright (C) 2007  Daniel John Walker and Nickolas Antonie Grigoriadis
+    E-Mail: djwalker at users.sourceforge.net and grigi_ at users.sourceforge.net
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -17,42 +17,11 @@
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef LIBMINIWEBSVR_H
-#define LIBMINIWEBSVR_H
-#define LIB
+#ifndef HOOKS_H
+#define HOOKS_H
 
-typedef void (*HOOK_logger)(char*);
-typedef void (*HOOK_file)(struct server_struct*, char*, char*, int);
+int check_hook(char* filename, struct server_struct* inst);
 
-struct hook_list_struct
-{
-	HOOK_file hook;
-	char* fileext;
-	struct hook_list_struct* next;
-};
-
-typedef struct hook_list_struct hook_list;
-
-
-struct server_config_struct
-{	
-	int port;
-	char* interface;
-	char* logfile;
-	char* root;
-
-#ifdef MULTITHREADED
-	int thread_pool_size;
-	int thread_pool_adjust;
-#endif
-#ifdef LIB
-	HOOK_logger logger_hook;
-	hook_list* filehook;
-#endif
-};
-
-typedef struct server_config_struct server_config;
-
+char get_ext(char* filename);
 
 #endif
-

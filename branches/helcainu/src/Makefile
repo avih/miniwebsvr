@@ -1,8 +1,9 @@
-FILES=config.c gethead.c header.c listener.c logging.c options.c pthreads.c server.c strl.c url.c 
+FILES=config.c gethead.c header.c listener.c logging.c options.c pthreads.c server.c strl.c url.c
+LIBFILES=hooks.c
 HFILES=config.h gethead.h header.h libminiwebsvr.h listener.h logging.h options.h os_compat.h pthreads.h server.h strl.h url.h
 OBJS=`echo "${FILES}" | sed 's/\.cp*/\.o/g'`
 
-LIBS=-lpthread -lrt
+LIBS=-lpthread
 
 RELEASEFLAGS=-O2 -s
 DEBUGFLAGS=-O0 -g -D_DEBUG
@@ -39,9 +40,9 @@ debug:
 release: 
 	gcc -o miniwebsvr ${FILES} main.c ${RELEASEFLAGS} ${LIBS} ${CFLAGS}
 lib_debug:
-	gcc -o libminiwebsvr.so ${FILES} libmain.c ${DEBUGFLAGS} ${LIBS} -shared -fPIC -DLIB ${CFLAGS}
+	gcc -o libminiwebsvr.so ${FILES} ${LIBFILES} libmain.c ${DEBUGFLAGS} ${LIBS} -shared -fPIC -DLIB ${CFLAGS}
 lib:
-	gcc -o libminiwebsvr.so ${FILES} libmain.c ${RELEASEFLAGS} ${LIBS} -shared -fPIC -DLIB ${CFLAGS}
+	gcc -o libminiwebsvr.so ${FILES} ${LIBFILES} libmain.c ${RELEASEFLAGS} ${LIBS} -shared -fPIC -DLIB ${CFLAGS}
 libtest:
 	gcc -o test libtest.c  -lminiwebsvr ${DEBUGFLAGS} ${LIBS} -DMULTITHREADED ${CFLAGS} -L.
 clean:

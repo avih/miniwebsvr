@@ -131,6 +131,7 @@ server_config* initconfig()
 #endif
 
 	config.logger_hook = &mwb_Log;
+	config.filehooks = NULL;
 
 	return &config;
 }
