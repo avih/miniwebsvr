@@ -1,0 +1,35 @@
+MiniWeb Helper Library
+
+To be true to the "Mini" in MiniWebsvr, I have decided to split the
+functionality.
+
+MiniWebsvr will only be the server, have the configuration and serving hooks,
+BUT NOTHING ELSE! Also MiniWebsvr is only allowed to be a C application.
+
+For the rest: (e.g.)
+- The XML parser/generator
+- Common utilities
+- Resource management
+- Template system (which I am going to start on right NOW)
+
+These will be in another library MWH (MiniWeb Helper).
+
+The MWH set of tools can be C/C++.
+
+Initially I recommend that each of these components be developed in
+"stand-alone" format.
+
+Once MiniWebsvr as a library is capable of doing the required things for a
+library like this to be useful, I'll start creating MWH as a library under
+/trunk/mwh, And also alter the Makefile to accommodate the users.
+
+MiniWebsvr MUST NOT have any dependencies on MWH.
+MWH SHOULD NOT have any dependencies on MiniWebsvr.
+
+This would allow each to be used separately.
+Glue can be provided in a separate file that "links" the two libraries
+together. (Sample code?)
+
+
+Regards,
+Nickolas
