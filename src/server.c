@@ -46,7 +46,7 @@ void server_close(struct server_struct *inst)
 
 int server_charpos(const struct server_struct *inst, const char chr)
 {
-	unsigned int i;
+	int i;
 	
 	for (i=inst->buffer_pos;i<inst->buffer_size;++i) 
 	{
@@ -56,9 +56,9 @@ int server_charpos(const struct server_struct *inst, const char chr)
 	return -1;
 }
 
-int server_readln(struct server_struct *inst, char *str, const unsigned int strsize)
+int server_readln(struct server_struct *inst, char *str, const int strsize)
 {
-	unsigned int strpos;
+	int strpos;
 	int retval;
 
 	// Check if in the buffer
@@ -212,8 +212,8 @@ void* server(struct server_struct *inst)
 	inst->logbuffer[SERVER_BUFFER_SIZE-1] = 0; // snprintf does not null-delimit when full
 
 	// Check for sub-root hacking, If found send a forbidden.
-	tstr=strstr(filename,"/..");
-	if ((tstr!=NULL) && ((tstr[3] == 0) || (tstr[3] == '/')))
+	tstr=strstr(filename,"..");
+	if (((tstr!=NULL) && ((tstr[2] == 0) || (tstr[2] == '/') || (tstr[2] == '\\'))) && ((tstr==filename) || (*(tstr-1) == '/') || (*(tstr-1) == '\\')))
 	{
 		strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);
 		setHeader_respval(inst,403);  // Forbidden

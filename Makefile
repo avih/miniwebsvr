@@ -33,7 +33,7 @@ LIBS=-lpthread -lrt
 LIBSWIN=-lws2_32
 
 COMMONFLAGS=-Wall
-RELEASEFLAGS=-O2 -s
+RELEASEFLAGS=-Os -s
 DEBUGFLAGS=-O0 -g -D_DEBUG
 
 
@@ -63,6 +63,7 @@ release: $(FILES) $(HFILES) $(S_FILES)
 
 xwin32: $(FILES) $(HFILES) $(S_FILES)
 	mingw32-gcc -o miniwebsvr.exe ${FILES} ${S_FILES} ${COMMONFLAGS} ${RELEASEFLAGS} ${LIBSWIN} ${CFLAGS}
+	upx --best -q miniwebsvr.exe
 
 clean:
 	rm --force miniwebsvr miniwebsvr.exe
