@@ -72,10 +72,10 @@ int listener(char *interface, unsigned short port)
 	
 	// Enable address reuse
 	on = 1;
-	setsockopt( listen_socket, SOL_SOCKET, SO_REUSEADDR, (void*)&on, sizeof(on) );
+	setsockopt( listen_socket, SOL_SOCKET, SO_REUSEADDR, (const char*)&on, sizeof(on) );
 	// Disable Nagle 
 	// Since we are implementing our own buffering Nagle just gets in the way.
-	setsockopt( listen_socket, IPPROTO_TCP, TCP_NODELAY, (void*)&on, sizeof(on) );
+	setsockopt( listen_socket, IPPROTO_TCP, TCP_NODELAY, (const char*)&on, sizeof(on) );
 
 	if (listen_socket == INVALID_SOCKET)
 	{
@@ -181,7 +181,7 @@ int listener(char *interface, unsigned short port)
 				return -1;
 			}
 			
-			sock = malloc(sizeof(struct server_struct));
+			sock = (struct server_struct*)malloc(sizeof(struct server_struct));
 			sock->sock=msgsock;
 			sock->sin_addr=from.sin_addr;
 			sock->sin_port=from.sin_port;

@@ -1,6 +1,21 @@
 <? include "lib.php"; startpage(); ?>
 <h2>Security Advisory</h2>
 This page lists the security issues that the author knows about, and their resolutions.<br>
+
+<br>
+<h3>Version 0.0.7:</h3>
+
+<b>Description:</b><br>
+Suffers from a directory traversal flaw, using a specially crafted url <code>"http://yoursite/..%00"</code>  one can list the parent folder<br>
+<b>Risk:</b><br>
+Critical<br>
+<b>Credits to:</b><br>
+shinnai x<br>
+<a href="http://www.shinnai.altervista.org/viewtopic.php?id=41&t_id=47">http://www.shinnai.altervista.org/viewtopic.php?id=41&t_id=47</a>
+<a href="http://www.milw0rm.com/exploits/3708">http://www.milw0rm.com/exploits/3708</a>
+<b>Resolution:</b><br>
+Fix in SVN soon to be released<br>
+
 <br>
 <h3>Version 0.0.6 and older:</h3>
 
