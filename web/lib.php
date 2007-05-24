@@ -1,12 +1,12 @@
 <?
 function startpage() {
-/*	$ldate = gmdate("D, d M Y H:i:s",getlastmod())." GMT";
+	$ldate = gmdate("D, d M Y H:i:s",getlastmod())." GMT";
 	$headers = apache_request_headers();
 	header("Last-Modified: $ldate");
 	if ($headers['If-Modified-Since'] == $ldate) {
 		header("HTTP/1.1 304 Not Modified");
 		exit();
-	}*/
+	}
 ?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
 <html>
 <head>

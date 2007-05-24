@@ -6,13 +6,13 @@ This page lists the security issues that the author knows about, and their resol
 <h3>Version 0.0.7:</h3>
 
 <b>Description:</b><br>
-Suffers from a directory traversal flaw, using a specially crafted url <code>"http://yoursite/..%00"</code>  one can list the parent folder<br>
+Suffers from a directory traversal flaw, using a specially crafted url one can list the parent folders<br>
 <b>Risk:</b><br>
 Critical<br>
 <b>Credits to:</b><br>
 shinnai x<br>
-<a href="http://www.shinnai.altervista.org/viewtopic.php?id=41&t_id=47">http://www.shinnai.altervista.org/viewtopic.php?id=41&t_id=47</a>
-<a href="http://www.milw0rm.com/exploits/3708">http://www.milw0rm.com/exploits/3708</a>
+<a href="http://www.shinnai.altervista.org/viewtopic.php?id=41&t_id=47">http://www.shinnai.altervista.org/viewtopic.php?id=41&t_id=47</a><br>
+<a href="http://www.milw0rm.com/exploits/3708">http://www.milw0rm.com/exploits/3708</a><br>
 <b>Resolution:</b><br>
 Fix in SVN soon to be released<br>
 
