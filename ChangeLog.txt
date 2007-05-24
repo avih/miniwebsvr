@@ -1,3 +1,13 @@
+Thu May 24 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- Fixed another directory traversal vulnerability.
+	- Fix for Bug Request ID 1723935.
+	  http://sourceforge.net/tracker/index.php?func=detail&aid=1723935&group_id=187000&atid=919543
+	- Added command-line options for Default page support --defualt
+	- Added option to set log off --nolog 
+	- Added option to disable directory listings
+	- Added option to hide servername in directory listing and HTTP
+	  headers.
+
 Sat Mar 10 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Released version 0.0.7
 

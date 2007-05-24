@@ -29,7 +29,7 @@ void Message(const char *format, ...);
 #if (defined _DEBUG) || (defined __BORLANDC__)
 void DebugMSG(const char *format, ...);
 #else // _DEBUG
-#define DebugMSG(f,...)
+#define DebugMSG(...)
 #endif // _DEBUG
 
 void BIGMessage(const char *format, ...);

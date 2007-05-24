@@ -21,7 +21,7 @@
 
 /************************* Compile time Limits/Options ***********************/
 
-#define VERSION "MiniWebsvr/0.0.7"
+#define VERSION "MiniWebsvr/0.0.8svn"
 #define COPYRIGHT "Copyright (C) 2007  Nickolas Antonie Grigoriadis"
 #define EMAIL "grigi_ at users.sourceforge.net"
 
@@ -40,20 +40,28 @@
 
 #define DEFAULT_THREAD_POOL_SIZE 8
 #define DEFAULT_PORT 8080
+#define DEFAULT_DIRLIST 1
+#define DEFUALT_DOLOG 1
+#define DEFAULT_LISTSERVER 1 
 #define DEFAULT_INTERFACE NULL
 #define DEFAULT_LOGFILE "miniwebsvr.log"
 #define DEFAULT_ROOT "."
+#define DEFAULT_DEFAULTFILE "index.html"
 
 /******************** Variables containing Run-time Values *******************/
 
 #ifdef THREAD_POOL
-extern int THREAD_POOL_SIZE;
+extern unsigned int THREAD_POOL_SIZE;
 #endif
 extern int PORT;
+extern int DOLOG;
+extern int DIRLIST;
+extern int LISTSERVER;
 extern char* INTERFACE;
 extern char* LOGFILE;
 extern char* ROOT;
-extern char MiniWebSvrlogo_data[2316];
+extern char* DEFUALTFILE;
+//extern char MiniWebSvrlogo_data[2316];
 
 void getconfig(int argc, char **argv);
 

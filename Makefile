@@ -23,7 +23,7 @@ VERSION='0.0.7'
 # Common source files
 FILES=src/config.c src/gethead.c src/header.c src/listener.c src/logging.c src/options.c src/server.c src/strl.c src/url.c 
 # Common header files
-HEADERS=src/config.h src/gethead.h src/header.h src/libminiwebsvr.h src/listener.h src/logging.h src/options.h src/os_compat.h src/server.h src/strl.h src/url.h
+HFILES=src/config.h src/gethead.h src/header.h src/listener.h src/logging.h src/options.h src/os_compat.h src/server.h src/strl.h src/url.h
 # Standalone executable source files
 S_FILES=src/main.c
 
@@ -32,9 +32,9 @@ LIBS=-lpthread -lrt
 # Win32 Libraries
 LIBSWIN=-lws2_32
 
-COMMONFLAGS=-Wall
+COMMONFLAGS=-Wall -Wextra
 RELEASEFLAGS=-Os -s
-DEBUGFLAGS=-O0 -g -D_DEBUG
+DEBUGFLAGS=-O0 -g -D_DEBUG -pedantic -std=gnu99
 
 
 help:
@@ -55,7 +55,7 @@ help:
 	@echo 'CFLAGS="-march=i586 -mtune=i686 -fomit-frame-pointer" make release'
 
 
-debug: $(FILES) $(HEADERS) $(S_FILES)
+debug: $(FILES) $(HFILES) $(S_FILES)
 	gcc -o miniwebsvr ${FILES} ${S_FILES} ${COMMONFLAGS} ${DEBUGFLAGS} ${LIBS} ${CFLAGS}
 
 release: $(FILES) $(HFILES) $(S_FILES)

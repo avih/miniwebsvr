@@ -24,21 +24,31 @@
 
 #include "config.h"
 
-int THREAD_POOL_SIZE;
+#ifdef THREAD_POOL
+unsigned int THREAD_POOL_SIZE;
+#endif
 int PORT;
+int DOLOG;
+int DIRLIST;
+int LISTSERVER;
 char* INTERFACE;
 char* LOGFILE;
 char* ROOT;
+char* DEFAULTFILE;
 
 void getconfig(int argc, char **argv) 
 {
 	int i;
-	enum { next_param, next_port, next_logfile, next_root, next_interface, next_threads } next = next_param;
+	enum { next_param, next_port, next_logfile, next_root, next_interface, next_threads, next_nolog, next_nodirlist, next_defaultfile, next_nonameserver } next = next_param;
 
 	PORT=DEFAULT_PORT;
 	INTERFACE=DEFAULT_INTERFACE;
 	LOGFILE=DEFAULT_LOGFILE;
 	ROOT=DEFAULT_ROOT;
+	DOLOG=DEFUALT_DOLOG;
+	DIRLIST=DEFAULT_DIRLIST;
+	DEFAULTFILE=DEFAULT_DEFAULTFILE;
+	LISTSERVER=DEFAULT_LISTSERVER;
 #ifdef THREAD_POOL
         THREAD_POOL_SIZE=DEFAULT_THREAD_POOL_SIZE;
 #endif
@@ -52,9 +62,15 @@ void getconfig(int argc, char **argv)
 				printf("Usage: %s [options]\nOptions:\n", argv[0]);
 				printf("  --help                   Display this information\n");
 				printf("  --port <port>            Listen on port <port> (default %d)\n",DEFAULT_PORT);
-				printf("  --log <file>             Save the log file as <file> (default: %s)\n",DEFAULT_LOGFILE);
-				printf("  --root <path>            Specify the document root directory (default: %s)\n",DEFAULT_ROOT);
 				printf("  --interface <ip>         Specify the interface the server listens on (default: ALL)\n");
+
+				printf("  --log <file>             Save the log file as <file> (default: %s)\n",DEFAULT_LOGFILE);
+				printf("  --nolog                  Disables logging, overrides any '--log' setting\n");
+
+				printf("  --root <path>            Specify the document root directory (default: %s)\n",DEFAULT_ROOT);
+				printf("  --default <filename>     Specify the default document filename in a directory (default: %s)\n",DEFAULT_DEFAULTFILE);
+				printf("  --nodirlist              Do not do any directory listings, just return a '404 File not found'\n");
+				printf("  --noname                 Do not specify servername in directory listings or HTTP headers\n");
 #ifdef THREAD_POOL
                                 printf("  --threads <thread_nos>   Specify number of threads in thread pool (default %d)\n",DEFAULT_THREAD_POOL_SIZE);
 #endif
@@ -68,6 +84,14 @@ void getconfig(int argc, char **argv)
 				next = next_root;
 			else if (0 == strcmp(argv[i], "--interface"))
 				next = next_interface;
+			else if (0 == strcmp(argv[i], "--nolog"))
+				next = next_nolog;
+			else if (0 == strcmp(argv[i], "--nodirlist"))
+				next = next_nodirlist;
+			else if (0 == strcmp(argv[i], "--default"))
+				next = next_defaultfile;
+			else if (0 == strcmp(argv[i], "--default"))
+				next = next_nonameserver;
 #ifdef THREAD_POOL
                         else if (0 == strcmp(argv[i], "--threads"))
                                 next = next_threads;
@@ -82,6 +106,14 @@ void getconfig(int argc, char **argv)
 			ROOT = argv[i];
 		else if (next == next_interface)
 			INTERFACE = argv[i];
+		else if (next == next_nolog)
+			DOLOG = 0;
+		else if (next == next_nodirlist)
+			DIRLIST = 0;
+		else if (next == next_defaultfile)
+			DEFAULTFILE = argv[i];
+		else if (next == next_nonameserver)
+			LISTSERVER = 0;
 #ifdef THREAD_POOL
 		else if (next == next_threads)
 			THREAD_POOL_SIZE = atoi(argv[i]);
