@@ -138,7 +138,7 @@ int listener(char *interface, unsigned short port)
 		
 	for(i = 0; i < THREAD_POOL_SIZE; i++)
 	{
-		pthread_create(&thread_pool[i], NULL, (void*)&worker, (void*)i);
+		pthread_create(&thread_pool[i], NULL, (void *(*)(void*))&worker, (void*)i);
 		pthread_detach(thread_pool[i]);
 	}
 	
@@ -289,7 +289,8 @@ void* worker(int n)
 
 int push_request(struct server_struct* request)
 {
-	int i, added = 0;
+	unsigned int i;
+	int added = 0;
 
 	pthread_mutex_lock(&pool_mutex);
 	for(i = 0; (i < THREAD_POOL_SIZE)&&(!added); i++)
@@ -308,7 +309,7 @@ int push_request(struct server_struct* request)
 
 struct server_struct* pop_request()
 {
-	int i;
+	unsigned int i;
 	struct server_struct *request = NULL;
 	for(i = 0; (i < THREAD_POOL_SIZE)&&(request == NULL); i++)
 	{
