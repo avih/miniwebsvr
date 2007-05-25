@@ -41,7 +41,7 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 	char FBuffer[FILENAME_SIZE];
 	char *cptr;
 	struct stat statbuf;
-	int isdir;
+	int isdir,skip;
 
 	if (dirlen>FILENAME_SIZE) dirlen=FILENAME_SIZE;
 
@@ -79,6 +79,7 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 		if (strcmp(ent->d_name,".")!=0)
 			if ((strcmp(dirname,"./")!=0) || (ent->d_name[0]!='.'))
 			{
+				skip=0;
 				isdir=0;
 				strlcpy(FBuffer,dirname,FILENAME_SIZE);
 				if (strcmp(ent->d_name,"..")!=0)
@@ -97,6 +98,10 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 						}
 					}
 				}
+				else if (strlen(dirname)<4)
+				{
+					skip=1;
+				}
 				else
 				{
 					retval=strnlen(dirname,FILENAME_SIZE);
@@ -109,8 +114,10 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 					isdir=1;
 				}
 
-				bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"<A href=\"%s\">%s%s</A>\n",FBuffer+2,ent->d_name,(isdir?"/":""));
-				send(inst->sock,Buffer,bufpos,SEND_FLAG);
+				if (!skip) {
+					bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"<A href=\"%s\">%s%s</A>\n",FBuffer+2,ent->d_name,(isdir?"/":""));
+					send(inst->sock,Buffer,bufpos,SEND_FLAG);
+				}
 			}
 
 		closedir(dir);
