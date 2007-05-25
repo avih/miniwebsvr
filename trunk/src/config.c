@@ -29,7 +29,7 @@ unsigned int THREAD_POOL_SIZE;
 #endif
 int PORT;
 int DOLOG;
-int DIRLIST;
+int NODIRLIST;
 int LISTSERVER;
 char* INTERFACE;
 char* LOGFILE;
@@ -39,14 +39,14 @@ char* DEFAULTFILE;
 void getconfig(int argc, char **argv) 
 {
 	int i;
-	enum { next_param, next_port, next_logfile, next_root, next_interface, next_threads, next_nolog, next_nodirlist, next_defaultfile, next_nonameserver } next = next_param;
+	enum { next_param, next_port, next_logfile, next_root, next_interface, next_threads, next_defaultfile } next = next_param;
 
 	PORT=DEFAULT_PORT;
 	INTERFACE=DEFAULT_INTERFACE;
 	LOGFILE=DEFAULT_LOGFILE;
 	ROOT=DEFAULT_ROOT;
 	DOLOG=DEFUALT_DOLOG;
-	DIRLIST=DEFAULT_DIRLIST;
+	NODIRLIST=DEFAULT_NODIRLIST;
 	DEFAULTFILE=DEFAULT_DEFAULTFILE;
 	LISTSERVER=DEFAULT_LISTSERVER;
 #ifdef THREAD_POOL
@@ -85,13 +85,13 @@ void getconfig(int argc, char **argv)
 			else if (0 == strcmp(argv[i], "--interface"))
 				next = next_interface;
 			else if (0 == strcmp(argv[i], "--nolog"))
-				next = next_nolog;
+				DOLOG = 0;
 			else if (0 == strcmp(argv[i], "--nodirlist"))
-				next = next_nodirlist;
+				NODIRLIST = 1;
 			else if (0 == strcmp(argv[i], "--default"))
 				next = next_defaultfile;
-			else if (0 == strcmp(argv[i], "--default"))
-				next = next_nonameserver;
+			else if (0 == strcmp(argv[i], "--noname"))
+				LISTSERVER = 0;
 #ifdef THREAD_POOL
                         else if (0 == strcmp(argv[i], "--threads"))
                                 next = next_threads;
@@ -106,14 +106,8 @@ void getconfig(int argc, char **argv)
 			ROOT = argv[i];
 		else if (next == next_interface)
 			INTERFACE = argv[i];
-		else if (next == next_nolog)
-			DOLOG = 0;
-		else if (next == next_nodirlist)
-			DIRLIST = 0;
 		else if (next == next_defaultfile)
 			DEFAULTFILE = argv[i];
-		else if (next == next_nonameserver)
-			LISTSERVER = 0;
 #ifdef THREAD_POOL
 		else if (next == next_threads)
 			THREAD_POOL_SIZE = atoi(argv[i]);

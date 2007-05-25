@@ -51,7 +51,7 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 		dirname[retval] = '/';
 		dirname[retval+1] = 0;
 	}
-	if ((dir = opendir(dirname)) == NULL)
+	if ((NODIRLIST) || ((dir = opendir(dirname)) == NULL))
 	{
 		retval=strnlen(dirname,dirlen);
 		if (dirname[retval-1] == '/') 
@@ -115,7 +115,11 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 
 		closedir(dir);
 
-		bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"</PRE><HR><ADDRESS>%s Server Port %d</ADDRESS></BODY></HTML>",VERSION,PORT);
+		if (LISTSERVER)
+			bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"</PRE><HR><ADDRESS>%s Server Port %d</ADDRESS></BODY></HTML>",VERSION,PORT);
+		else
+			bufpos=snprintf(Buffer,SEND_BUFFER_SIZE,"</PRE><HR></BODY></HTML>");
+
 		send(inst->sock,Buffer,bufpos,SEND_FLAG);
 	}
 }
@@ -156,15 +160,17 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 				GHBuffer[retval] = 0;
 				DebugMSG("Adding / to dir");
 			}
-			strlcat(GHBuffer,"index.html",SERVER_BUFFER_SIZE);
+			strlcat(GHBuffer,DEFAULTFILE,SERVER_BUFFER_SIZE);
 			DebugMSG("Trying %s",GHBuffer);
 			in = fopen(GHBuffer, "rb");
 			if (in != NULL)
 			{
-				strlcat(inst->logbuffer,"[index.html]",SERVER_BUFFER_SIZE);
-				strlcat(filename,"index.html",FILENAME_SIZE);
+				strlcat(inst->logbuffer,"[",SERVER_BUFFER_SIZE);
+				strlcat(inst->logbuffer,DEFAULTFILE,SERVER_BUFFER_SIZE);
+				strlcat(inst->logbuffer,"]",SERVER_BUFFER_SIZE);
+				strlcat(filename,DEFAULTFILE,FILENAME_SIZE);
 	                        statret=stat(filename, &statbuf);
-				DebugMSG("Found index.html");
+				DebugMSG("Found %s",DEFAULTFILE);
 			}
 		} 
 		else

@@ -1,6 +1,7 @@
 Fri May 25 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Fixed default file bug 1723932.
 	  http://sourceforge.net/tracker/index.php?func=detail&aid=1723932&group_id=187000&atid=919543
+	- Made command-line options functional (nolog,default,nodirlist,noname)
 
 Thu May 24 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Fixed another directory traversal vulnerability.
