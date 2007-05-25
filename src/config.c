@@ -70,7 +70,7 @@ void getconfig(int argc, char **argv)
 				printf("  --root <path>            Specify the document root directory (default: %s)\n",DEFAULT_ROOT);
 				printf("  --default <filename>     Specify the default document filename in a directory (default: %s)\n",DEFAULT_DEFAULTFILE);
 				printf("  --nodirlist              Do not do any directory listings, just return a '404 File not found'\n");
-				printf("  --noname                 Do not specify servername in directory listings or HTTP headers\n");
+				printf("  --stealth                Do not specify servername in directory listings or HTTP headers\n");
 #ifdef THREAD_POOL
                                 printf("  --threads <thread_nos>   Specify number of threads in thread pool (default %d)\n",DEFAULT_THREAD_POOL_SIZE);
 #endif
@@ -90,7 +90,7 @@ void getconfig(int argc, char **argv)
 				NODIRLIST = 1;
 			else if (0 == strcmp(argv[i], "--default"))
 				next = next_defaultfile;
-			else if (0 == strcmp(argv[i], "--noname"))
+			else if (0 == strcmp(argv[i], "--stealth"))
 				LISTSERVER = 0;
 #ifdef THREAD_POOL
                         else if (0 == strcmp(argv[i], "--threads"))
