@@ -10,10 +10,15 @@ Usage: miniwebsvr.exe [options]
 Options:
   --help                   Display this information
   --port <port>            Listen on port <port> (default 8080)
-  --log <file>             Save the log file as <file> (default: miniwebsvr.log)
-  --root <path>            Specify the document root directory (default: .)
   --interface <ip>         Specify the interface the server listens on (default: ALL)
-  --threads <thread_nos>   Specify number of threads in thread pool (default 8)
+  --log <file>             Save the log file as <file> (default: miniwebsvr.log)
+  --nolog                  Disables logging, overrides any '--log' setting
+  --root <path>            Specify the document root directory (default: .)
+  --default <filename>     Specify the default document filename in a directory (default: index.html)
+  --nodirlist              Do not do any directory listings, just return a '404 File not found'
+  --stealth                Do not specify servername in directory listings or HTTP headers
+UNIX only:
+  --threads <thread_nos>   Specify number of threads in thread pool (default 8) 
 
 
 
@@ -31,7 +36,8 @@ The web-server supports the following:
 - Conditional GET:
   - If-Modified-Since:
 - Range-bound downloads (Download resuming)
-- Thread pooling (PThreads only)
+- Thread pooling (UNIX PThreads only)
+
 
 
 Was originally designed as a small stand-alone web-server, but I think I'll
@@ -45,3 +51,35 @@ MiniWebsvr is mostly developed by Nickolas Antonie Grigoriadis <grigi_ at users.
 - Daniel John Walker <djwalker at users.sourceforge.net>
 - Johan Strydom <fyrewolfe at users.sourceforge.net>
 - Sergey Sytchewoj <brumal at users.sourceforge.net>
+
+
+--- Release Notes ---
+
+Version 0.0.8: ()
+New Features:
+- Extra command-line options to:
+  - Set defualt page name
+  - Disable directory listing
+  - Stealth mode
+  - Disable logging
+Bug Fixes:
+- Fixes sub-root vulnerability introduced in 0.0.7
+- Fixes default page not always working
+- Does not show '../' on root directory listing anymore
+
+Version 0.0.7: (2007-03-10)
+This version brings with it mostly security fixes.
+
+Version 0.0.6: (2007-02-09)
+For more platforms:
+- Support for UNIX sockets and pthreads support.
+- Support for download resuming.
+- Several bugfixes.
+
+Version 0.05: (2007-01-18)
+This version supports:
+- OPTIONS
+- HEAD
+- GET
+  - Conditional GET (If-Modified-Since)
+Also a considerable amount of bug fixes and possible buffer-overflow fixes has been made.
