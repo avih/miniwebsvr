@@ -159,8 +159,10 @@ int printHeader(struct server_struct *inst, int headeronly, char* Buffer, int bu
 			bufpos+=tmp;
 		}
 	}
-	
-	bufpos+=snprintf(Buffer+bufpos,bufsize-bufpos,"Server: %s\r\n",VERSION);
+
+	if (LISTSERVER)
+		bufpos+=snprintf(Buffer+bufpos,bufsize-bufpos,"Server: %s\r\n",VERSION);
+
 	loctime = gmtime (&curtime);
 	bufpos+=strftime(Buffer+bufpos,bufsize-bufpos,"Date: %a, %d %b %Y %I:%M:%S GMT\r\n\r\n",loctime);
 	Buffer[bufsize-1]=0;

@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "config.h"
 #include "logging.h"
 
 // The log stream
@@ -29,6 +30,8 @@ char outbuf[BUFSIZ];
 
 void Log(char* txt) 
 {
+	if (!DOLOG) return;
+	
 	if (LogStream==NULL) 
 		return;
 
@@ -38,6 +41,8 @@ void Log(char* txt)
 
 void StartLogging(char* name) 
 {
+	if (!DOLOG) return;
+
 	if ((LogStream = fopen(name, "at")) == NULL) 
 		LogStream=stdout;
 
@@ -46,6 +51,8 @@ void StartLogging(char* name)
 
 void StopLogging() 
 {
+	if (!DOLOG) return;
+	
 	fflush(LogStream);
 	if (LogStream!=stdout)
 		fclose(LogStream);

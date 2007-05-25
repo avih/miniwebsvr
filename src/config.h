@@ -40,7 +40,7 @@
 
 #define DEFAULT_THREAD_POOL_SIZE 8
 #define DEFAULT_PORT 8080
-#define DEFAULT_DIRLIST 1
+#define DEFAULT_NODIRLIST 0
 #define DEFUALT_DOLOG 1
 #define DEFAULT_LISTSERVER 1 
 #define DEFAULT_INTERFACE NULL
@@ -55,12 +55,12 @@ extern unsigned int THREAD_POOL_SIZE;
 #endif
 extern int PORT;
 extern int DOLOG;
-extern int DIRLIST;
+extern int NODIRLIST;
 extern int LISTSERVER;
 extern char* INTERFACE;
 extern char* LOGFILE;
 extern char* ROOT;
-extern char* DEFUALTFILE;
+extern char* DEFAULTFILE;
 //extern char MiniWebSvrlogo_data[2316];
 
 void getconfig(int argc, char **argv);
