@@ -47,6 +47,7 @@ help:
 	@echo '  release       - Builds a release build of MiniWebsvr'
 	@echo '  debug         - Builds a debug build of MiniWebsvr'
 	@echo '  xwin32        - Builds a release build of MiniWebsvr for Windows using mingw32-gcc cross compiler'
+	@echo '  xwin32d       - Builds a debug build of MiniWebsvr for Windows using mingw32-gcc cross compiler'
 	@echo
 	@echo 'Maintenance:'
 	@echo '  clean         - Cleans up the files created by make'
@@ -65,5 +66,8 @@ xwin32: $(FILES) $(HFILES) $(S_FILES)
 	mingw32-gcc -o miniwebsvr.exe ${FILES} ${S_FILES} ${COMMONFLAGS} ${RELEASEFLAGS} ${LIBSWIN} ${CFLAGS}
 	upx --best -q miniwebsvr.exe
 
+xwin32d: $(FILES) $(HFILES) $(S_FILES)
+	mingw32-gcc -o miniwebsvr.exe ${FILES} ${S_FILES} ${COMMONFLAGS} ${DEBUGFLAGS} ${LIBSWIN} ${CFLAGS}
+
 clean:
-	rm --force miniwebsvr miniwebsvr.exe
+	rm --force miniwebsvr miniwebsvr.exe miniwebsvr.log

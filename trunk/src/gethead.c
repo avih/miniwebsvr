@@ -133,10 +133,13 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 	struct tm *loctime;
         int statret;
 
+	in=NULL;
+
 	if ((statret=stat(filename, &statbuf)) == 0)
 	{
 		// Supports filestats
-                if (!((statbuf.st_mode & (S_IFREG | S_IFDIR)) && (statbuf.st_ctime != -1))) {
+                if (!((statbuf.st_mode & (S_IFREG | S_IFDIR)) && (statbuf.st_ctime != -1)))
+		{
 			// Not a regular file OR a directory OR has no creation time!!!!
 			strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);
 			setHeader_respval(inst,403);  // Forbidden
@@ -144,23 +147,28 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 			return;
 		}
 
-
-	if ((in = fopen(filename, "rb")) == NULL)
-	{
-		retval=strlcpy(GHBuffer,filename,SERVER_BUFFER_SIZE);
-		if (GHBuffer[retval-1] == '/') {
+		if (statbuf.st_mode & S_IFDIR)
+		{
+			retval=strlcpy(GHBuffer,filename,SERVER_BUFFER_SIZE);
+			if (GHBuffer[retval-1] != '/') 
+			{
+				GHBuffer[retval++] = '/';
+				GHBuffer[retval] = 0;
+				DebugMSG("Adding / to dir");
+			}
 			strlcat(GHBuffer,"index.html",SERVER_BUFFER_SIZE);
+			DebugMSG("Trying %s",GHBuffer);
 			in = fopen(GHBuffer, "rb");
 			if (in != NULL)
 			{
 				strlcat(inst->logbuffer,"[index.html]",SERVER_BUFFER_SIZE);
 				strlcat(filename,"index.html",FILENAME_SIZE);
-                                statret=stat(filename, &statbuf);
+	                        statret=stat(filename, &statbuf);
+				DebugMSG("Found index.html");
 			}
-		}
-	}
-        } else {
-          in=NULL;
+		} 
+		else
+			in = fopen(filename, "rb");
         }
 
         strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);
@@ -168,10 +176,6 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 	{
 		server_dirlist(inst,headeronly,filename,filebufsize);
 	}
-        else if(statbuf.st_mode & S_IFDIR)
-        {
- 	  	server_dirlist(inst,headeronly,filename,filebufsize);
-        }
 	else 
 	{
 		// Start Header parsing
