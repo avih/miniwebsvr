@@ -1,5 +1,5 @@
 # Makefile for MiniWebsvr
-# 
+#
 # MiniWebsvr - A small webserver
 # Copyright (C) 2007  Nickolas Antonie Grigoriadis and Sergey Sytchewoj
 # E-Mail: grigi_ at users.sourceforge.net and brumal at users.sourceforge.net
@@ -17,11 +17,11 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-                                                     
+
 VERSION='0.0.7'
 
 # Common source files
-FILES=src/config.c src/gethead.c src/header.c src/listener.c src/logging.c src/options.c src/server.c src/strl.c src/url.c 
+FILES=src/config.c src/gethead.c src/header.c src/listener.c src/logging.c src/options.c src/server.c src/strl.c src/url.c
 # Common header files
 HFILES=src/config.h src/gethead.h src/header.h src/listener.h src/logging.h src/options.h src/os_compat.h src/server.h src/strl.h src/url.h
 # Standalone executable source files
@@ -39,10 +39,10 @@ DEBUGFLAGS=-O0 -g -D_DEBUG -pedantic -std=gnu99
 
 help:
 	@echo 'MiniWebsvr ${VERSION} make:'
-	@echo 
+	@echo
 	@echo 'Flags that affect compilation:'
 	@echo '  CFLAGS        - Compiler optimization flags'
-	@echo 
+	@echo
 	@echo 'Targets:'
 	@echo '  release       - Builds a release build of MiniWebsvr'
 	@echo '  debug         - Builds a debug build of MiniWebsvr'

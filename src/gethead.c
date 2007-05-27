@@ -54,7 +54,7 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 	if ((NODIRLIST) || ((dir = opendir(dirname)) == NULL))
 	{
 		retval=strnlen(dirname,dirlen);
-		if (dirname[retval-1] == '/') 
+		if (dirname[retval-1] == '/')
 			dirname[retval-1] = 0;
 
 		setHeader_respval(inst,404);  // Not Found
@@ -105,11 +105,11 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 				else
 				{
 					retval=strnlen(dirname,FILENAME_SIZE);
-					if (FBuffer[retval-1] == '/') 
+					if (FBuffer[retval-1] == '/')
 						FBuffer[retval-1] = 0;
-					if ((cptr=strrchr(FBuffer,'/')) != NULL) 
+					if ((cptr=strrchr(FBuffer,'/')) != NULL)
 						cptr[1] = 0;
-					else 
+					else
 						strlcpy(FBuffer,"/",FILENAME_SIZE);
 					isdir=1;
 				}
@@ -138,19 +138,19 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 	char TMPBuffer[SERVER_BUFFER_SIZE];
 	char TimeBuffer[SERVER_BUFFER_SIZE];
 	int retval,ret,blen,range;
-        long int contentlength,rangefrom,rangeto;
+	long int contentlength,rangefrom,rangeto;
 	FILE *in;
 	struct stat statbuf;
 	struct tm *loctime;
-        int statret;
+	int statret;
 
 	in=NULL;
-        DebugMSG("1");
+	DebugMSG("1");
 
 	if ((statret=stat(filename, &statbuf)) == 0)
 	{
 		// Supports filestats
-                if (!((statbuf.st_mode & (S_IFREG | S_IFDIR)) && (statbuf.st_ctime != -1)))
+		if (!((statbuf.st_mode & (S_IFREG | S_IFDIR)) && (statbuf.st_ctime != -1)))
 		{
 			// Not a regular file OR a directory OR has no creation time!!!!
 			strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);
@@ -158,7 +158,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 			printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
 			return;
 		}
-         }
+	 }
 
 	 if (statret || (statbuf.st_mode & S_IFDIR))
 	 {
@@ -178,15 +178,15 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 			strlcat(inst->logbuffer,DEFAULTFILE,SERVER_BUFFER_SIZE);
 			strlcat(inst->logbuffer,"]",SERVER_BUFFER_SIZE);
 			strlcat(filename,DEFAULTFILE,FILENAME_SIZE);
-	                statret=stat(filename, &statbuf);
+			statret=stat(filename, &statbuf);
 			DebugMSG("Found %s",DEFAULTFILE);
 		}
 	 }
 	 else if (!statret)
 		in = fopen(filename, "rb");
 
-        strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);
-        if (in == NULL)
+	strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);
+	if (in == NULL)
 	{
 		server_dirlist(inst,headeronly,filename,filebufsize);
 	}
@@ -195,40 +195,40 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 		// Start Header parsing
 		// Reset some internal variables
 		TimeBuffer[0]=0;
-                contentlength=0;
-                rangefrom=0;
+		contentlength=0;
+		rangefrom=0;
 		range=0;
 		GHBuffer[0]=0;
 
 		// Read until blank line
 		while ((retval = server_readln(inst,TMPBuffer,SERVER_BUFFER_SIZE)) != 0) {
-                        DebugMSG("%s",TMPBuffer);
+			DebugMSG("%s",TMPBuffer);
 			if (0 == strncmp(TMPBuffer, "If-Modified-Since: ", 19))
 			{
 				// Comare date string to existing
 				strlcpy(TimeBuffer,TMPBuffer+19,SERVER_BUFFER_SIZE-19);
 			}
 
-                        if (0 == strncmp(TMPBuffer, "Range: ", 7))
-                        {
-                                char *range2;
-                                char *range1 = strstr(TMPBuffer,"bytes=");
-                                if (range1)
-                                {
-                                        rangeto=0;
-                                        sscanf(range1,"bytes=%ld-",&rangefrom);
-                                        range2 = strstr(range1,"-");
-                                        if (range2)
-                                                sscanf(range2,"-%ld",&rangeto);
-                                        DebugMSG("RANGE: %s (%ld - %ld)",range1,rangefrom,rangeto);
-                                        range+=1;
-                                }
-                        }
+			if (0 == strncmp(TMPBuffer, "Range: ", 7))
+			{
+				char *range2;
+				char *range1 = strstr(TMPBuffer,"bytes=");
+				if (range1)
+				{
+					rangeto=0;
+					sscanf(range1,"bytes=%ld-",&rangefrom);
+					range2 = strstr(range1,"-");
+					if (range2)
+						sscanf(range2,"-%ld",&rangeto);
+					DebugMSG("RANGE: %s (%ld - %ld)",range1,rangefrom,rangeto);
+					range+=1;
+				}
+			}
 
-                        if (0 == strncmp(TMPBuffer, "If-Range: ", 10))
-                        {
-                                range+=2;
-                        }
+			if (0 == strncmp(TMPBuffer, "If-Range: ", 10))
+			{
+				range+=2;
+			}
 		}
 
 		// Check that If-Range was done with Range
@@ -239,171 +239,171 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 		setHeader_filename(inst,filename);
 		setHeader_respval(inst,200);  // OK
 		blen=0;
-                if (!statret) {
-		        loctime = gmtime (&statbuf.st_mtime);
-                        blen=strftime(GHBuffer,SERVER_BUFFER_SIZE,"Last-Modified: %a, %d %b %Y %I:%M:%S GMT\r\n",loctime);
-		        if (strncmp(TimeBuffer,GHBuffer+15,strlen(GHBuffer+15)-2) == 0 )
-		        {
-			        // If-Modified-Since matches, therefore no update
-			        setHeader_respval(inst,304);  // Not Modified
-			        headeronly=1;
-                        }
-                }
+		if (!statret) {
+			loctime = gmtime (&statbuf.st_mtime);
+			blen=strftime(GHBuffer,SERVER_BUFFER_SIZE,"Last-Modified: %a, %d %b %Y %I:%M:%S GMT\r\n",loctime);
+			if (strncmp(TimeBuffer,GHBuffer+15,strlen(GHBuffer+15)-2) == 0 )
+			{
+				// If-Modified-Since matches, therefore no update
+				setHeader_respval(inst,304);  // Not Modified
+				headeronly=1;
+			}
+		}
 
 		if (!fseek(in,0,SEEK_END))
 		{
 			// Supports seek
-                        contentlength=ftell(in);
+			contentlength=ftell(in);
 		}
 
-                // Is a Partial request? Force a full DL, unless below changes it
-                if (range)
-                {
-                        setHeader_respval(inst,200);  // OK
-                        headeronly=0;
-                }
+		// Is a Partial request? Force a full DL, unless below changes it
+		if (range)
+		{
+			setHeader_respval(inst,200);  // OK
+			headeronly=0;
+		}
 
-                // Partial download may only happen when "If-Modified-Since" did NOT FAIL and is seekable
-                if (range && contentlength && ((TimeBuffer[0] == 0) || (inst->respval == 304)))
-                {
-                        // OK, partial downloads MAY happen
+		// Partial download may only happen when "If-Modified-Since" did NOT FAIL and is seekable
+		if (range && contentlength && ((TimeBuffer[0] == 0) || (inst->respval == 304)))
+		{
+			// OK, partial downloads MAY happen
 
-                        if ((rangefrom >= contentlength) || (rangeto >= contentlength))
-                        {
+			if ((rangefrom >= contentlength) || (rangeto >= contentlength))
+			{
 				// Cannot satisfy "Range" request
-				if (range == 1) 
+				if (range == 1)
 				{
-                                        setHeader_respval(inst,416);  // Requested Range Not Satisfiable
-                                        range=-1;
-                                }
+					setHeader_respval(inst,416);  // Requested Range Not Satisfiable
+					range=-1;
+				}
 				else
 				{
 					range=0;  // Act as if no range request;
 				}
 			}
-                        else
-                        {
-                        	// Range request IS valid
-                                setHeader_respval(inst,206);  // Partial Content
-                        }
-                }
-                else if ((range == 1) && (contentlength || (TimeBuffer[0] != 0)))
-                {
-                        // "Range" with failed conditional or unseekable returns 416
-                        setHeader_respval(inst,416);  // Requested Range Not Satisfiable
-                        headeronly=0;
-                        range=-1;
-                }
+			else
+			{
+				// Range request IS valid
+				setHeader_respval(inst,206);  // Partial Content
+			}
+		}
+		else if ((range == 1) && (contentlength || (TimeBuffer[0] != 0)))
+		{
+			// "Range" with failed conditional or unseekable returns 416
+			setHeader_respval(inst,416);  // Requested Range Not Satisfiable
+			headeronly=0;
+			range=-1;
+		}
 
-                if (contentlength > 0)
-                {
+		if (contentlength > 0)
+		{
 			long int rangeto2 = rangeto;
 			if (!rangeto2)
 				rangeto2 = contentlength-1;
 			blen+=snprintf(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Content-Range: bytes %ld-%ld/%ld\r\n",rangefrom,rangeto2,contentlength);
 		}
 
-                if (range > 0)
-                {
-                        fseek(in,rangefrom,SEEK_SET);
-                        if (rangeto)
-                                contentlength = rangeto - rangefrom;
-                        else
-                                contentlength-=rangefrom;
-                }
+		if (range > 0)
+		{
+			fseek(in,rangefrom,SEEK_SET);
+			if (rangeto)
+				contentlength = rangeto - rangefrom;
+			else
+				contentlength-=rangefrom;
+		}
 
-                if (contentlength > 0)
-                {
+		if (contentlength > 0)
+		{
 			blen+=snprintf(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Content-Length: %ld\r\n",contentlength);
 			fseek(in,rangefrom,SEEK_SET);
-                }
+		}
 
-                // Test for no late error
-                if (range != -1)
-                {
-              		GHBuffer[SERVER_BUFFER_SIZE-1] = 0; // strnprintf does not null-delimit when full
-                        setHeader_generic(inst,GHBuffer);
+		// Test for no late error
+		if (range != -1)
+		{
+			GHBuffer[SERVER_BUFFER_SIZE-1] = 0; // strnprintf does not null-delimit when full
+			setHeader_generic(inst,GHBuffer);
 
-		        blen=printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE);
-                }
-                else
-                {
-                        // Late error
-                        printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE);
-                        return;
-                }
+			blen=printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE);
+		}
+		else
+		{
+			// Late error
+			printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE);
+			return;
+		}
 
-                if (headeronly == 1)
-                {
+		if (headeronly == 1)
+		{
 			send(inst->sock,Buffer,blen,SEND_FLAG);
 			fclose(in);
 			return;
 		}
 
 
-                if (contentlength > 0)
-                {
-                        // I know exactly how much I need to read
-                        contentlength += blen; // Add existing buffer, and then only keep track of data sent over socket
-                        DebugMSG("c+b: %d",contentlength);
-                        retval=fread(Buffer+blen, 1,SEND_BUFFER_SIZE-blen, in);
-                        retval+=blen;
-                        do
-        		{
-        			ret=0;
-        			blen=0;
-                                contentlength -= retval;
+		if (contentlength > 0)
+		{
+			// I know exactly how much I need to read
+			contentlength += blen; // Add existing buffer, and then only keep track of data sent over socket
+			DebugMSG("c+b: %d",contentlength);
+			retval=fread(Buffer+blen, 1,SEND_BUFFER_SIZE-blen, in);
+			retval+=blen;
+			do
+			{
+				ret=0;
+				blen=0;
+				contentlength -= retval;
 
-        			while ((ret < retval) && (retval > 0))
-        			{
-        				ret=send(inst->sock,Buffer+blen,retval,SEND_FLAG);
+				while ((ret < retval) && (retval > 0))
+				{
+					ret=send(inst->sock,Buffer+blen,retval,SEND_FLAG);
 
 //                                        DebugMSG("%d - %d",contentlength,ret);
-        				if (ret <= 0)
-        				{
-        					// Some transmission error
-        					fclose(in);
-                                                DebugMSG("Transmission ended prematurely");
-        					return;
-        				}
-        				blen+=ret;
-	        			retval-=ret;
-        				ret=0;
-		        	}
-        			blen=0;
-                                if (contentlength < SEND_BUFFER_SIZE)
-                                        blen =  SEND_BUFFER_SIZE - contentlength; // To ensure that I only read as much as is left.
-        		}
-        		while ((contentlength > 0) && ((retval=fread(Buffer, 1,SEND_BUFFER_SIZE-blen, in)) > 0));
-                }
-                else
-                {
-                        // I DONT know how much I need to read
-        		while ((retval=fread(Buffer+blen, 1,SEND_BUFFER_SIZE-blen, in)) > 0)
-        		{
-        			retval+=blen;
-        			ret=0;
-        			blen=0;
+					if (ret <= 0)
+					{
+						// Some transmission error
+						fclose(in);
+						DebugMSG("Transmission ended prematurely");
+						return;
+					}
+					blen+=ret;
+					retval-=ret;
+					ret=0;
+				}
+				blen=0;
+				if (contentlength < SEND_BUFFER_SIZE)
+					blen =  SEND_BUFFER_SIZE - contentlength; // To ensure that I only read as much as is left.
+			}
+			while ((contentlength > 0) && ((retval=fread(Buffer, 1,SEND_BUFFER_SIZE-blen, in)) > 0));
+		}
+		else
+		{
+			// I DONT know how much I need to read
+			while ((retval=fread(Buffer+blen, 1,SEND_BUFFER_SIZE-blen, in)) > 0)
+			{
+				retval+=blen;
+				ret=0;
+				blen=0;
 
-        			while ((ret < retval) && (retval > 0))
-        			{
-        				ret=send(inst->sock,Buffer+blen,retval,SEND_FLAG);
+				while ((ret < retval) && (retval > 0))
+				{
+					ret=send(inst->sock,Buffer+blen,retval,SEND_FLAG);
 
 //                                        DebugMSG("%d",ret);
-        				if (ret <= 0)
-        				{
-        					// Some transmission error
-        					fclose(in);
-                                                DebugMSG("Transmission ended prematurely");
-        					return;
-        				}
-        				blen+=ret;
-	        			retval-=ret;
-        				ret=0;
-		        	}
-        			blen=0;
-        		}
-                }
+					if (ret <= 0)
+					{
+						// Some transmission error
+						fclose(in);
+						DebugMSG("Transmission ended prematurely");
+						return;
+					}
+					blen+=ret;
+					retval-=ret;
+					ret=0;
+				}
+				blen=0;
+			}
+		}
 		fclose(in);
 	}
 }

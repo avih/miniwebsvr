@@ -28,38 +28,38 @@ FILE* LogStream=NULL;
 // For Log file buffering
 char outbuf[BUFSIZ];
 
-void Log(char* txt) 
+void Log(char* txt)
 {
 	if (!DOLOG) return;
-	
-	if (LogStream==NULL) 
+
+	if (LogStream==NULL)
 		return;
 
 	fprintf(LogStream,"%s\n",txt);
 	fflush(LogStream);
 }
 
-void StartLogging(char* name) 
+void StartLogging(char* name)
 {
 	if (!DOLOG) return;
 
-	if ((LogStream = fopen(name, "at")) == NULL) 
+	if ((LogStream = fopen(name, "at")) == NULL)
 		LogStream=stdout;
 
 	setbuf(LogStream, outbuf);  /// Optimization for speed, OS might not follow spec.
 }
 
-void StopLogging() 
+void StopLogging()
 {
 	if (!DOLOG) return;
-	
+
 	fflush(LogStream);
 	if (LogStream!=stdout)
 		fclose(LogStream);
 	LogStream=NULL;
 }
 
-void Message(const char *format, ...) 
+void Message(const char *format, ...)
 {
 	char buffer[MESSAGE_BUFFER];
 	va_list argptr;
@@ -73,7 +73,7 @@ void Message(const char *format, ...)
 }
 
 #ifdef _DEBUG
-void DebugMSG(const char *format, ...) 
+void DebugMSG(const char *format, ...)
 {
 	char buffer[MESSAGE_BUFFER];
 	va_list argptr;
@@ -88,7 +88,7 @@ void DebugMSG(const char *format, ...)
 }
 #endif // _DEBUG
 
-void BIGMessage(const char *format, ...) 
+void BIGMessage(const char *format, ...)
 {
 	char buffer[MESSAGE_BUFFER];
 	va_list argptr;
@@ -102,7 +102,7 @@ void BIGMessage(const char *format, ...)
 	printf("%s\n",buffer);
 }
 
-void Error(const char *format, ...) 
+void Error(const char *format, ...)
 {
 	char buffer[MESSAGE_BUFFER];
 	va_list argptr;
@@ -116,7 +116,7 @@ void Error(const char *format, ...)
 	Log(buffer);
 }
 
-void Critical(const char *format, ...) 
+void Critical(const char *format, ...)
 {
 	char buffer[MESSAGE_BUFFER];
 	va_list argptr;

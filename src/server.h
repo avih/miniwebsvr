@@ -24,26 +24,26 @@
 #define FILENAME_SIZE 1024
 #define MIME_size 16
 
-struct server_struct 
+struct server_struct
 {
 	// Tempory recieve/send buffer
 	char buffer[SERVER_BUFFER_SIZE];
 	unsigned int buffer_pos;
 	size_t buffer_size;
 	char logbuffer[1024];
-	
+
 	// Socket
 	SOCKET sock;
 
 	// Incoming connection data
 	u_short sin_port;
 	struct in_addr sin_addr;
-	
+
 	// response header
 	int respval;
 	char MIMEtype[MIME_size];
 	char header_content[SERVER_BUFFER_SIZE];
-	char *MIMEoverride; 
+	char *MIMEoverride;
 };
 
 #ifdef __WIN32__

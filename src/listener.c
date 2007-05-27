@@ -39,7 +39,7 @@ pthread_mutex_t pool_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t thread_pool_mutex = PTHREAD_MUTEX_INITIALIZER;
 #endif
 
-int listener(char *interface, unsigned short port) 
+int listener(char *interface, unsigned short port)
 {
 	struct timeval timeout;// = {1,0}; // 1 second poll state
 #if defined(THREAD_POOL) && !defined(__WIN32__)
@@ -62,18 +62,18 @@ int listener(char *interface, unsigned short port)
 		return -1;
 	}
 #endif
-	
+
 	local.sin_family = AF_INET;
-	local.sin_addr.s_addr = (!interface)?INADDR_ANY:inet_addr(interface); 
+	local.sin_addr.s_addr = (!interface)?INADDR_ANY:inet_addr(interface);
 
 	local.sin_port = htons(port);
 
 	listen_socket = socket(AF_INET, SOCK_STREAM,0); // TCP socket
-	
+
 	// Enable address reuse
 	on = 1;
 	setsockopt( listen_socket, SOL_SOCKET, SO_REUSEADDR, (const char*)&on, sizeof(on) );
-	// Disable Nagle 
+	// Disable Nagle
 	// Since we are implementing our own buffering Nagle just gets in the way.
 	setsockopt( listen_socket, IPPROTO_TCP, TCP_NODELAY, (const char*)&on, sizeof(on) );
 
@@ -92,7 +92,7 @@ int listener(char *interface, unsigned short port)
 		return -1;
 	}
 
-	if (bind(listen_socket,(struct sockaddr*)&local,sizeof(local)) == SOCKET_ERROR) 
+	if (bind(listen_socket,(struct sockaddr*)&local,sizeof(local)) == SOCKET_ERROR)
 	{
 		#ifdef __WIN32__
 		ret = WSAGetLastError();
@@ -114,7 +114,7 @@ int listener(char *interface, unsigned short port)
 		#else
 		ret = errno;
 		#endif
-		
+
 		Critical("listen() failed with error %d",ret);
 		#ifdef __WIN32__
 		WSACleanup();
@@ -130,34 +130,34 @@ int listener(char *interface, unsigned short port)
 		DebugMSG("Can't allocate memory for thread pool need");
 		return -1;
 	}
-	
+
 	memset(pool, 0, sizeof(struct server_struct)*THREAD_POOL_SIZE);
 	memset(thread_pool, 0, sizeof(pthread_t)*THREAD_POOL_SIZE);
 
 	size_t i = 0;
-		
+
 	for(i = 0; i < THREAD_POOL_SIZE; i++)
 	{
 		pthread_create(&thread_pool[i], NULL, (void *(*)(void*))&worker, (void*)i);
 		pthread_detach(thread_pool[i]);
 	}
-	
+
 #endif
 	BIGMessage("--- Listening on port %d ---",port);
-	while(loop) 
+	while(loop)
 	{
 		FD_ZERO(&socket_set);
 		FD_SET(listen_socket,&socket_set);
 		timeout.tv_sec=1;  // Select has 1 second timeout (to check on exit_status)
 		timeout.tv_usec=0;
 		ret=select(listen_socket+1,&socket_set,NULL,NULL,&timeout);
-		if (ret > 0) 
+		if (ret > 0)
 		{
 #ifdef MULTITHREADED
 #ifndef THREAD_POOL
-			HANDLE hThread; 
+			HANDLE hThread;
 #ifdef __WIN32__
-			DWORD dwThreadId; 
+			DWORD dwThreadId;
 #else
 			pthread_attr_t attr;
 #endif // __WIN32__
@@ -166,7 +166,7 @@ int listener(char *interface, unsigned short port)
 			struct server_struct *sock;
 			fromlen =sizeof(from);
 			msgsock = accept(listen_socket,(struct sockaddr*)&from, &fromlen);
-			if (msgsock == INVALID_SOCKET) 
+			if (msgsock == INVALID_SOCKET)
 			{
 				#ifdef __WIN32__
 				ret = WSAGetLastError();
@@ -180,7 +180,7 @@ int listener(char *interface, unsigned short port)
 				#endif
 				return -1;
 			}
-			
+
 			sock = (struct server_struct*)malloc(sizeof(struct server_struct));
 			sock->sock=msgsock;
 			sock->sin_addr=from.sin_addr;
@@ -194,20 +194,20 @@ int listener(char *interface, unsigned short port)
 				clock_gettime(CLOCK_REALTIME, &tp);
 				++tp.tv_sec;		// 1 sec
 				pthread_mutex_lock(&thread_pool_mutex);
-				pthread_cond_timedwait(&thread_free, &thread_pool_mutex, &tp); 
+				pthread_cond_timedwait(&thread_free, &thread_pool_mutex, &tp);
 				pthread_mutex_unlock(&thread_pool_mutex);
 			}
 #endif // __WIN32__
 #else
 #ifdef MULTITHREADED
 #ifdef __WIN32__
-			hThread = CreateThread( 
-				NULL,                           // no security attributes 
-				0,                              // use default stack size  
-				(LPTHREAD_START_ROUTINE)server,	// thread function 
+			hThread = CreateThread(
+				NULL,                           // no security attributes
+				0,                              // use default stack size
+				(LPTHREAD_START_ROUTINE)server,	// thread function
 				sock,                           // argument to thread function
-				0,                              // use default creation flags 
-				&dwThreadId);                   // returns the thread identifier 
+				0,                              // use default creation flags
+				&dwThreadId);                   // returns the thread identifier
 #else // __WIN32__
 			pthread_attr_init(&attr);
 			pthread_attr_setdetachstate(&attr,1);
@@ -220,7 +220,7 @@ int listener(char *interface, unsigned short port)
 		}
 	}
 
-        // Stop listening asap
+	// Stop listening asap
 
 #ifdef __WIN32__
 	closesocket(listen_socket);
@@ -233,13 +233,13 @@ int listener(char *interface, unsigned short port)
 	// Send broadcast signal so that threads unblock.
 //	pthread_cond_broadcast(&new_request); // you did'nt need it. 2 lines forward you use pthread_cancel, so it stop thread, because pthread_cond_wait is cancellation point.
 
-        // OK, Cancel all threads
+	// OK, Cancel all threads
 	for(i = 0; i < THREAD_POOL_SIZE; i++)
 	{
 		pthread_cancel(thread_pool[i]);
 	}
 
-        // OK, now wait for threads to complete...
+	// OK, now wait for threads to complete...
 	for(i = 0; i < THREAD_POOL_SIZE; i++)
 	{
 		void* blah;
@@ -254,7 +254,7 @@ int listener(char *interface, unsigned short port)
 #endif
 
 #ifdef __WIN32__
-        // Turn off WinSock
+	// Turn off WinSock
 	WSACleanup();
 #endif
 
@@ -274,7 +274,7 @@ void* worker(int n)
 		if (request == NULL) {
 			// No more jobs, go to sleep now
 			pthread_cond_wait(&new_request, &pool_mutex); // On pthread_cond_signal event pthread_cond_wait lock's mutex via pthread_mutex_lock
-			request = pop_request(); 
+			request = pop_request();
 		}
 		pthread_mutex_unlock(&pool_mutex); // so, you must unlock it.
 
@@ -302,7 +302,7 @@ int push_request(struct server_struct* request)
 		}
 	}
 	pthread_mutex_unlock(&pool_mutex);
-	if (added) 
+	if (added)
 		pthread_cond_signal(&new_request);
 	return added;
 }
@@ -313,12 +313,12 @@ struct server_struct* pop_request()
 	struct server_struct *request = NULL;
 	for(i = 0; (i < THREAD_POOL_SIZE)&&(request == NULL); i++)
 	{
- 		if(pool[i] != NULL)
+		if(pool[i] != NULL)
 		{
 			request = pool[i];
 			pool[i] = NULL;
 		}
- 	}
+	}
 	return request;
 }
 #endif
