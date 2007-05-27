@@ -1,3 +1,7 @@
+Sun May 27 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+    - Fixed default file bug 1723932. Hopefully for real this time.
+    - Fixed compilation on Borland
+    
 Fri May 25 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Fixed default file bug 1723932.
 	  http://sourceforge.net/tracker/index.php?func=detail&aid=1723932&group_id=187000&atid=919543

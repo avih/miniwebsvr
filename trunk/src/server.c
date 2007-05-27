@@ -46,7 +46,7 @@ void server_close(struct server_struct *inst)
 
 int server_charpos(const struct server_struct *inst, const char chr)
 {
-	int i;
+	unsigned int i;
 	
 	for (i=inst->buffer_pos;i<inst->buffer_size;++i) 
 	{
@@ -56,9 +56,9 @@ int server_charpos(const struct server_struct *inst, const char chr)
 	return -1;
 }
 
-int server_readln(struct server_struct *inst, char *str, const int strsize)
+int server_readln(struct server_struct *inst, char *str, const unsigned int strsize)
 {
-	int strpos;
+	unsigned int strpos;
 	int retval;
 
 	// Check if in the buffer
@@ -68,7 +68,7 @@ int server_readln(struct server_struct *inst, char *str, const int strsize)
 		strpos -= inst->buffer_pos+1;
 		
 		// Copy string to given buffer
-		if (strpos > strsize) 
+		if (strpos > strsize)
 			strpos=strsize;
 		memcpy(str,inst->buffer+inst->buffer_pos,strpos);
 		inst->buffer_pos+=strpos+2; 
@@ -114,7 +114,7 @@ int server_readln(struct server_struct *inst, char *str, const int strsize)
 			else 
 			{
 				// Partial buffer
-				if (retval > (strsize- strpos))
+				if (retval > (int)(strsize - strpos))
 					retval = strsize - strpos; // Limit check exceeded
 				inst->buffer_pos=retval+1; // +1 to skip the NULL terminator of the string
 				--retval; // -1 to stop before the detected endline
