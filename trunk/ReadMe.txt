@@ -18,7 +18,7 @@ Options:
   --nodirlist              Do not do any directory listings, just return a '404 File not found'
   --stealth                Do not specify servername in directory listings or HTTP headers
 UNIX only:
-  --threads <thread_nos>   Specify number of threads in thread pool (default 8) 
+  --threads <thread_nos>   Specify number of threads in thread pool (default 8)
 
 
 

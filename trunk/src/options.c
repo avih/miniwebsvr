@@ -30,12 +30,12 @@
 
 #include "strl.h"
 
-void OPTIONS(struct server_struct *inst) 
+void OPTIONS(struct server_struct *inst)
 {
 	char Buffer[SEND_BUFFER_SIZE];
 	char GHBuffer[SERVER_BUFFER_SIZE];
 	int bufpos;
-	
+
 	snprintf(inst->logbuffer,SERVER_BUFFER_SIZE,"\"%s:%d\"",inet_ntoa(inst->sin_addr),htons(inst->sin_port));
 	inst->logbuffer[SERVER_BUFFER_SIZE-1] = 0; // snprintf does not null-delimit when full
 	inst->MIMEoverride = "OPTIONS"; // Override MIME type with OPTIONS (for log)

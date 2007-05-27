@@ -47,10 +47,10 @@ void server_close(struct server_struct *inst)
 int server_charpos(const struct server_struct *inst, const char chr)
 {
 	unsigned int i;
-	
-	for (i=inst->buffer_pos;i<inst->buffer_size;++i) 
+
+	for (i=inst->buffer_pos;i<inst->buffer_size;++i)
 	{
-		if (inst->buffer[i] == chr) 
+		if (inst->buffer[i] == chr)
 			return i;
 	}
 	return -1;
@@ -62,33 +62,33 @@ int server_readln(struct server_struct *inst, char *str, const unsigned int strs
 	int retval;
 
 	// Check if in the buffer
-	if ((strpos = server_charpos(inst,'\n')) != -1) 
+	if ((strpos = server_charpos(inst,'\n')) != -1)
 	{
 		// Whole string is in buffer
 		strpos -= inst->buffer_pos+1;
-		
+
 		// Copy string to given buffer
 		if (strpos > strsize)
 			strpos=strsize;
 		memcpy(str,inst->buffer+inst->buffer_pos,strpos);
-		inst->buffer_pos+=strpos+2; 
-	} 
-	else 
+		inst->buffer_pos+=strpos+2;
+	}
+	else
 	{
 		// Copy remaining data in buffer
 		strpos=inst->buffer_size-inst->buffer_pos;
-		if (strpos > strsize) 
+		if (strpos > strsize)
 			strpos=strsize;
 		memcpy(str,inst->buffer+inst->buffer_pos,strpos);
-	
+
 		// Assemble rest of string out of multiple buffers
-		while (strpos < strsize) 
+		while (strpos < strsize)
 		{
 			// Get data from stream
 			inst->buffer_pos=0;
 			inst->buffer_size = recv(inst->sock,inst->buffer,SERVER_BUFFER_SIZE,0);
 
-			if (inst->buffer_size == SOCKET_ERROR) 
+			if (inst->buffer_size == SOCKET_ERROR)
 			{
 				#ifdef __WIN32__
 				retval = WSAGetLastError();
@@ -100,46 +100,46 @@ int server_readln(struct server_struct *inst, char *str, const unsigned int strs
 				//server_close(inst);
 				return -1;
 			}
-			
+
 			retval=server_charpos(inst,'\n');
 			if ((retval == -1) && ((strpos+inst->buffer_size) > strsize))
 				retval=strsize-strpos; // Limit check exceeded
-			if (retval == -1) 
+			if (retval == -1)
 			{
 				// Consume whole buffer
 				inst->buffer_pos=inst->buffer_size;
 				memcpy(str+strpos,inst->buffer,inst->buffer_size);
 				strpos+=inst->buffer_size;
-			} 
-			else 
+			}
+			else
 			{
 				// Partial buffer
 				if (retval > (int)(strsize - strpos))
 					retval = strsize - strpos; // Limit check exceeded
 				inst->buffer_pos=retval+1; // +1 to skip the NULL terminator of the string
 				--retval; // -1 to stop before the detected endline
-				if (retval>0) 
+				if (retval>0)
 					memcpy(str+strpos,inst->buffer,retval);
 				strpos+=retval;
 				break;
 			}
-			
+
 			// Don't expect a full buffer to allow interactive (non-buffering) connections.
 			// No data indicates some connection error, so quit.
 			if (inst->buffer_size == 0) break;
 		}
 	}
-	
+
 	// remove \r if present just before the \n
-	if (str[strpos] == '\r') 
+	if (str[strpos] == '\r')
 		--strpos;
-	
+
 	// Set the NULL terminator for the string
 	++strpos;
-	if (strpos > strsize) 
+	if (strpos > strsize)
 		strpos=strsize;
 	str[strpos-1]=0;
-	return strpos-1;	
+	return strpos-1;
 }
 
 #ifdef __WIN32__
@@ -155,7 +155,7 @@ void* server(struct server_struct *inst)
 	int headeronly;
 	char *tstr;
 
-        DebugMSG("--==|New Request|==--");
+	DebugMSG("--==|New Request|==--");
 
 	// Initialize structure
 	inst->buffer_pos=0;
@@ -170,19 +170,19 @@ void* server(struct server_struct *inst)
 
 	// Parse header
 	retval = server_readln(inst,GHBuffer,SERVER_BUFFER_SIZE);
-        DebugMSG("%s",GHBuffer);
+	DebugMSG("%s",GHBuffer);
 	// check for GET requests
 	if ( retval >= 4 && 0 == strncmp(GHBuffer, "GET ", 4))
 	{
 		urldecode(GHBuffer+4, filename+2, FILENAME_SIZE-2);
 		headeronly=0;
-	} 
+	}
 	else if ( retval >= 5 && 0 == strncmp(GHBuffer, "HEAD ", 5))
 	{
 		urldecode(GHBuffer+5, filename+2, FILENAME_SIZE-2);
 		//headeronly=1;
-	} 
-	else if ( retval >= 8 && 0 == strncmp(GHBuffer, "OPTIONS ", 8)) 
+	}
+	else if ( retval >= 8 && 0 == strncmp(GHBuffer, "OPTIONS ", 8))
 	{
 		OPTIONS(inst);
 		goto serverquit;
@@ -204,7 +204,7 @@ void* server(struct server_struct *inst)
 		inst->logbuffer[SERVER_BUFFER_SIZE-1] = 0; // snprintf does not null-delimit when full
 		setHeader_respval(inst,400);  // Bad Request
 		printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
-		
+
 		goto serverquit;
 	}
 
@@ -218,7 +218,7 @@ void* server(struct server_struct *inst)
 		strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);
 		setHeader_respval(inst,403);  // Forbidden
 		printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
-		
+
 		goto serverquit;
 	}
 

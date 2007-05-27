@@ -1,7 +1,9 @@
 Sun May 27 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
-    - Fixed default file bug 1723932. Hopefully for real this time.
-    - Fixed compilation on Borland
-    
+	- Fixed default file bug 1723932. Hopefully for real this time.
+	- Fixed compilation on Borland
+	- It seems all files were CRLF's, but not all lines -> Fixed CRLF's
+	  Whilst I was at it, Fixed indentation
+
 Fri May 25 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Fixed default file bug 1723932.
 	  http://sourceforge.net/tracker/index.php?func=detail&aid=1723932&group_id=187000&atid=919543
@@ -15,7 +17,7 @@ Thu May 24 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Fix for Bug Request ID 1723935.
 	  http://sourceforge.net/tracker/index.php?func=detail&aid=1723935&group_id=187000&atid=919543
 	- Added command-line options for Default page support --defualt
-	- Added option to set log off --nolog 
+	- Added option to set log off --nolog
 	- Added option to disable directory listings
 	- Added option to hide servername in directory listing and HTTP
 	  headers.
@@ -78,12 +80,12 @@ Tue Jan 23 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 
 Thu Jan 18 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	Released version 0.05
-	- Fixed a bug in server_readln where it would return an array that is 
+	- Fixed a bug in server_readln where it would return an array that is
 	  one character too long. The problem was hidden because the buffer
 	  start out as zeroes.
-	- Supports conditinal GET's 
+	- Supports conditinal GET's
 	  If-Modified-Since: Using string comparison (Based on the assumption the client stores the string)
-	  Tested & works with Firefox, Konqueror & IE. Opera is not playing nice, not even requesting an 
+	  Tested & works with Firefox, Konqueror & IE. Opera is not playing nice, not even requesting an
 	  If-Modified-Since on forced refresh, and it's cache never expires.
 
 Tue Jan 16 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>

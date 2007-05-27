@@ -83,8 +83,8 @@ void catch_quit(int sig)
 int main(int argc, char **argv)
 {
 	getconfig(argc, argv);
-	
-	if (atexit(&cleanup)) 
+
+	if (atexit(&cleanup))
 	{
 		fprintf(stderr, "cannot set exit function\n");
 		return EXIT_FAILURE;
@@ -97,14 +97,14 @@ int main(int argc, char **argv)
 	signal (SIGHUP, &catch_hup);
 	signal (SIGQUIT, &catch_quit);
 #endif
-	
+
 	StartLogging(LOGFILE);
 	BIGMessage("--- %s starting ---",VERSION);
 	BIGMessage("--- This software is distributed under the GNU Lesser General Public License");
-	BIGMessage("--- %s",COPYRIGHT); 
+	BIGMessage("--- %s",COPYRIGHT);
 	BIGMessage("--- E-Mail: %s",EMAIL);
 
 // chdir to the document root
-	chdir(ROOT);        
+	chdir(ROOT);
 	return listener(INTERFACE,PORT);
 }

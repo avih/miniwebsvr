@@ -36,7 +36,7 @@ char* LOGFILE;
 char* ROOT;
 char* DEFAULTFILE;
 
-void getconfig(int argc, char **argv) 
+void getconfig(int argc, char **argv)
 {
 	int i;
 	enum { next_param, next_port, next_logfile, next_root, next_interface, next_threads, next_defaultfile } next = next_param;
@@ -50,14 +50,14 @@ void getconfig(int argc, char **argv)
 	DEFAULTFILE=DEFAULT_DEFAULTFILE;
 	LISTSERVER=DEFAULT_LISTSERVER;
 #ifdef THREAD_POOL
-        THREAD_POOL_SIZE=DEFAULT_THREAD_POOL_SIZE;
+	THREAD_POOL_SIZE=DEFAULT_THREAD_POOL_SIZE;
 #endif
 
 	for (i = 1; i < argc; i += 1)
 	{
 		if (next == next_param)
 		{
-                        if (0 == strcmp(argv[i], "--port"))
+			if (0 == strcmp(argv[i], "--port"))
 				next = next_port;
 			else if (0 == strcmp(argv[i], "--log"))
 				next = next_logfile;
@@ -74,10 +74,10 @@ void getconfig(int argc, char **argv)
 			else if (0 == strcmp(argv[i], "--stealth"))
 				LISTSERVER = 0;
 #ifdef THREAD_POOL
-                        else if (0 == strcmp(argv[i], "--threads"))
-                                next = next_threads;
+			else if (0 == strcmp(argv[i], "--threads"))
+				next = next_threads;
 #endif
-                        else
+			else
 			{
 				printf("Usage: %s [options]\nOptions:\n", argv[0]);
 				printf("  --help                   Display this information\n");
@@ -92,7 +92,7 @@ void getconfig(int argc, char **argv)
 				printf("  --nodirlist              Do not do any directory listings, just return a '404 File not found'\n");
 				printf("  --stealth                Do not specify servername in directory listings or HTTP headers\n");
 #ifdef THREAD_POOL
-                                printf("  --threads <thread_nos>   Specify number of threads in thread pool (default %d)\n",DEFAULT_THREAD_POOL_SIZE);
+				printf("  --threads <thread_nos>   Specify number of threads in thread pool (default %d)\n",DEFAULT_THREAD_POOL_SIZE);
 #endif
 				exit(0);
 			}
