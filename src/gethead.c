@@ -145,6 +145,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
         int statret;
 
 	in=NULL;
+        DebugMSG("1");
 
 	if ((statret=stat(filename, &statbuf)) == 0)
 	{
@@ -157,39 +158,39 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 			printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
 			return;
 		}
+         }
 
-		if (statbuf.st_mode & S_IFDIR)
+	 if (statret || (statbuf.st_mode & S_IFDIR))
+	 {
+		retval=strlcpy(GHBuffer,filename,SERVER_BUFFER_SIZE);
+		if (GHBuffer[retval-1] != '/')
 		{
-			retval=strlcpy(GHBuffer,filename,SERVER_BUFFER_SIZE);
-			if (GHBuffer[retval-1] != '/') 
-			{
-				GHBuffer[retval++] = '/';
-				GHBuffer[retval] = 0;
-				DebugMSG("Adding / to dir");
-			}
-			strlcat(GHBuffer,DEFAULTFILE,SERVER_BUFFER_SIZE);
-			DebugMSG("Trying %s",GHBuffer);
-			in = fopen(GHBuffer, "rb");
-			if (in != NULL)
-			{
-				strlcat(inst->logbuffer,"[",SERVER_BUFFER_SIZE);
-				strlcat(inst->logbuffer,DEFAULTFILE,SERVER_BUFFER_SIZE);
-				strlcat(inst->logbuffer,"]",SERVER_BUFFER_SIZE);
-				strlcat(filename,DEFAULTFILE,FILENAME_SIZE);
-	                        statret=stat(filename, &statbuf);
-				DebugMSG("Found %s",DEFAULTFILE);
-			}
-		} 
-		else
-			in = fopen(filename, "rb");
-        }
+			GHBuffer[retval++] = '/';
+			GHBuffer[retval] = 0;
+			DebugMSG("Adding / to dir");
+		}
+		strlcat(GHBuffer,DEFAULTFILE,SERVER_BUFFER_SIZE);
+		DebugMSG("Trying %s",GHBuffer);
+		in = fopen(GHBuffer, "rb");
+		if (in != NULL)
+		{
+			strlcat(inst->logbuffer,"[",SERVER_BUFFER_SIZE);
+			strlcat(inst->logbuffer,DEFAULTFILE,SERVER_BUFFER_SIZE);
+			strlcat(inst->logbuffer,"]",SERVER_BUFFER_SIZE);
+			strlcat(filename,DEFAULTFILE,FILENAME_SIZE);
+	                statret=stat(filename, &statbuf);
+			DebugMSG("Found %s",DEFAULTFILE);
+		}
+	 }
+	 else if (!statret)
+		in = fopen(filename, "rb");
 
         strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);
         if (in == NULL)
 	{
 		server_dirlist(inst,headeronly,filename,filebufsize);
 	}
-	else 
+	else
 	{
 		// Start Header parsing
 		// Reset some internal variables

@@ -57,26 +57,7 @@ void getconfig(int argc, char **argv)
 	{
 		if (next == next_param)
 		{
-			if (0 == strcmp(argv[i], "--help"))
-			{
-				printf("Usage: %s [options]\nOptions:\n", argv[0]);
-				printf("  --help                   Display this information\n");
-				printf("  --port <port>            Listen on port <port> (default %d)\n",DEFAULT_PORT);
-				printf("  --interface <ip>         Specify the interface the server listens on (default: ALL)\n");
-
-				printf("  --log <file>             Save the log file as <file> (default: %s)\n",DEFAULT_LOGFILE);
-				printf("  --nolog                  Disables logging, overrides any '--log' setting\n");
-
-				printf("  --root <path>            Specify the document root directory (default: %s)\n",DEFAULT_ROOT);
-				printf("  --default <filename>     Specify the default document filename in a directory (default: %s)\n",DEFAULT_DEFAULTFILE);
-				printf("  --nodirlist              Do not do any directory listings, just return a '404 File not found'\n");
-				printf("  --stealth                Do not specify servername in directory listings or HTTP headers\n");
-#ifdef THREAD_POOL
-                                printf("  --threads <thread_nos>   Specify number of threads in thread pool (default %d)\n",DEFAULT_THREAD_POOL_SIZE);
-#endif
-				exit(0);
-			}
-			else if (0 == strcmp(argv[i], "--port"))
+                        if (0 == strcmp(argv[i], "--port"))
 				next = next_port;
 			else if (0 == strcmp(argv[i], "--log"))
 				next = next_logfile;
@@ -96,6 +77,25 @@ void getconfig(int argc, char **argv)
                         else if (0 == strcmp(argv[i], "--threads"))
                                 next = next_threads;
 #endif
+                        else
+			{
+				printf("Usage: %s [options]\nOptions:\n", argv[0]);
+				printf("  --help                   Display this information\n");
+				printf("  --port <port>            Listen on port <port> (default %d)\n",DEFAULT_PORT);
+				printf("  --interface <ip>         Specify the interface the server listens on (default: ALL)\n");
+
+				printf("  --log <file>             Save the log file as <file> (default: %s)\n",DEFAULT_LOGFILE);
+				printf("  --nolog                  Disables logging, overrides any '--log' setting\n");
+
+				printf("  --root <path>            Specify the document root directory (default: %s)\n",DEFAULT_ROOT);
+				printf("  --default <filename>     Specify the default document filename in a directory (default: %s)\n",DEFAULT_DEFAULTFILE);
+				printf("  --nodirlist              Do not do any directory listings, just return a '404 File not found'\n");
+				printf("  --stealth                Do not specify servername in directory listings or HTTP headers\n");
+#ifdef THREAD_POOL
+                                printf("  --threads <thread_nos>   Specify number of threads in thread pool (default %d)\n",DEFAULT_THREAD_POOL_SIZE);
+#endif
+				exit(0);
+			}
 			continue;
 		}
 		if (next == next_logfile)

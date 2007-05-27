@@ -29,7 +29,7 @@ struct server_struct
 	// Tempory recieve/send buffer
 	char buffer[SERVER_BUFFER_SIZE];
 	unsigned int buffer_pos;
-	ssize_t buffer_size;
+	size_t buffer_size;
 	char logbuffer[1024];
 	
 	// Socket
@@ -52,6 +52,6 @@ DWORD server(struct server_struct *inst);
 void* server(struct server_struct *inst);
 #endif
 
-int server_readln(struct server_struct *inst, char *str, const int strsize);
+int server_readln(struct server_struct *inst, char *str, const unsigned int strsize);
 
 #endif // SERVER_H
