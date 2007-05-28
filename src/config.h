@@ -1,4 +1,4 @@
-/*  MiniWebsvr - A small webserver
+/*  MiniWebSvr - A small webserver
     Copyright (C) 2007  Daniel John Walker and Nickolas Antonie Grigoriadis
     E-Mail: djwalker at users.sourceforge.net and grigi_ at users.sourceforge.net
 
@@ -21,7 +21,7 @@
 
 /************************* Compile time Limits/Options ***********************/
 
-#define VERSION "MiniWebsvr/0.0.8svn"
+#define VERSION "MiniWebSvr/0.0.8"
 #define COPYRIGHT "Copyright (C) 2007  Nickolas Antonie Grigoriadis"
 #define EMAIL "grigi_ at users.sourceforge.net"
 

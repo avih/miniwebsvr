@@ -1,4 +1,4 @@
-/*  MiniWebsvr - A small webserver
+/*  MiniWebSvr - A small webserver
     Copyright (C) 2007  Nickolas Antonie Grigoriadis
     E-Mail: grigi_ at users.sourceforge.net
 
@@ -24,12 +24,16 @@
 #define FILENAME_SIZE 1024
 #define MIME_size 16
 
+#ifdef __BORLANDC__
+#define ssize_t int
+#endif
+
 struct server_struct
 {
 	// Tempory recieve/send buffer
 	char buffer[SERVER_BUFFER_SIZE];
 	unsigned int buffer_pos;
-	size_t buffer_size;
+	ssize_t buffer_size;
 	char logbuffer[1024];
 
 	// Socket
@@ -52,6 +56,6 @@ DWORD server(struct server_struct *inst);
 void* server(struct server_struct *inst);
 #endif
 
-int server_readln(struct server_struct *inst, char *str, const unsigned int strsize);
+int server_readln(struct server_struct *inst, char *str, const int strsize);
 
 #endif // SERVER_H

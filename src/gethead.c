@@ -1,4 +1,4 @@
-/*  MiniWebsvr - A small webserver
+/*  MiniWebSvr - A small webserver
     Copyright (C) 2007  Nickolas Antonie Grigoriadis
     E-Mail: grigi_ at users.sourceforge.net
 
@@ -197,6 +197,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 		TimeBuffer[0]=0;
 		contentlength=0;
 		rangefrom=0;
+		rangeto=0;
 		range=0;
 		GHBuffer[0]=0;
 
@@ -215,7 +216,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 				char *range1 = strstr(TMPBuffer,"bytes=");
 				if (range1)
 				{
-					rangeto=0;
+//					rangeto=0;
 					sscanf(range1,"bytes=%ld-",&rangefrom);
 					range2 = strstr(range1,"-");
 					if (range2)

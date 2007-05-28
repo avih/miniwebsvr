@@ -1,3 +1,10 @@
+Mon May 28 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- Renamed --stealth bach to --noname
+	- Fixed name/version reporting in generated errors
+	- Fixed a bug in reporting the data range when whole file requested
+	- Fixed capitalisation in reference to MiniWebSvr
+	- Released version 0.0.8
+
 Sun May 27 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Fixed default file bug 1723932. Hopefully for real this time.
 	- Fixed compilation on Borland
@@ -26,7 +33,7 @@ Sat Mar 10 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Released version 0.0.7
 
 Mon Feb 19 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
-	- Hopefully fixing the flaw of MiniWebsvr allowing "special device
+	- Hopefully fixing the flaw of MiniWebSvr allowing "special device
 	  files" to be accessed. Still need to test properly.
 
 Fri Feb 16 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
