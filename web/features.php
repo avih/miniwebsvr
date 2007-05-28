@@ -14,6 +14,10 @@ Supports:<br>
 <li> UNIX variants, such as Linux
 <li> Resuming downloads<sup>*</sup>
 <li> Thread pooling (PThreads implementation only)
+
+<li> Optional Logging
+<li> Some options to lock down the site a bit
+<li> Configurable default page
 </ul>
 * Saves on bandwidth!<br>
 <br>

@@ -14,7 +14,7 @@ shinnai x<br>
 <a href="http://www.shinnai.altervista.org/viewtopic.php?id=41&t_id=47">http://www.shinnai.altervista.org/viewtopic.php?id=41&t_id=47</a><br>
 <a href="http://www.milw0rm.com/exploits/3708">http://www.milw0rm.com/exploits/3708</a><br>
 <b>Resolution:</b><br>
-Fix in SVN soon to be released<br>
+Fixed in 0.0.8<br>
 
 <br>
 <h3>Version 0.0.6 and older:</h3>

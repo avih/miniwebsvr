@@ -1,7 +1,7 @@
 <? include "lib.php"; startpage(); ?>
 <h2>Latest release:</h2>
-The latest release is version 0.0.7, available for download:
-<a href="http://sourceforge.net/project/showfiles.php?group_id=187000&package_id=218154&release_id=492667">MiniWebsvr version 0.0.7</a><br>
+The latest release is version 0.0.8, available for download:
+<a href="http://sourceforge.net/project/showfiles.php?group_id=187000&package_id=218154&release_id=511741">MiniWebsvr version 0.0.8</a><br>
 
 <br> 
 
