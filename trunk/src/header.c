@@ -1,4 +1,4 @@
-/*  MiniWebsvr - A small webserver
+/*  MiniWebSvr - A small webserver
     Copyright (C) 2007  Nickolas Antonie Grigoriadis
     E-Mail: grigi_ at users.sourceforge.net
 
@@ -171,9 +171,10 @@ int printHeader(struct server_struct *inst, int headeronly, char* Buffer, int bu
 	if (headerResp[inst->respval].autogen)
 	{
 		if (headeronly==0) {
-			bufpos+=snprintf(Buffer+bufpos,bufsize-bufpos,"<HTML><HEAD><TITLE>HTTP %d - %s</TITLE></HEAD><BODY><H1>HTTP %d - %s<H1><H3>MiniWeb web server</H3></BODY></HTML>"
+			bufpos+=snprintf(Buffer+bufpos,bufsize-bufpos,"<HTML><HEAD><TITLE>HTTP %d - %s</TITLE></HEAD><BODY><H1>HTTP %d - %s<H1><H3>%s</H3></BODY></HTML>"
 				,headerResp[inst->respval].respval,headerResp[inst->respval].respstr
-				,headerResp[inst->respval].respval,headerResp[inst->respval].respstr);
+				,headerResp[inst->respval].respval,headerResp[inst->respval].respstr
+				,(LISTSERVER?VERSION:""));
 		}
 		send(inst->sock,Buffer,bufpos,SEND_FLAG);
 		return 0; // Flushed buffer

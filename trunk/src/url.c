@@ -1,4 +1,4 @@
-/*  MiniWebsvr - A small webserver
+/*  MiniWebSvr - A small webserver
     Copyright (C) 2007  Daniel John Walker and Nickolas Antonie Grigoriadis
     E-Mail: djwalker at users.sourceforge.net and grigi_ at users.sourceforge.net
 

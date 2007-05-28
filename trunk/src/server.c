@@ -1,4 +1,4 @@
-/*  MiniWebsvr - A small webserver
+/*  MiniWebSvr - A small webserver
     Copyright (C) 2007  Nickolas Antonie Grigoriadis
     E-Mail: grigi_ at users.sourceforge.net
 
@@ -46,7 +46,7 @@ void server_close(struct server_struct *inst)
 
 int server_charpos(const struct server_struct *inst, const char chr)
 {
-	unsigned int i;
+	int i;
 
 	for (i=inst->buffer_pos;i<inst->buffer_size;++i)
 	{
@@ -56,9 +56,9 @@ int server_charpos(const struct server_struct *inst, const char chr)
 	return -1;
 }
 
-int server_readln(struct server_struct *inst, char *str, const unsigned int strsize)
+int server_readln(struct server_struct *inst, char *str, const int strsize)
 {
-	unsigned int strpos;
+	int strpos;
 	int retval;
 
 	// Check if in the buffer

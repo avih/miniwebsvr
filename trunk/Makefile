@@ -1,6 +1,6 @@
-# Makefile for MiniWebsvr
+# Makefile for MiniWebSvr
 #
-# MiniWebsvr - A small webserver
+# MiniWebSvr - A small webserver
 # Copyright (C) 2007  Nickolas Antonie Grigoriadis and Sergey Sytchewoj
 # E-Mail: grigi_ at users.sourceforge.net and brumal at users.sourceforge.net
 #
@@ -18,7 +18,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-VERSION='0.0.7'
+VERSION='0.0.8'
 
 # Common source files
 FILES=src/config.c src/gethead.c src/header.c src/listener.c src/logging.c src/options.c src/server.c src/strl.c src/url.c
@@ -38,16 +38,16 @@ DEBUGFLAGS=-O0 -g -D_DEBUG -pedantic -std=gnu99
 
 
 help:
-	@echo 'MiniWebsvr ${VERSION} make:'
+	@echo 'MiniWebSvr ${VERSION} make:'
 	@echo
 	@echo 'Flags that affect compilation:'
 	@echo '  CFLAGS        - Compiler optimization flags'
 	@echo
 	@echo 'Targets:'
-	@echo '  release       - Builds a release build of MiniWebsvr'
-	@echo '  debug         - Builds a debug build of MiniWebsvr'
-	@echo '  xwin32        - Builds a release build of MiniWebsvr for Windows using mingw32-gcc cross compiler'
-	@echo '  xwin32d       - Builds a debug build of MiniWebsvr for Windows using mingw32-gcc cross compiler'
+	@echo '  release       - Builds a release build of MiniWebSvr'
+	@echo '  debug         - Builds a debug build of MiniWebSvr'
+	@echo '  xwin32        - Builds a release build of MiniWebSvr for Windows using mingw32-gcc cross compiler'
+	@echo '  xwin32d       - Builds a debug build of MiniWebSvr for Windows using mingw32-gcc cross compiler'
 	@echo
 	@echo 'Maintenance:'
 	@echo '  clean         - Cleans up the files created by make'

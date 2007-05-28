@@ -1,7 +1,7 @@
-Welcome to the MiniWebsvr project
+Welcome to the MiniWebSvr project
 ---------------------------------
 
-MiniWebsvr is a small web server that aims to be able to be used stand-alone
+MiniWebSvr is a small web server that aims to be able to be used stand-alone
 or embedded into another application.
 Small footprint and light on resources is a requirement.
 
@@ -16,7 +16,7 @@ Options:
   --root <path>            Specify the document root directory (default: .)
   --default <filename>     Specify the default document filename in a directory (default: index.html)
   --nodirlist              Do not do any directory listings, just return a '404 File not found'
-  --stealth                Do not specify servername in directory listings or HTTP headers
+  --noname                 Do not specify servername in directory listings or HTTP headers
 UNIX only:
   --threads <thread_nos>   Specify number of threads in thread pool (default 8)
 
@@ -47,7 +47,7 @@ browsers to support an game, maybe provide live stats of the game world
 to a client. So eventually it will be an embedded HTTP server.
 
 
-MiniWebsvr is mostly developed by Nickolas Antonie Grigoriadis <grigi_ at users.sourceforge.net> with contributions from:
+MiniWebSvr is mostly developed by Nickolas Antonie Grigoriadis <grigi_ at users.sourceforge.net> with contributions from:
 - Daniel John Walker <djwalker at users.sourceforge.net>
 - Johan Strydom <fyrewolfe at users.sourceforge.net>
 - Sergey Sytchewoj <brumal at users.sourceforge.net>
@@ -55,17 +55,20 @@ MiniWebsvr is mostly developed by Nickolas Antonie Grigoriadis <grigi_ at users.
 
 --- Release Notes ---
 
-Version 0.0.8: ()
+Version 0.0.8: (2007-05-28)
 New Features:
 - Extra command-line options to:
   - Set defualt page name
   - Disable directory listing
-  - Stealth mode
+  - Disable reporting of server name & version
   - Disable logging
+- Will list the command-line help when it fails to parse the command line
 Bug Fixes:
 - Fixes sub-root vulnerability introduced in 0.0.7
 - Fixes default page not always working
 - Does not show '../' on root directory listing anymore
+- Fixed name/version reporting in generated errors
+- Fixed a bug in reporting the data range when whole file requested
 
 Version 0.0.7: (2007-03-10)
 This version brings with it mostly security fixes.
