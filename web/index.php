@@ -7,19 +7,24 @@ Small footprint and light on resources is a major requirement.<br>
 <hr  noshade="noshade" size="1">
 <h2>Pie in the sky aim of the project:</h2>
 
+The aim of this project is firstly:
 <ul>
-<li> Create a small library you link into your app
-<li> The configuration can be pushed from the app or have its own handlers to read conf files.
-<li> This library provides you with HOOKS, into the server, so you can write your own functions that will override some functionality, e.g.
-<ul>
-<li> HOOK to override the default directory listing func
-<li> HOOK to call a func with given parameters when a certain resource (file) is called
-<li> HOOK to define fixed-content, and maybe even override disk IO with some VFS (so you can serve static content out of your own bundled resource file or a DB, etc...)
-<li> HOOK to override a whole directory, and that returns the sub-path and paremeters to a func
+<li> To create a small fully functional web-server
 </ul>
 
-<li> This library provides you with a parse/generate XML functionality so that you can easily pass data up and down (kinda like SOAP, but I prefer simplicity) 
-<li> User space (Authenticated), so that you can use it for reliable data transfer
+And secondly:
+<ul>
+<li> Create a embedable webserver library you can link into your application.
+<li> Provide mechanisms to serve pages easily.
+<li> The idea is <b>NOT</b> to have the applets plug-in to the server, but the server to plug-in to the base application.
 </ul>
+
+Part of this project is a set of small helpler libraries that make using/managing the webserver easier:
+<ul>
+<li> Templating system, for easy creation of non-structured data like HTML pages
+<li> Small XML parser/generator to read/serve configuration or SOAP-like functionality
+<li> Any other utility that would make it much easier to use. 
+</ul>
+
 <br>
 <?endpage();?>

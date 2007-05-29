@@ -32,10 +32,23 @@ Key:
 
 <ul>
 <li>Implement fixed-size thread pool<sub>(PThreads implementation only)</sub>
-<li type=square>Implement custom default index
+</ul>
 
-<li type=circle>Implement self-adjusting size thread pool
-<li type=circle>Add support for Pipelining (In a safe, compliant way)
+<b>0.0.7 Released (Mar 10 2007)</sub></b><br>
+
+<ul>
+<li>Implement custom default index
+<li>Optional disabling of directory listing,reporting of name and version &amp; logging
+</ul>
+
+<b>0.0.8 Released (May 28 2007)</sub></b><br>
+
+<ul>
+<li type=circle>Config system (Optional config file)
+<li type=circle>Implement XML parser for Config system
+<li type=circle>Running as service for Win32 version
+<li type=circle>Configurator GUI for Win32 version
+<li type=circle>Installer for Win32 version
 <li type=circle>Add vhost support (For HTTP/1.0 and HTTP/1.1)
 </ul>
 
@@ -43,19 +56,16 @@ Key:
 Version 0.1.0 should have a featureset to be a complete static content server<br>
 
 <ul>
-<li type=circle>Port to Library
+<li type=circle>Implement self-adjusting size thread pool
+<li type=circle>Add support for Pipelining (In a safe, compliant way)
+<li type=square>Port to Library
 <li type=circle>Provide sample application to replace stand-alone server
-<li type=circle>Implement XML Parser/Generator
+<li type=circle>Implement XML Generator
   <ul>
-  <li type=circle>Implement Config parser using XML Parser
-    <ul>
-
-    <li type=circle>Add vhost support
-    </ul>
   <li type=circle>Implement Directory Listing using XML Generator
   <li type=circle>Re-implement strign handling to suit
   </ul>
-<li type=circle> Add preliminary HOOK support 
+<li type=circle> Add preliminary HOOK support <sub>Need to revise if this is wise, a VFS might work much more elegantly</sub> 
 </ul>
 
 <b>Requirements for 0.2.0 met (Stable)</b><br>
