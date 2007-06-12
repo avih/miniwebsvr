@@ -80,8 +80,50 @@ void catch_quit(int sig)
 }
 #endif
 
+#ifdef USEWINMAIN
+#include <shellapi.h>
+
+char **argv = NULL;
+	
+/*******************************************************
+WIN32 command line parser function
+********************************************************/
+int ParseCommandline()
+{
+	int    argc, BuffSize, i;
+	WCHAR  *wcCommandLine;
+	LPWSTR *argw;
+	
+	// Get a WCHAR version of the parsed commande line
+	wcCommandLine = GetCommandLineW();	
+	argw = CommandLineToArgvW( wcCommandLine, &argc);
+
+	// Create the first dimension of the double array
+	argv = (char **)GlobalAlloc( LPTR, argc + 1 );
+	
+	// convert each line of wcCommandeLine to MultiByte and place them
+	// to the argv[] array
+	for( i=0; i < argc; i++)
+	{
+		BuffSize = WideCharToMultiByte( CP_ACP, WC_COMPOSITECHECK, argw[i], -1, NULL, 0, NULL, NULL );
+		argv[i] = (char *)GlobalAlloc( LPTR, BuffSize );		
+		WideCharToMultiByte( CP_ACP, WC_COMPOSITECHECK, argw[i], BuffSize * sizeof( WCHAR ) ,argv[i], BuffSize, NULL, NULL );
+	}
+
+	LocalFree(argw);
+
+	// return the number of argument
+	return argc;
+}
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+	int argc = ParseCommandline( );
+#else
 int main(int argc, char **argv)
 {
+#endif
+
 	getconfig(argc, argv);
 
 	if (atexit(&cleanup))
