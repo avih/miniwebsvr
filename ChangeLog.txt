@@ -1,3 +1,8 @@
+Sat Jun 16 2007 Daniel Walker <djwalker at users.sourceforge.net>
+	- Since THREAD_POOL and __WIN32__ are not compatible, Win32 builds
+	  would fail when THREAD_POOL is defined. It now fails far more cleanly,
+	  with advice not to enable THREAD_POOL for Windows.
+
 Mon May 28 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Renamed --stealth bach to --noname
 	- Fixed name/version reporting in generated errors

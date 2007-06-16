@@ -29,6 +29,9 @@
 int loop;
 
 #ifdef THREAD_POOL
+#ifdef __WIN32__
+#error "THREAD_POOL not implemented for WIN32 targets"
+#else
 struct server_struct** pool;
 pthread_t* thread_pool;
 
@@ -38,12 +41,17 @@ pthread_cond_t thread_free = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t pool_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t thread_pool_mutex = PTHREAD_MUTEX_INITIALIZER;
 #endif
+#endif
 
 int listener(char *interface, unsigned short port)
 {
 	struct timeval timeout;// = {1,0}; // 1 second poll state
-#if defined(THREAD_POOL) && !defined(__WIN32__)
+#ifdef THREAD_POOL
+#ifdef __WIN32__
+#error "THREAD_POOL not implemented for WIN32 targets"
+#else
 	struct timespec tp; // stores absolute time for pthread_cond_timedwait
+#endif
 #endif
 
 	int ret,on;
@@ -123,6 +131,9 @@ int listener(char *interface, unsigned short port)
 	}
 	loop = 1;
 #ifdef THREAD_POOL
+#ifdef __WIN32__
+#error "THREAD_POOL not implemented for WIN32 targets"
+#else
 	pool = malloc(THREAD_POOL_SIZE*sizeof(struct server_struct));
 	thread_pool = malloc(THREAD_POOL_SIZE*sizeof(pthread_t));
 	if((pool == NULL)||(thread_pool == NULL))
@@ -141,6 +152,7 @@ int listener(char *interface, unsigned short port)
 		pthread_create(&thread_pool[i], NULL, (void *(*)(void*))&worker, (void*)i);
 		pthread_detach(thread_pool[i]);
 	}
+#endif
 
 #endif
 	BIGMessage("--- Listening on port %d ---",port);
@@ -188,6 +200,7 @@ int listener(char *interface, unsigned short port)
 			sock->logbuffer[0]=0;
 #ifdef THREAD_POOL
 #ifdef __WIN32__
+#error "THREAD_POOL not implemented for WIN32 targets"
 #else
 			while(!push_request(sock) && loop) // try every second or when "thread_free" fires
 			{
@@ -229,7 +242,9 @@ int listener(char *interface, unsigned short port)
 #endif
 
 #ifdef THREAD_POOL
-#ifndef __WIN32__
+#ifdef __WIN32__
+#error "THREAD_POOL not implemented for WIN32 targets"
+#else
 	// Send broadcast signal so that threads unblock.
 //	pthread_cond_broadcast(&new_request); // you did'nt need it. 2 lines forward you use pthread_cancel, so it stop thread, because pthread_cond_wait is cancellation point.
 
