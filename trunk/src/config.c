@@ -36,6 +36,18 @@ char* LOGFILE;
 char* ROOT;
 char* DEFAULTFILE;
 
+int sar(char *str,char chr)
+{
+	if (strlen(str)!=2) 
+		return 0;
+	if ((str[0] == '-') || (str[0] == '/'))
+	{
+		if (str[1] == chr)
+			return 1;
+	}
+	return 0;
+}
+
 void getconfig(int argc, char **argv)
 {
 	int i;
@@ -57,19 +69,19 @@ void getconfig(int argc, char **argv)
 	{
 		if (next == next_param)
 		{
-			if (0 == strcmp(argv[i], "--port"))
+			if ((0 == strcmp(argv[i], "--port")) || (sar(argv[i],'p')))
 				next = next_port;
-			else if (0 == strcmp(argv[i], "--log"))
+			else if ((0 == strcmp(argv[i], "--log")) || (sar(argv[i],'l')))
 				next = next_logfile;
-			else if (0 == strcmp(argv[i], "--root"))
+			else if ((0 == strcmp(argv[i], "--root")) || (sar(argv[i],'r')))
 				next = next_root;
-			else if (0 == strcmp(argv[i], "--interface"))
+			else if ((0 == strcmp(argv[i], "--interface")) || (sar(argv[i],'i')))
 				next = next_interface;
 			else if (0 == strcmp(argv[i], "--nolog"))
 				DOLOG = 0;
 			else if (0 == strcmp(argv[i], "--nodirlist"))
 				NODIRLIST = 1;
-			else if (0 == strcmp(argv[i], "--default"))
+			else if ((0 == strcmp(argv[i], "--default")) || (sar(argv[i],'d')))
 				next = next_defaultfile;
 			else if (0 == strcmp(argv[i], "--noname"))
 				LISTSERVER = 0;
@@ -77,18 +89,18 @@ void getconfig(int argc, char **argv)
 			else if (0 == strcmp(argv[i], "--threads"))
 				next = next_threads;
 #endif
-			else if ((0 == strcmp(argv[i], "--help")) || (0 == strcmp(argv[i], "/?")))
+			else if ((0 == strcmp(argv[i], "--help")) || (sar(argv[i],'?')) | (sar(argv[i],'h')))
 			{
 				printf("Usage: %s [options] (%s)\nOptions:\n", argv[0],VERSION);
-				printf("  /?, --help               Display this information\n");
-				printf("  --port <port>            Listen on port <port> (default %d)\n",DEFAULT_PORT);
-				printf("  --interface <ip>         Specify the interface the server listens on (default: ALL)\n");
+				printf("  -h, /?, --help           Display this information\n");
+				printf("  -p, --port <port>        Listen on port <port> (default %d)\n",DEFAULT_PORT);
+				printf("  -i, --interface <ip>     Specify the interface the server listens on (default: ALL)\n");
 
-				printf("  --log <file>             Save the log file as <file> (default: %s)\n",DEFAULT_LOGFILE);
+				printf("  -l, --log <file>         Save the log file as <file> (default: %s)\n",DEFAULT_LOGFILE);
 				printf("  --nolog                  Disables logging, overrides any '--log' setting\n");
 
-				printf("  --root <path>            Specify the document root directory (default: %s)\n",DEFAULT_ROOT);
-				printf("  --default <filename>     Specify the default document filename in a directory (default: %s)\n",DEFAULT_DEFAULTFILE);
+				printf("  -r, --root <path>        Specify the document root directory (default: %s)\n",DEFAULT_ROOT);
+				printf("  -d, --default <filename> Specify the default document filename in a directory (default: %s)\n",DEFAULT_DEFAULTFILE);
 				printf("  --nodirlist              Do not do any directory listings, just return a '404 File not found'\n");
 				printf("  --noname                 Do not specify servername in directory listings or HTTP headers\n");
 #ifdef THREAD_POOL
