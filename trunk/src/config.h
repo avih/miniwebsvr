@@ -21,7 +21,7 @@
 
 /************************* Compile time Limits/Options ***********************/
 
-#define VERSION "MiniWebSvr/0.0.8"
+//#define VERSION "MiniWebSvr/0.0.8"
 #define COPYRIGHT "Copyright (C) 2007  Nickolas Antonie Grigoriadis"
 #define EMAIL "grigi_ at users.sourceforge.net"
 

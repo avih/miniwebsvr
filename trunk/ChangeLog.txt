@@ -1,10 +1,19 @@
+Tue Jun 26 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- MiniWebSvr now prints message on bad parameter
+	- Short parameter support
+	- Version is now specified in Makefile
+
 Sat Jun 16 2007 Daniel Walker <djwalker at users.sourceforge.net>
 	- Since THREAD_POOL and __WIN32__ are not compatible, Win32 builds
 	  would fail when THREAD_POOL is defined. It now fails far more cleanly,
 	  with advice not to enable THREAD_POOL for Windows.
 
+Tue Jun 12 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- Optional winmain entry point, still need to investigate if this is
+	  what we want...
+
 Mon May 28 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
-	- Renamed --stealth bach to --noname
+	- Renamed --stealth back to --noname
 	- Fixed name/version reporting in generated errors
 	- Fixed a bug in reporting the data range when whole file requested
 	- Fixed capitalisation in reference to MiniWebSvr
