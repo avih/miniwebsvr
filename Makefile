@@ -18,7 +18,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-VERSION='0.0.8'
+VERSION="MiniWebSvr/0.0.9svn"
 
 # Common source files
 FILES=src/config.c src/gethead.c src/header.c src/listener.c src/logging.c src/options.c src/server.c src/strl.c src/url.c
@@ -32,13 +32,13 @@ LIBS=-lpthread -lrt
 # Win32 Libraries
 LIBSWIN=-lws2_32
 
-COMMONFLAGS=-Wall -Wextra
+COMMONFLAGS=-Wall -Wextra -DVERSION='${VERSION}'
 RELEASEFLAGS=-Os -s
 DEBUGFLAGS=-O0 -g -D_DEBUG -pedantic -std=gnu99
 
 
 help:
-	@echo 'MiniWebSvr ${VERSION} make:'
+	@echo "${VERSION} make:"
 	@echo
 	@echo 'Flags that affect compilation:'
 	@echo '  CFLAGS        - Compiler optimization flags'

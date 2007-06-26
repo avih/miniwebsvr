@@ -77,10 +77,10 @@ void getconfig(int argc, char **argv)
 			else if (0 == strcmp(argv[i], "--threads"))
 				next = next_threads;
 #endif
-			else
+			else if ((0 == strcmp(argv[i], "--help")) || (0 == strcmp(argv[i], "/?")))
 			{
-				printf("Usage: %s [options]\nOptions:\n", argv[0]);
-				printf("  --help                   Display this information\n");
+				printf("Usage: %s [options] (%s)\nOptions:\n", argv[0],VERSION);
+				printf("  /?, --help               Display this information\n");
 				printf("  --port <port>            Listen on port <port> (default %d)\n",DEFAULT_PORT);
 				printf("  --interface <ip>         Specify the interface the server listens on (default: ALL)\n");
 
@@ -94,6 +94,11 @@ void getconfig(int argc, char **argv)
 #ifdef THREAD_POOL
 				printf("  --threads <thread_nos>   Specify number of threads in thread pool (default %d)\n",DEFAULT_THREAD_POOL_SIZE);
 #endif
+				exit(0);
+			}
+			else
+			{
+				printf("Unknown parameter \"%s\". Type \"%s --help\" for more info.\n",argv[i],argv[0]);
 				exit(0);
 			}
 			continue;
