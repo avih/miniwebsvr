@@ -74,6 +74,15 @@ int listener(char *interface, unsigned short port)
 	local.sin_family = AF_INET;
 	local.sin_addr.s_addr = (!interface)?INADDR_ANY:inet_addr(interface);
 
+	if (local.sin_addr.s_addr == INADDR_NONE)
+	{
+		Critical("Interface address \"%s\" is not valid.\n",interface);
+		#ifdef __WIN32__
+		WSACleanup();
+		#endif
+		return -1;
+	}
+
 	local.sin_port = htons(port);
 
 	listen_socket = socket(AF_INET, SOCK_STREAM,0); // TCP socket

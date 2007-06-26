@@ -106,7 +106,13 @@ void getconfig(int argc, char **argv)
 		if (next == next_logfile)
 			LOGFILE = argv[i];
 		else if (next == next_port)
+		{
 			PORT = atoi(argv[i]);
+			if ((PORT<1) || (PORT>65535)) {
+				printf("Bad port \"%s\". Must be integer from 1 to 65535.\n",argv[i]);
+				exit(0);
+			}
+		}
 		else if (next == next_root)
 			ROOT = argv[i];
 		else if (next == next_interface)
@@ -115,7 +121,12 @@ void getconfig(int argc, char **argv)
 			DEFAULTFILE = argv[i];
 #ifdef THREAD_POOL
 		else if (next == next_threads)
+		{
 			THREAD_POOL_SIZE = atoi(argv[i]);
+			if ((THREAD_POOL_SIZE<1) || (THREAD_POOL_SIZE>32)) {
+				printf("Bad thread pool size \"%s\". Must be positive integer from 1 to 32.\n",argv[i]);
+			}
+		}
 #endif
 		next = next_param;
 	}
