@@ -15,10 +15,26 @@ Add all C files in the <code>src/</code> directory to your project, or:<br>
 
 <br>
 Using MinGW (Windows):
-<pre>gcc -o miniwebsvr.exe src/*.c -Wall -lws2_32 -O2 -fomit-frame-pointer -march=i486 -mtune=i686 -s</pre>
+<pre>gcc -o miniwebsvr.exe src/*.c -Wall -lws2_32 -O2 -s</pre>
 Using GCC:
-<pre>gcc -o miniwebsvr src/*.c -Wall -O2 -fomit-frame-pointer -march=i486 -mtune=i686 -s</pre>
+<pre>gcc -o miniwebsvr src/*.c -Wall -O2 -s</pre>
 <br>
-To enable debug information just define &quot;_DEBUG&quot;<br>
+To enable debug information just define <i>&quot;_DEBUG&quot;</i><br>
+If you define <i>VERSION=&quot;someversion&quot;</i> it will override the version name/number<br>
+<br>
+A Makefile is also provided for UNIX/LINUX systems:
+<pre>
+Flags that affect compilation:
+  CFLAGS        - Compiler optimization flags
+
+Targets:'
+  release       - Builds a release build of MiniWebSvr
+  debug         - Builds a debug build of MiniWebSvr
+  xwin32        - Builds a release build of MiniWebSvr for Windows using mingw32-gcc cross compiler
+  xwin32d       - Builds a debug build of MiniWebSvr for Windows using mingw32-gcc cross compiler
+
+Maintenance:
+  clean         - Cleans up the files created by make
+</pre>
 <br>
 <?endpage();?>
