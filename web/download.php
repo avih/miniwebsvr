@@ -18,9 +18,9 @@ Using MinGW (Windows):
 <pre>gcc -o miniwebsvr.exe src/*.c -Wall -lws2_32 -O2 -s</pre>
 Using GCC:
 <pre>gcc -o miniwebsvr src/*.c -Wall -O2 -s</pre>
-<br>
 To enable debug information just define <i>&quot;_DEBUG&quot;</i><br>
 If you define <i>VERSION=&quot;someversion&quot;</i> it will override the version name/number<br>
+<br>
 <br>
 A Makefile is also provided for UNIX/LINUX systems:
 <pre>
