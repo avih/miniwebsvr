@@ -87,9 +87,17 @@ int listener(char *interface, unsigned short port)
 
 	listen_socket = socket(AF_INET, SOCK_STREAM,0); // TCP socket
 
-	// Enable address reuse
 	on = 1;
+	#ifdef _DEBUG
+	// Enable address reuse (Only on debug)
 	setsockopt( listen_socket, SOL_SOCKET, SO_REUSEADDR, (const char*)&on, sizeof(on) );
+	#else
+	#ifdef __WIN32__
+	// Enable stricter Win32 sockets security.
+	setsockopt( listen_socket, SOL_SOCKET, SO_EXCLUSIVEADDRUSE, (const char*)&on, sizeof(on) );
+	#endif
+	#endif
+
 	// Disable Nagle
 	// Since we are implementing our own buffering Nagle just gets in the way.
 	setsockopt( listen_socket, IPPROTO_TCP, TCP_NODELAY, (const char*)&on, sizeof(on) );
