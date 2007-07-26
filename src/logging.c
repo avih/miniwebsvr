@@ -44,7 +44,10 @@ void StartLogging(char* name)
 	if (!DOLOG) return;
 
 	if ((LogStream = fopen(name, "at")) == NULL)
+	{
 		LogStream=stdout;
+		printf("Warning: Failed to open logfile \"%s\", printing logs to stdout.\n",name);
+	}
 
 	setbuf(LogStream, outbuf);  /// Optimization for speed, OS might not follow spec.
 }
