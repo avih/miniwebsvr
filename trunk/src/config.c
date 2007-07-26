@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #include "config.h"
 
@@ -51,6 +52,7 @@ int sar(char *str,char chr)
 void getconfig(int argc, char **argv)
 {
 	int i;
+	struct stat statbuf;
 	enum { next_param, next_port, next_logfile, next_root, next_interface, next_threads, next_defaultfile } next = next_param;
 
 	PORT=DEFAULT_PORT;
@@ -126,7 +128,14 @@ void getconfig(int argc, char **argv)
 			}
 		}
 		else if (next == next_root)
+		{
 			ROOT = argv[i];
+			if (!((0 == stat(ROOT, &statbuf)) && (statbuf.st_mode & S_IFDIR)))
+			{
+				printf("Invalid root \"%s\". Must be a valid directory.\n",ROOT);
+				exit(0);
+			}
+		}
 		else if (next == next_interface)
 			INTERFACE = argv[i];
 		else if (next == next_defaultfile)
