@@ -1,3 +1,6 @@
+Wed Jul 01 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- Fixed some spelling mistakes :P
+
 Tue Jun 26 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- MiniWebSvr now prints message on bad parameter
 	- Short parameter support
@@ -40,7 +43,7 @@ Thu May 24 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Added command-line options for Default page support --defualt
 	- Added option to set log off --nolog
 	- Added option to disable directory listings
-	- Added option to hide servername in directory listing and HTTP
+	- Added option to hide server name in directory listing and HTTP
 	  headers.
 
 Sat Mar 10 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
@@ -56,7 +59,7 @@ Fri Feb 16 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Minor alterations to patch to fix race condition, and exit on flag
 	- Re-patched the patched patch (phew!) Helc provided me with some good
 	  advice on the mistakes I have made.
-	- After that, and resolving a possibly unnessesary sleep got a ~15%
+	- After that, and resolving a possibly unnecessary sleep got a ~15%
 	  speedup!
 
 Tue Feb 13 2007 Daniel Walker <djwalker at users.sourceforge.net>
@@ -74,7 +77,7 @@ Thu Feb 8 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Started implementing pthreads support
 
 Wed Feb 7 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
-	- HTTP/1.0 style "Range" requests are implmented and tested
+	- HTTP/1.0 style "Range" requests are implemented and tested
 	- Added a ton of debug info
 
 Sat Feb 3 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
@@ -104,7 +107,7 @@ Thu Jan 18 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Fixed a bug in server_readln where it would return an array that is
 	  one character too long. The problem was hidden because the buffer
 	  start out as zeroes.
-	- Supports conditinal GET's
+	- Supports conditional GET's
 	  If-Modified-Since: Using string comparison (Based on the assumption the client stores the string)
 	  Tested & works with Firefox, Konqueror & IE. Opera is not playing nice, not even requesting an
 	  If-Modified-Since on forced refresh, and it's cache never expires.
@@ -117,7 +120,7 @@ Tue Jan 16 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 
 Mon Jan 15 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Made directory listing look more like Apache
-	- strl(cpy/cat) strnlen implementations are now optinally inlineable
+	- strl(cpy/cat) strnlen implementations are now optionally in-line able
 	- Added option to limit listening to one specified interface only
 
 Fri Jan 12 2007 Nickolas Girgoriadis <grigi_@sourceforge.net>
@@ -127,9 +130,9 @@ Fri Jan 12 2007 Nickolas Girgoriadis <grigi_@sourceforge.net>
 	  the no of string scans
 	- Implemented output Buffering, so that header will get sent with some
 	  data appended (one packet) versus about 6-9 packets.
-	- Blocked the 'nul' virual file device (in windows), it would open a
+	- Blocked the 'nul' virtual file device (in windows), it would open a
 	  write only file as readable, then (if you are lucky) the kernel will
-	  kill the rogue process attemting to allocate an infinite amount of
+	  kill the rogue process attempting to allocate an infinite amount of
 	  ram.
 	- With the improvements, a generic nikto scan over a wireless & lan
 	  network (simulate ~10ms latency), the scan time went down from 2 minutes
@@ -148,7 +151,7 @@ Thu Jan 11 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 Wed Jan 10 2007 Daniel Walker <djwalker at users.sourceforge.net>
 	You can now set the document root using the --root parameter
 	miniweb no parses URL's better, it now copes with % and ?
-	a potential bufer overrun has been fixed
+	A potential buffer overrun has been fixed
 	it was possible to bypass the sub-root protection by typing GET ./
 
 Wed Jan 10 2007 Daniel Walker <djwalker at users.sourceforge.net>
@@ -168,7 +171,7 @@ Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 
 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	Released version 0.02
-	- Added MIME types supprt
+	- Added MIME types support
 	Parses % in URL correctly
 
 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>

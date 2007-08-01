@@ -16,7 +16,7 @@ Options:
   --root <path>            Specify the document root directory (default: .)
   --default <filename>     Specify the default document filename in a directory (default: index.html)
   --nodirlist              Do not do any directory listings, just return a '404 File not found'
-  --noname                 Do not specify servername in directory listings or HTTP headers
+  --noname                 Do not specify server name in directory listings or HTTP headers
 UNIX only:
   --threads <thread_nos>   Specify number of threads in thread pool (default 8)
 
@@ -29,7 +29,7 @@ The web-server supports the following:
 - Supports GET/HEAD/OPTIONS
 - Logging to disk
 - Small memory footprint
-- Muti-threaded
+- Multi-threaded
 - Written in plain C
 - Win32 and UNIX
 - Command line options
@@ -41,9 +41,9 @@ The web-server supports the following:
 
 
 Was originally designed as a small stand-alone web-server, but I think I'll
-change the scope to a small embedded web serbver, so maybe serve pages to
+change the scope to a small embedded web server, so maybe serve pages to
 browsers to support an game, maybe provide live stats of the game world
-(would be usefull for an online game) or used for downloading in-game content
+(would be useful for an online game) or used for downloading in-game content
 to a client. So eventually it will be an embedded HTTP server.
 
 
@@ -58,7 +58,7 @@ MiniWebSvr is mostly developed by Nickolas Antonie Grigoriadis <grigi_ at users.
 Version 0.0.8: (2007-05-28)
 New Features:
 - Extra command-line options to:
-  - Set defualt page name
+  - Set default page name
   - Disable directory listing
   - Disable reporting of server name & version
   - Disable logging
@@ -77,7 +77,7 @@ Version 0.0.6: (2007-02-09)
 For more platforms:
 - Support for UNIX sockets and pthreads support.
 - Support for download resuming.
-- Several bugfixes.
+- Several bug fixes.
 
 Version 0.05: (2007-01-18)
 This version supports:
