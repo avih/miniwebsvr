@@ -1,6 +1,6 @@
 <? include "lib.php"; startpage(); ?>
 <h2>What is MiniWebsvr:</h2>
-MiniWebsvr is a small web server that aims to one day be embeddable.<br>
+MiniWebsvr is a tiny/small HTTP web server that aims to one day be embeddable.<br>
 Small footprint and light on resources is a major requirement.<br>
 <br>
 
@@ -14,12 +14,12 @@ The aim of this project is firstly:
 
 And secondly:
 <ul>
-<li> Create a embedable webserver library you can link into your application.
+<li> Create a embeddable web server library you can link into your application.
 <li> Provide mechanisms to serve pages easily.
 <li> The idea is <b>NOT</b> to have the applets plug-in to the server, but the server to plug-in to the base application.
 </ul>
 
-Part of this project is a set of small helpler libraries that make using/managing the webserver easier:
+Part of this project is a set of small helper libraries that make using/managing the web server easier:
 <ul>
 <li> Templating system, for easy creation of non-structured data like HTML pages
 <li> Small XML parser/generator to read/serve configuration or SOAP-like functionality

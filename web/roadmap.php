@@ -28,20 +28,28 @@ Key:
 <li>Add support for range-bound downloads (Support Resume)
 </ul>
 
-<b>0.0.6 Released (Feb 9 2007)</sub></b><br>
+<b>0.0.6 Released (Feb 9 2007)</b><br>
 
 <ul>
 <li>Implement fixed-size thread pool<sub>(PThreads implementation only)</sub>
 </ul>
 
-<b>0.0.7 Released (Mar 10 2007)</sub></b><br>
+<b>0.0.7 Released (Mar 10 2007)</b><br>
 
 <ul>
 <li>Implement custom default index
 <li>Optional disabling of directory listing,reporting of name and version &amp; logging
 </ul>
 
-<b>0.0.8 Released (May 28 2007)</sub></b><br>
+<b>0.0.8 Released (May 28 2007)</b><br>
+
+<ul>
+<li>Error checking with errors and/or warnings for command-line options
+<li>Under Win32 architectures you could hijack the port the server listens on - Fixed
+<li>Short versions of command-line parameter options
+
+
+<b>0.0.9</b><br>
 
 <ul>
 <li type=circle>Config system (Optional config file)
@@ -53,7 +61,7 @@ Key:
 </ul>
 
 <b>Requirements for 0.1.0 met (Beta)</b><br>
-Version 0.1.0 should have a featureset to be a complete static content server<br>
+Version 0.1.0 should have a feature set to be a complete static content server<br>
 
 <ul>
 <li type=circle>Implement self-adjusting size thread pool
@@ -63,7 +71,7 @@ Version 0.1.0 should have a featureset to be a complete static content server<br
 <li type=circle>Implement XML Generator
   <ul>
   <li type=circle>Implement Directory Listing using XML Generator
-  <li type=circle>Re-implement strign handling to suit
+  <li type=circle>Re-implement string handling to suit
   </ul>
 <li type=circle> Add preliminary HOOK support <sub>Need to revise if this is wise, a VFS might work much more elegantly</sub> 
 </ul>
@@ -83,7 +91,7 @@ Features that we intend to implement, but have not given it much thought (as it 
   <li type=circle>HOOK to override the default directory listing func
   <li type=circle>HOOK to call a func with given parameters when a certain resource (file) is called
   <li type=circle>HOOK to define fixed-content, and maybe even override disk IO with some VFS (so you can serve static content out of your own bundled resource file or a DB, etc...)
-  <li type=circle>HOOK to override a whole directory, and that returns the sub-path and paremeters to a func
+  <li type=circle>HOOK to override a whole directory, and that returns the sub-path and parameters to a func
   </ul>
 <li type=circle>POST support
 <li type=circle>PUT support

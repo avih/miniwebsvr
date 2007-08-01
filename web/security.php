@@ -6,7 +6,7 @@ This page lists the security issues that the author knows about, and their resol
 <h3>Version 0.0.7:</h3>
 
 <b>Description:</b><br>
-Suffers from a directory traversal flaw, using a specially crafted url one can list the parent folders<br>
+Suffers from a directory traversal flaw, using a specially crafted URL one can list the parent folders<br>
 <b>Risk:</b><br>
 Critical<br>
 <b>Credits to:</b><br>
@@ -20,7 +20,7 @@ Fixed in 0.0.8<br>
 <h3>Version 0.0.6 and older:</h3>
 
 <b>Description:</b><br>
-Suffers from a directory traversal flaw, using a specially crafted url <code>"http://yoursite/..%00"</code>  one can list the parent folder<br>
+Suffers from a directory traversal flaw, using a specially crafted URL <code>"http://yoursite/..%00"</code>  one can list the parent folder<br>
 <b>Risk:</b><br>
 Medium (You can only list the folder contents one level up, not view the file contents)<br>
 <b>Credits to:</b><br>
