@@ -101,7 +101,7 @@ void Parse(const string &p_filename) {
 				cout << "Could not allocate " << contentlength << " byte buffer" << endl;
 			}
 		} else {
-			cout << "Cannot find filesize of " << p_filename << endl;
+			cout << "Cannot find file size of " << p_filename << endl;
 		}
 		fclose(in);
 	} else {

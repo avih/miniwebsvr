@@ -1,12 +1,12 @@
 MiniWeb Helper Templates
 
-This is a templating system to assist in generating HTML content dynamically.
-One of the first usefull examples I intend to create is the direcory listing
+This is a template system to assist in generating HTML content dynamically.
+One of the first useful examples I intend to create is the directory listing
 template.
 
 It will have a template "parser" (for interpreting the template) and some way
 of "Compiling" the template to C++ source. (If that is not reasonably simple
-to do, an option of atleast exporting the internal parsed tree to source would
+to do, an option of at least exporting the internal parsed tree to source would
 be cool too)
 
 Templates will be as follows:
