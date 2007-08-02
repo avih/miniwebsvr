@@ -1,3 +1,6 @@
+Thu Jul 02 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- FreeBSD implementation
+
 Wed Jul 01 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Fixed some spelling mistakes :P
 

@@ -28,13 +28,17 @@ HFILES=src/config.h src/gethead.h src/header.h src/listener.h src/logging.h src/
 S_FILES=src/main.c
 
 # POSIX-Style Libraries
-LIBS=-lpthread -lrt
+LIBS=-lpthread
 # Win32 Libraries
 LIBSWIN=-lws2_32
 
 COMMONFLAGS=-Wall -Wextra -DVERSION='${VERSION}'
 RELEASEFLAGS=-Os -s
 DEBUGFLAGS=-O0 -g -D_DEBUG -pedantic -std=gnu99
+OS=$(shell uname)
+ifeq (${OS},Linux)
+LIBS+= -lrt
+endif
 
 
 help:
