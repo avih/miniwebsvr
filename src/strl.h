@@ -19,6 +19,14 @@
 #ifndef STRL_H
 #define STRL_H
 
+#if __BSD_VISIBLE
+	#define STATIN
+
+	#if !defined strnlen
+	extern size_t strnlen (const char *s, size_t maxlen);
+	#endif
+#else
+
 #include "config.h"
 
 #if defined USE_INLINE
@@ -44,5 +52,7 @@
 	#endif
 
 #endif // USE_INLINE
+
+#endif // __BSD_VISIBLE
 
 #endif // STRL_H

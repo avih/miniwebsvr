@@ -29,7 +29,9 @@
 
 /// Defines whether the server must run in multiple threads (recommended)
 #define MULTITHREADED
+#if ! __BSD_VISIBLE
 #define USE_INLINE
+#endif
 
 /// Defines if a Thread Pool is to be used (recommended)
 #ifdef MULTITHREADED

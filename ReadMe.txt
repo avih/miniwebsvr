@@ -55,6 +55,20 @@ MiniWebSvr is mostly developed by Nickolas Antonie Grigoriadis <grigi_ at users.
 
 --- Release Notes ---
 
+Version 0.0.9: ()
+New Features:
+- Command-line options checking
+  MiniWebSvr will now complain if an incorrect parameter is specified
+  - Cannot write to specified logfile
+  - Cannot open 'root' directory
+  - Port value out-of-bounds
+  - Limits the no of threads in thread-pool to a sane amount
+- Support for FreeBSD
+  Please use gmake with gcc on this platform.
+Bug Fixes:
+- Fixes a security issue where another application can hijack the listening
+  port of the server
+
 Version 0.0.8: (2007-05-28)
 New Features:
 - Extra command-line options to:
@@ -86,3 +100,6 @@ This version supports:
 - GET
   - Conditional GET (If-Modified-Since)
 Also a considerable amount of bug fixes and possible buffer-overflow fixes has been made.
+
+Version 0.0.4: (2007-01-01)
+First LGPL release
