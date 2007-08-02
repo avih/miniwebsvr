@@ -19,7 +19,7 @@
 #include "os_compat.h"
 
 #include <stdio.h>
-#include <malloc.h>
+#include <stdlib.h>
 
 #include "config.h"
 #include "server.h"

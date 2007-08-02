@@ -39,19 +39,19 @@ DEBUGFLAGS=-O0 -g -D_DEBUG -pedantic -std=gnu99
 
 help:
 	@echo "${VERSION} make:"
-	@echo
+	@echo ''
 	@echo 'Flags that affect compilation:'
 	@echo '  CFLAGS        - Compiler optimization flags'
-	@echo
+	@echo ''
 	@echo 'Targets:'
 	@echo '  release       - Builds a release build of MiniWebSvr'
 	@echo '  debug         - Builds a debug build of MiniWebSvr'
 	@echo '  xwin32        - Builds a release build of MiniWebSvr for Windows using mingw32-gcc cross compiler'
 	@echo '  xwin32d       - Builds a debug build of MiniWebSvr for Windows using mingw32-gcc cross compiler'
-	@echo
+	@echo ''
 	@echo 'Maintenance:'
 	@echo '  clean         - Cleans up the files created by make'
-	@echo
+	@echo ''
 	@echo 'e.g.'
 	@echo 'CFLAGS="-march=i586 -mtune=i686 -fomit-frame-pointer" make release'
 
@@ -70,4 +70,4 @@ xwin32d: $(FILES) $(HFILES) $(S_FILES)
 	mingw32-gcc -o miniwebsvr.exe ${FILES} ${S_FILES} ${COMMONFLAGS} ${DEBUGFLAGS} ${LIBSWIN} ${CFLAGS}
 
 clean:
-	rm --force miniwebsvr miniwebsvr.exe miniwebsvr.log
+	rm -f miniwebsvr miniwebsvr.exe miniwebsvr.log
