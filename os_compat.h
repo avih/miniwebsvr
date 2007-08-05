@@ -28,7 +28,7 @@
 	#define socklen_t int
 
 	#define SEND_FLAG 0	// Windows does not have a similar flag?
-
+	#define SOCKETS_ERRNO WSAGetLastError()
 #else // !_WINDOWS__
 	// Compile for UNIX Sockets
 	#include <sys/types.h>
@@ -50,6 +50,11 @@
 	#define HANDLE pthread_t
 
 	#define SEND_FLAG MSG_NOSIGNAL
+
+
+	#define SOCKETS_ERRNO errno
+
+	#define closesocket(s) close(s)
 
 #endif // !__WINDOWS__
 
