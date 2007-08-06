@@ -22,7 +22,8 @@ To enable debug information just define <i>&quot;_DEBUG&quot;</i><br>
 If you define <i>VERSION=&quot;someversion&quot;</i> it will override the version name/number<br>
 <br>
 <br>
-A Makefile is also provided for UNIX/LINUX systems:
+A Makefile is also provided for UNIX/LINUX systems:<br>
+<i>Please use GNU make.(gmake on non-GNU platforms, like FreeBSD)</i>
 <pre>
 Flags that affect compilation:
   CFLAGS        - Compiler optimization flags
