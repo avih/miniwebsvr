@@ -67,7 +67,8 @@ a.sidebar:hover { color: yellow; }
 	<br>
 	Sample WebServer:<br>	
 	<hr noshade="noshade" size="1" color="white">
-	<a href="http://196.4.161.17:8080/">Sample MiniWebSvr</a>
+	<a class=sidebar href="http://196.4.161.17:8080/">Sample MiniWebSvr</a><br>
+	<br>
 	Affiliations:<br>	
 	<hr noshade="noshade" size="1" color="white">
 	<a href="http://www.sagamedev.com/"><img src="images/sagd-btn.gif" border="0" height="31" width="88"></a><br>
