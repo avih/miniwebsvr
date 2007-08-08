@@ -65,6 +65,9 @@ a.sidebar:hover { color: yellow; }
 	Hosted by<br>SourceForge:<br>
 	<a href="http://sourceforge.net"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=187000&amp;type=2" width="125" height="37" border="0" alt="SourceForge.net Logo" /></a><br>
 	<br>
+	Sample WebServer:<br>	
+	<hr noshade="noshade" size="1" color="white">
+	<a href="http://196.4.161.17:8080/">Sample MiniWebSvr</a>
 	Affiliations:<br>	
 	<hr noshade="noshade" size="1" color="white">
 	<a href="http://www.sagamedev.com/"><img src="images/sagd-btn.gif" border="0" height="31" width="88"></a><br>
