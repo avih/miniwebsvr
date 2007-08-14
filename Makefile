@@ -50,8 +50,8 @@ help:
 	@echo 'Targets:'
 	@echo '  release       - Builds a release build of MiniWebSvr'
 	@echo '  debug         - Builds a debug build of MiniWebSvr'
-	@echo '  xwin32        - Builds a release build of MiniWebSvr (Console application) for Windows using mingw32-gcc cross compiler'
-	@echo '  xwin32ng      - Builds a release build of MiniWebSvr (Non-Console application) for Windows using mingw32-gcc cross compiler'
+	@echo '  xwin32c       - Builds a release build of MiniWebSvr (Console application) for Windows using mingw32-gcc cross compiler'
+	@echo '  xwin32        - Builds a release build of MiniWebSvr (Non-Console application) for Windows using mingw32-gcc cross compiler'
 	@echo '  xwin32d       - Builds a debug build of MiniWebSvr for Windows using mingw32-gcc cross compiler'
 	@echo ''
 	@echo 'Maintenance:'
@@ -67,16 +67,16 @@ debug: $(FILES) $(HFILES) $(S_FILES)
 release: $(FILES) $(HFILES) $(S_FILES)
 	gcc -o miniwebsvr ${FILES} ${S_FILES} ${COMMONFLAGS} ${RELEASEFLAGS} ${LIBS} ${CFLAGS}
 
-xwin32: $(FILES) $(HFILES) $(S_FILES)
-	mingw32-gcc -o miniwebsvr.exe ${FILES} ${S_FILES} ${COMMONFLAGS} ${RELEASEFLAGS} ${LIBSWIN} ${CFLAGS}
-	upx --best -q miniwebsvr.exe
+xwin32c: $(FILES) $(HFILES) $(S_FILES)
+	mingw32-gcc -o miniwebsvrcon.exe ${FILES} ${S_FILES} ${COMMONFLAGS} ${RELEASEFLAGS} ${LIBSWIN} ${CFLAGS}
+	upx --best -q miniwebsvrcon.exe
 
-xwin32ng: $(FILES) $(HFILES) $(S_FILES)
-	mingw32-gcc -o miniwebsvrnogui.exe -mwindows ${FILES} ${S_FILES} -DUSEWINMAIN ${COMMONFLAGS} ${RELEASEFLAGS} ${LIBSWIN} ${CFLAGS}
-	upx --best -q miniwebsvrnogui.exe
+xwin32: $(FILES) $(HFILES) $(S_FILES)
+	mingw32-gcc -o miniwebsvr.exe -mwindows ${FILES} ${S_FILES} -DUSEWINMAIN ${COMMONFLAGS} ${RELEASEFLAGS} ${LIBSWIN} ${CFLAGS}
+	upx --best -q miniwebsvr.exe
 
 xwin32d: $(FILES) $(HFILES) $(S_FILES)
 	mingw32-gcc -o miniwebsvr.exe ${FILES} ${S_FILES} ${COMMONFLAGS} ${DEBUGFLAGS} ${LIBSWIN} ${CFLAGS}
 
 clean:
-	rm -f miniwebsvr miniwebsvr.exe miniwebsvr.log
+	rm -f miniwebsvr miniwebsvr.exe miniwebsvrcon.exe miniwebsvr.log
