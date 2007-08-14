@@ -16,6 +16,8 @@
     License along with this library; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
+#include "os_compat.h"
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
@@ -45,8 +47,15 @@ void StartLogging(char* name)
 
 	if ((LogStream = fopen(name, "at")) == NULL)
 	{
-		LogStream=stdout;
+		#ifndef USEWINMAIN
 		printf("Warning: Failed to open logfile \"%s\", printing logs to stdout.\n",name);
+		#else
+		char buf[256];
+		snprintf(buf,255,"Failed to open logfile \"%s\", printing logs to stdout.\n",name);
+		buf[255]=0;
+		MessageBox(NULL, buf, "Warning", MB_ICONWARNING);
+		#endif
+		LogStream=stdout;
 	}
 
 	setbuf(LogStream, outbuf);  /// Optimization for speed, OS might not follow spec.
@@ -102,7 +111,9 @@ void BIGMessage(const char *format, ...)
 
 	buffer[MESSAGE_BUFFER-1]=0;
 	Log(buffer);
+	#ifndef USEWINMAIN
 	printf("%s\n",buffer);
+	#endif
 }
 
 void Error(const char *format, ...)
@@ -131,5 +142,13 @@ void Critical(const char *format, ...)
 
 	buffer[MESSAGE_BUFFER]=0;
 	Log(buffer);
+#ifndef USEWINMAIN
 	fprintf(stderr,"%s\n",buffer);
+#else
+	va_start(argptr, format);
+	vsnprintf(buffer,MESSAGE_BUFFER, format, argptr);
+	va_end(argptr);
+
+	MessageBox(NULL, buffer, "Critical", MB_ICONERROR);
+#endif
 }

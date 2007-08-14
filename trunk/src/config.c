@@ -24,6 +24,7 @@
 #include <sys/stat.h>
 
 #include "config.h"
+#include "logging.h"
 
 #ifdef THREAD_POOL
 unsigned int THREAD_POOL_SIZE;
@@ -93,26 +94,39 @@ void getconfig(int argc, char **argv)
 #endif
 			else if ((0 == strcmp(argv[i], "--help")) || (sar(argv[i],'?')) | (sar(argv[i],'h')))
 			{
-				printf("Usage: %s [options] (%s)\nOptions:\n", argv[0],VERSION);
-				printf("  -h, /?, --help           Display this information\n");
-				printf("  -p, --port <port>        Listen on port <port> (default %d)\n",DEFAULT_PORT);
-				printf("  -i, --interface <ip>     Specify the interface the server listens on (default: ALL)\n");
-
-				printf("  -l, --log <file>         Save the log file as <file> (default: %s)\n",DEFAULT_LOGFILE);
-				printf("  --nolog                  Disables logging, overrides any '--log' setting\n");
-
-				printf("  -r, --root <path>        Specify the document root directory (default: %s)\n",DEFAULT_ROOT);
-				printf("  -d, --default <filename> Specify the default document filename in a directory (default: %s)\n",DEFAULT_DEFAULTFILE);
-				printf("  --nodirlist              Do not do any directory listings, just return a '404 File not found'\n");
-				printf("  --noname                 Do not specify server name in directory listings or HTTP headers\n");
+				#ifdef USEWINMAIN
+				char buf[8192];
+				snprintf(buf,8191,
+				#else
+				printf(
+				#endif
+					"Usage: %s [options] (%s)\nOptions:\n" 
+					" -h, /?, --help           Display this information\n" 
+					" -p, --port <port>        Listen on port <port> (default %d)\n" 
+					" -i, --interface <ip>     Specify the interface the server listens on (default: ALL)\n" 
+					" -l, --log <file>         Save the log file as <file> (default: %s)\n" 
+					" --nolog                  Disables logging, overrides any '--log' setting\n" 
+					" -r, --root <path>        Specify the document root directory (default: %s)\n" 
+					" -d, --default <filename> Specify the default document filename in a directory (default: %s)\n" 
+					" --nodirlist              Do not do any directory listings, just return a '404 File not found'\n" 
+					" --noname                 Do not specify server name in directory listings or HTTP headers\n" 
 #ifdef THREAD_POOL
-				printf("  --threads <thread_nos>   Specify number of threads in thread pool (default %d)\n",DEFAULT_THREAD_POOL_SIZE);
+					" --threads <thread_nos>   Specify number of threads in thread pool (default %d)\n" 
 #endif
+					"",argv[0],VERSION,DEFAULT_PORT,DEFAULT_LOGFILE,DEFAULT_ROOT,DEFAULT_DEFAULTFILE
+#ifdef THREAD_POOL
+					,DEFAULT_THREAD_POOL_SIZE
+#endif
+					);
+				#ifdef USEWINMAIN
+				buf[8191]=0;
+				MessageBox(NULL, buf, "Usage", MB_ICONINFORMATION);
+				#endif
 				exit(0);
 			}
 			else
 			{
-				printf("Unknown parameter \"%s\". Type \"%s --help\" for more info.\n",argv[i],argv[0]);
+				Critical("Unknown parameter \"%s\". Type \"%s --help\" for more info.\n",argv[i],argv[0]);
 				exit(0);
 			}
 			continue;
@@ -123,7 +137,7 @@ void getconfig(int argc, char **argv)
 		{
 			PORT = atoi(argv[i]);
 			if ((PORT<1) || (PORT>65535)) {
-				printf("Bad port \"%s\". Must be integer from 1 to 65535.\n",argv[i]);
+				Critical("Bad port \"%s\". Must be integer from 1 to 65535.\n",argv[i]);
 				exit(0);
 			}
 		}
@@ -132,7 +146,7 @@ void getconfig(int argc, char **argv)
 			ROOT = argv[i];
 			if (!((0 == stat(ROOT, &statbuf)) && (statbuf.st_mode & S_IFDIR)))
 			{
-				printf("Invalid root \"%s\". Must be a valid directory.\n",ROOT);
+				Critical("Invalid root \"%s\". Must be a valid directory.\n",ROOT);
 				exit(0);
 			}
 		}
@@ -145,7 +159,8 @@ void getconfig(int argc, char **argv)
 		{
 			THREAD_POOL_SIZE = atoi(argv[i]);
 			if ((THREAD_POOL_SIZE<1) || (THREAD_POOL_SIZE>32)) {
-				printf("Bad thread pool size \"%s\". Must be positive integer from 1 to 32.\n",argv[i]);
+				Critical("Bad thread pool size \"%s\". Must be positive integer from 1 to 32.\n",argv[i]);
+				exit(0);
 			}
 		}
 #endif

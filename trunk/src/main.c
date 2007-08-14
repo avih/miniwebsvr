@@ -128,7 +128,11 @@ int main(int argc, char **argv)
 
 	if (atexit(&cleanup))
 	{
-		fprintf(stderr, "cannot set exit function\n");
+		#ifdef USEWINMAIN
+		MessageBox(NULL, "Cannot set exit function", "Critical", MB_ICONERROR);
+		#else
+		fprintf(stderr, "Critical: Cannot set exit function\n");
+		#endif
 		return EXIT_FAILURE;
 	}
 	signal (SIGINT, &catch_int);
