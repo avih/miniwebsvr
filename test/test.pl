@@ -1,0 +1,66 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use IO::Socket;
+
+my $host = shift || die "Usage: perl $0 host port test\n";
+my $port = shift || 8080;
+
+my $tests = 0;
+my $failed = 0;
+
+print STDERR "\nStarting tests:\n\n";
+
+my $test = shift;
+while ($test) {
+	my $header = undef;
+	my $response = undef;
+	my $shouldbe = undef;
+
+	print STDERR "Running test: $test ... ";
+	++$tests;
+
+	if (open REQ,"<  test/tests/$test.req")
+	{
+		read REQ,$header,10000;
+		close REQ;
+	}
+
+	if (open RESP,"<  test/tests/$test.resp")
+	{
+		read RESP,$shouldbe,10000;
+		close RESP;
+	}
+
+	if ($header and $shouldbe) {
+		my $sock = new IO::Socket::INET(PeerAddr => $host, PeerPort => $port, PeerProto => 'tcp') or die "Error: $!\n";
+
+		#print $header,"\n";
+		$sock->send($header);
+		$sock->recv($response,10000);
+		#print $response,"\n";
+		$sock->close;
+
+		# Mangle response so that date & version issues does not bother us:
+		$response =~ s/\r\nLast-Modified:[^\r]*\r\n/\r\nLast-Modified:\r\n/;
+		$response =~ s/\r\nServer: MiniWebSvr\/[^\r]*\r\n/\r\nServer: MiniWebSvr\/\r\n/;
+		$response =~ s/\r\nDate:[^\r]*\r\n/\r\nDate:\r\n/;
+
+		if ($response ne $shouldbe) {
+			print STDERR "failed - Result mismatch\n";
+			++$failed;
+			print "Got:\n$response\n";
+			print "Should be:\n$shouldbe\n";
+		} else {
+			print STDERR "succeed\n";
+		}
+	} else {
+		print STDERR "failed - Test not complete\n";
+		++$failed;
+	}
+
+	$test = shift;
+}
+
+print STDERR "\nRan $tests tests, where $failed failed\n\n";

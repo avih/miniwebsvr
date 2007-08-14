@@ -79,4 +79,13 @@ xwin32d: $(FILES) $(HFILES) $(S_FILES)
 	mingw32-gcc -o miniwebsvr.exe ${FILES} ${S_FILES} ${COMMONFLAGS} ${DEBUGFLAGS} ${LIBSWIN} ${CFLAGS}
 
 clean:
-	rm -f miniwebsvr miniwebsvr.exe miniwebsvrcon.exe miniwebsvr.log
+	rm -f miniwebsvr miniwebsvr.exe miniwebsvrcon.exe miniwebsvr.log miniwebsvrout.log mwstest testout.log
+
+test: clean debug
+	@echo ''
+	@echo ''
+	-@killall mwstest 2>/dev/null
+	@cp miniwebsvr mwstest
+	./mwstest --root test/www --port 8081 > miniwebsvrout.log &
+	perl test/test.pl 127.0.0.1 8081 1 2 > testout.log
+	@killall mwstest
