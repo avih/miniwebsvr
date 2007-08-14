@@ -50,7 +50,8 @@ help:
 	@echo 'Targets:'
 	@echo '  release       - Builds a release build of MiniWebSvr'
 	@echo '  debug         - Builds a debug build of MiniWebSvr'
-	@echo '  xwin32        - Builds a release build of MiniWebSvr for Windows using mingw32-gcc cross compiler'
+	@echo '  xwin32        - Builds a release build of MiniWebSvr (Console application) for Windows using mingw32-gcc cross compiler'
+	@echo '  xwin32ng      - Builds a release build of MiniWebSvr (Non-Console application) for Windows using mingw32-gcc cross compiler'
 	@echo '  xwin32d       - Builds a debug build of MiniWebSvr for Windows using mingw32-gcc cross compiler'
 	@echo ''
 	@echo 'Maintenance:'
@@ -69,6 +70,10 @@ release: $(FILES) $(HFILES) $(S_FILES)
 xwin32: $(FILES) $(HFILES) $(S_FILES)
 	mingw32-gcc -o miniwebsvr.exe ${FILES} ${S_FILES} ${COMMONFLAGS} ${RELEASEFLAGS} ${LIBSWIN} ${CFLAGS}
 	upx --best -q miniwebsvr.exe
+
+xwin32ng: $(FILES) $(HFILES) $(S_FILES)
+	mingw32-gcc -o miniwebsvrnogui.exe -mwindows ${FILES} ${S_FILES} -DUSEWINMAIN ${COMMONFLAGS} ${RELEASEFLAGS} ${LIBSWIN} ${CFLAGS}
+	upx --best -q miniwebsvrnogui.exe
 
 xwin32d: $(FILES) $(HFILES) $(S_FILES)
 	mingw32-gcc -o miniwebsvr.exe ${FILES} ${S_FILES} ${COMMONFLAGS} ${DEBUGFLAGS} ${LIBSWIN} ${CFLAGS}
