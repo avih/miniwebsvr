@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 use IO::Socket;
+use Time::HiRes qw(usleep);
 
 my $host = shift || die "Usage: perl $0 host port test\n";
 my $port = shift || 8080;
@@ -23,13 +24,13 @@ while ($test) {
 
 	if (open REQ,"<  test/tests/$test.req")
 	{
-		read REQ,$header,10000;
+		read REQ,$header,100000;
 		close REQ;
 	}
 
 	if (open RESP,"<  test/tests/$test.resp")
 	{
-		read RESP,$shouldbe,10000;
+		read RESP,$shouldbe,100000;
 		close RESP;
 	}
 
@@ -38,20 +39,23 @@ while ($test) {
 
 		#print $header,"\n";
 		$sock->send($header);
-		$sock->recv($response,10000);
+		usleep(100);
+		$sock->recv($response,100000);
 		#print $response,"\n";
 		$sock->close;
 
+
 		# Mangle response so that date & version issues does not bother us:
 		$response =~ s/\r\nLast-Modified:[^\r]*\r\n/\r\nLast-Modified:\r\n/;
-		$response =~ s/\r\nServer: MiniWebSvr\/[^\r]*\r\n/\r\nServer: MiniWebSvr\/\r\n/;
+		$response =~ s/MiniWebSvr\/[0-9\.a-zA-Z]*/MiniWebSvr\//g;
 		$response =~ s/\r\nDate:[^\r]*\r\n/\r\nDate:\r\n/;
 
 		if ($response ne $shouldbe) {
 			print STDERR "failed - Result mismatch\n";
 			++$failed;
-			print "Got:\n$response\n";
-			print "Should be:\n$shouldbe\n";
+			print "Got:\n";
+			print $response;
+			print "\nShould be:\n$shouldbe\n";
 		} else {
 			print STDERR "succeed\n";
 		}
