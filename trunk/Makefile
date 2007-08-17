@@ -86,6 +86,6 @@ test: clean debug
 	@echo ''
 	-@killall mwstest 2>/dev/null
 	@cp miniwebsvr mwstest
-	./mwstest --root test/www --port 8081 > miniwebsvrout.log &
-	perl test/test.pl 127.0.0.1 8081 "Default page" "Dirlist" "Dirlist2" > testout.log
+	./mwstest --root test/www --port 8081 --interface 127.0.0.1 > miniwebsvrout.log &
+	perl test/test.pl 127.0.0.1 8081 "Default page" "Dirlist" "Dirlist2" "SubRoot" "SubRoot2" > testout.log
 	@killall mwstest
