@@ -1,0 +1,5 @@
+HTTP/1.1 403 Forbidden
+Server: MiniWebSvr/
+Date:
+
+<HTML><HEAD><TITLE>HTTP 403 - Forbidden</TITLE></HEAD><BODY><H1>HTTP 403 - Forbidden<H1><H3>MiniWebSvr/</H3></BODY></HTML>
