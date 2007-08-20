@@ -35,6 +35,7 @@ LIBSWIN=-lws2_32
 COMMONFLAGS=-Wall -Wextra -DVERSION='${VERSION}'
 RELEASEFLAGS=-Os -s
 DEBUGFLAGS=-O0 -g -D_DEBUG -pedantic -std=gnu99
+MINGW=$(shell ls -1 /usr/bin/ | grep "mingw.*\-gcc$$")
 OS=$(shell uname)
 ifeq (${OS},Linux)
 LIBS+= -lrt
@@ -62,21 +63,21 @@ help:
 
 
 debug: $(FILES) $(HFILES) $(S_FILES)
-	gcc -o miniwebsvr ${FILES} ${S_FILES} ${COMMONFLAGS} ${DEBUGFLAGS} ${LIBS} ${CFLAGS}
+	$(CC) -o miniwebsvr ${FILES} ${S_FILES} ${COMMONFLAGS} ${DEBUGFLAGS} ${LIBS} ${CFLAGS}
 
 release: $(FILES) $(HFILES) $(S_FILES)
-	gcc -o miniwebsvr ${FILES} ${S_FILES} ${COMMONFLAGS} ${RELEASEFLAGS} ${LIBS} ${CFLAGS}
+	$(CC) -o miniwebsvr ${FILES} ${S_FILES} ${COMMONFLAGS} ${RELEASEFLAGS} ${LIBS} ${CFLAGS}
 
 xwin32c: $(FILES) $(HFILES) $(S_FILES)
-	mingw32-gcc -o miniwebsvrcon.exe ${FILES} ${S_FILES} ${COMMONFLAGS} ${RELEASEFLAGS} ${LIBSWIN} ${CFLAGS}
-	upx --best -q miniwebsvrcon.exe
+	$(MINGW) -o miniwebsvrcon.exe ${FILES} ${S_FILES} ${COMMONFLAGS} ${RELEASEFLAGS} ${LIBSWIN} ${CFLAGS}
+	-@upx --best -q miniwebsvrcon.exe
 
 xwin32: $(FILES) $(HFILES) $(S_FILES)
-	mingw32-gcc -o miniwebsvr.exe -mwindows ${FILES} ${S_FILES} -DUSEWINMAIN ${COMMONFLAGS} ${RELEASEFLAGS} ${LIBSWIN} ${CFLAGS}
-	upx --best -q miniwebsvr.exe
+	$(MINGW) -o miniwebsvr.exe -mwindows ${FILES} ${S_FILES} -DUSEWINMAIN ${COMMONFLAGS} ${RELEASEFLAGS} ${LIBSWIN} ${CFLAGS}
+	-@upx --best -q miniwebsvr.exe
 
 xwin32d: $(FILES) $(HFILES) $(S_FILES)
-	mingw32-gcc -o miniwebsvr.exe ${FILES} ${S_FILES} ${COMMONFLAGS} ${DEBUGFLAGS} ${LIBSWIN} ${CFLAGS}
+	$(MINGW) -o miniwebsvr.exe ${FILES} ${S_FILES} ${COMMONFLAGS} ${DEBUGFLAGS} ${LIBSWIN} ${CFLAGS}
 
 clean:
 	rm -f miniwebsvr miniwebsvr.exe miniwebsvrcon.exe miniwebsvr.log miniwebsvrout.log mwstest testout.log
