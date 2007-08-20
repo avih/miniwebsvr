@@ -53,9 +53,9 @@ while ($test) {
 		if ($response ne $shouldbe) {
 			print STDERR "failed - Result mismatch\n";
 			++$failed;
-			print "Got:\n";
+#			print "Got:\n";
 			print $response;
-			print "\nShould be:\n$shouldbe\n";
+#			print "\nShould be:\n$shouldbe\n";
 		} else {
 			print STDERR "succeed\n";
 		}

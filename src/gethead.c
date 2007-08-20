@@ -41,15 +41,18 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 	char FBuffer[FILENAME_SIZE];
 	char *cptr;
 	struct stat statbuf;
-	int isdir,skip;
+	int isdir,skip,notrainilngslash;
 
 	if (dirlen>FILENAME_SIZE) dirlen=FILENAME_SIZE;
 
 	retval=strnlen(dirname,dirlen);
+	notrainilngslash=0;
 	if (dirname[retval-1] != '/')
 	{
+		// Here there is no trailing slash
 		dirname[retval] = '/';
 		dirname[retval+1] = 0;
+		notrainilngslash=1;
 	}
 	if ((NODIRLIST) || ((dir = opendir(dirname)) == NULL))
 	{
@@ -63,6 +66,12 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 	}
 	else
 	{
+		if (notrainilngslash) {
+			setHeader_respval(inst,301);  // Moved Permanently
+			snprintf(inst->header_content,SERVER_BUFFER_SIZE,"Location: %s\r\n",dirname+2);
+			printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
+			return;
+		}
 		setHeader_filename(inst,".html");
 		setHeader_respval(inst,201);  // Created
 		bufpos=printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE);

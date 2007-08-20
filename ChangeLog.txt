@@ -1,5 +1,7 @@
 Mon Aug 20 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Implemented 64-bit seeking to support files larger than 2GiB
+	- Fixed issue where miniwebserver lists dir or returns default page
+	  when trailing slash is missing
 
 Tue Aug 14 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Added the nogui windows build target

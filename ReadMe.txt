@@ -65,6 +65,11 @@ New Features:
   - Limits the no of threads in thread-pool to a sane amount
 - Support for FreeBSD
   Please use gmake with gcc on this platform.
+- Supports accessing large files (>2GiB)
+- Added beginnings of a testing suite for regression testing
+- Changed Win32 build to have a console & gui client.
+  The gui client will not open any window, unless it needs to communicate with
+  the user
 Bug Fixes:
 - Fixes a security issue where another application can hijack the listening
   port of the server

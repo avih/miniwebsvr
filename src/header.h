@@ -23,7 +23,7 @@
 
 #define EXT_size 8
 
-#define headerResp_size 10
+#define headerResp_size 11
 #define headerExt_size 16
 
 struct headerResp_struct
