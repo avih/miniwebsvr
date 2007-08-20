@@ -38,6 +38,7 @@ const struct headerResp_struct headerResp[headerResp_size] =
 	{0,200,"OK"},
 	{0,201,"Created"},
 	{0,206,"Partial Content"},
+	{1,301,"Moved Permanently"},
 	{0,304,"Not Modified"},
 	{0,307,"Tempory Redirect"},
 	{1,400,"Bad Request"},
