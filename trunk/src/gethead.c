@@ -138,7 +138,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 	char TMPBuffer[SERVER_BUFFER_SIZE];
 	char TimeBuffer[SERVER_BUFFER_SIZE];
 	int retval,ret,blen,range;
-	long int contentlength,rangefrom,rangeto;
+	INT64 contentlength,rangefrom,rangeto;
 	FILE *in;
 	struct stat statbuf;
 	struct tm *loctime;
@@ -217,11 +217,11 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 				if (range1)
 				{
 //					rangeto=0;
-					sscanf(range1,"bytes=%ld-",&rangefrom);
+					sscanf(range1,"bytes=%lld-",&rangefrom);
 					range2 = strstr(range1,"-");
 					if (range2)
-						sscanf(range2,"-%ld",&rangeto);
-					DebugMSG("RANGE: %s (%ld - %ld)",range1,rangefrom,rangeto);
+						sscanf(range2,"-%lld",&rangeto);
+					DebugMSG("RANGE: %s (%lld - %lld)",range1,rangefrom,rangeto);
 					range+=1;
 				}
 			}
@@ -298,10 +298,10 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 
 		if (contentlength > 0)
 		{
-			long int rangeto2 = rangeto;
+			INT64 rangeto2 = rangeto;
 			if (!rangeto2)
 				rangeto2 = contentlength-1;
-			blen+=snprintf(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Content-Range: bytes %ld-%ld/%ld\r\n",rangefrom,rangeto2,contentlength);
+			blen+=snprintf(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Content-Range: bytes %lld-%lld/%lld\r\n",rangefrom,rangeto2,contentlength);
 		}
 
 		if (range > 0)
@@ -315,7 +315,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 
 		if (contentlength > 0)
 		{
-			blen+=snprintf(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Content-Length: %ld\r\n",contentlength);
+			blen+=snprintf(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Content-Length: %lld\r\n",contentlength);
 			fseek(in,rangefrom,SEEK_SET);
 		}
 
@@ -346,7 +346,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 		{
 			// I know exactly how much I need to read
 			contentlength += blen; // Add existing buffer, and then only keep track of data sent over socket
-			DebugMSG("c+b: %d",contentlength);
+			DebugMSG("c+b: %lld",contentlength);
 			retval=fread(Buffer+blen, 1,SEND_BUFFER_SIZE-blen, in);
 			retval+=blen;
 			do

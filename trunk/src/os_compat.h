@@ -19,6 +19,27 @@
 #ifndef OS_COMPAT_H
 #define OS_COMPAT_H
 
+// Define the 64-bit integer used for seeking
+#ifdef __GNUC__
+#define INT64 long long int
+#endif
+
+#ifdef _MSC_VER
+#if _MSC_VER >= 1100
+#define INT64   __int64
+#endif
+#endif
+
+#ifdef __BORLANDC__
+#define INT64 __int64
+#endif
+
+#ifndef INT64
+#warning "No 64-bit type found, 2GB limit on files will apply"
+#define INT64 long int
+#endif
+
+
 #ifdef __WIN32__
 	// Compile for Windows(R) Sockets
 	#define WIN32_LEAN_AND_MEAN
