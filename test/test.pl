@@ -39,8 +39,9 @@ while ($test) {
 
 		#print $header,"\n";
 		$sock->send($header);
-		usleep(100);
-		$sock->recv($response,100000);
+		while (<$sock>) {
+			$response .= $_;
+		}
 		#print $response,"\n";
 		$sock->close;
 
@@ -53,9 +54,9 @@ while ($test) {
 		if ($response ne $shouldbe) {
 			print STDERR "failed - Result mismatch\n";
 			++$failed;
-#			print "Got:\n";
+			print "Got:\n";
 			print $response;
-#			print "\nShould be:\n$shouldbe\n";
+			print "\nShould be:\n$shouldbe\n";
 		} else {
 			print STDERR "succeed\n";
 		}
