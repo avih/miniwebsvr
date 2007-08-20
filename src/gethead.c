@@ -251,10 +251,10 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 			}
 		}
 
-		if (!fseek(in,0,SEEK_END))
+		if (!fseeko(in,0,SEEK_END))
 		{
 			// Supports seek
-			contentlength=ftell(in);
+			contentlength=ftello(in);
 		}
 
 		// Is a Partial request? Force a full DL, unless below changes it
@@ -306,7 +306,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 
 		if (range > 0)
 		{
-			fseek(in,rangefrom,SEEK_SET);
+			fseeko(in,rangefrom,SEEK_SET);
 			if (rangeto)
 				contentlength = rangeto - rangefrom;
 			else
@@ -316,7 +316,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 		if (contentlength > 0)
 		{
 			blen+=snprintf(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Content-Length: %lld\r\n",contentlength);
-			fseek(in,rangefrom,SEEK_SET);
+			fseeko(in,rangefrom,SEEK_SET);
 		}
 
 		// Test for no late error
