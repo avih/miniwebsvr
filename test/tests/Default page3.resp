@@ -1,0 +1,6 @@
+HTTP/1.1 301 Moved Permanently
+Location: /def/
+Server: MiniWebSvr/
+Date:
+
+<HTML><HEAD><TITLE>HTTP 301 - Moved Permanently</TITLE></HEAD><BODY><H1>HTTP 301 - Moved Permanently<H1><H3>MiniWebSvr/</H3></BODY></HTML>

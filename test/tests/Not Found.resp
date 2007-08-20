@@ -1,0 +1,5 @@
+HTTP/1.1 404 Not Found
+Server: MiniWebSvr/
+Date:
+
+<HTML><HEAD><TITLE>HTTP 404 - Not Found</TITLE></HEAD><BODY><H1>HTTP 404 - Not Found<H1><H3>MiniWebSvr/</H3></BODY></HTML>
