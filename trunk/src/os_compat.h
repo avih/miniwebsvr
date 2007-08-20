@@ -20,31 +20,17 @@
 #define OS_COMPAT_H
 
 // Define the 64-bit integer used for seeking
-#ifdef __GNUC__
-#define INT64 long long int
-#endif
-
-#ifdef _MSC_VER
-#if _MSC_VER >= 1100
-#define INT64   __int64
-#endif
-#endif
-
-#ifdef __BORLANDC__
-#define INT64 __int64
-#endif
-
-#ifndef INT64
-#warning "No 64-bit type found, 2GB limit on files will apply"
-#define INT64 long int
-#endif
-
+#define _FILE_OFFSET_BITS 64
+#define _LARGE_FILES
 
 #ifdef __WIN32__
 	// Compile for Windows(R) Sockets
 	#define WIN32_LEAN_AND_MEAN
 	#include <windows.h>
 	#include <winsock2.h>
+
+	#define fseeko fseeko64
+	#define ftello ftello64
 
 	#define socklen_t int
 
@@ -73,5 +59,27 @@
 	#define SEND_FLAG MSG_NOSIGNAL
 
 #endif // !__WINDOWS__
+
+// Define the 64-bit integer used for seeking
+#ifndef INT64
+#ifdef __GNUC__
+#define INT64 long long
+#endif
+
+#ifdef _MSC_VER
+#if _MSC_VER >= 1100
+#define INT64   __int64
+#endif
+#endif
+
+#ifdef __BORLANDC__
+#define INT64 __int64
+#endif
+#endif
+
+#ifndef INT64
+#warning "No 64-bit type found, 2GB limit on files will apply"
+#define INT64 long int
+#endif
 
 #endif // OS_COMPAT_H
