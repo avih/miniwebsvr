@@ -41,19 +41,11 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 	char FBuffer[FILENAME_SIZE];
 	char *cptr;
 	struct stat statbuf;
-	int isdir,skip,notrainilngslash;
+	int isdir,skip;
 
 	if (dirlen>FILENAME_SIZE) dirlen=FILENAME_SIZE;
 
 	retval=strnlen(dirname,dirlen);
-	notrainilngslash=0;
-	if (dirname[retval-1] != '/')
-	{
-		// Here there is no trailing slash
-		dirname[retval] = '/';
-		dirname[retval+1] = 0;
-		notrainilngslash=1;
-	}
 	if ((NODIRLIST) || ((dir = opendir(dirname)) == NULL))
 	{
 		retval=strnlen(dirname,dirlen);
@@ -66,12 +58,6 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 	}
 	else
 	{
-		if (notrainilngslash) {
-			setHeader_respval(inst,301);  // Moved Permanently
-			snprintf(inst->header_content,SERVER_BUFFER_SIZE,"Location: %s\r\n",dirname+2);
-			printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
-			return;
-		}
 		setHeader_filename(inst,".html");
 		setHeader_respval(inst,201);  // Created
 		bufpos=printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE);
@@ -172,11 +158,17 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 	 if (statret || (statbuf.st_mode & S_IFDIR))
 	 {
 		retval=strlcpy(GHBuffer,filename,SERVER_BUFFER_SIZE);
-		if (GHBuffer[retval-1] != '/')
+		if ((statbuf.st_mode & S_IFDIR) && (GHBuffer[retval-1] != '/'))
 		{
+			// Here there is no trailing slash
 			GHBuffer[retval++] = '/';
 			GHBuffer[retval] = 0;
 			DebugMSG("Adding / to dir");
+			setHeader_respval(inst,301);  // Moved Permanently
+			snprintf(inst->header_content,SERVER_BUFFER_SIZE,"Location: %s\r\n",GHBuffer+2);
+			printHeader(inst,headeronly,Buffer,SEND_BUFFER_SIZE); // No need to read return value as it will flush the buffer
+			return;
+
 		}
 		strlcat(GHBuffer,DEFAULTFILE,SERVER_BUFFER_SIZE);
 		DebugMSG("Trying %s",GHBuffer);
