@@ -1,3 +1,6 @@
+Tue Aug 21 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- Implemented build-gen script to reduce chance of build error
+
 Mon Aug 20 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Implemented 64-bit seeking to support files larger than 2GiB
 	- Fixed issue where miniwebserver lists dir or returns default page
