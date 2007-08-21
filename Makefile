@@ -58,6 +58,10 @@ help:
 	@echo 'Maintenance:'
 	@echo '  clean         - Cleans up the files created by make'
 	@echo ''
+	@echo 'Testing:'
+	@echo '  test          - Runs test suite'
+	@echo '  testwin       - Runs test suite for Windows server using wine'
+	@echo ''
 	@echo 'e.g.'
 	@echo 'CFLAGS="-march=i586 -mtune=i686 -fomit-frame-pointer" make release'
 
@@ -90,3 +94,11 @@ test: clean debug
 	./mwstest --root test/www --port 8081 --interface 127.0.0.1 > miniwebsvrout.log &
 	perl test/test.pl 127.0.0.1 8081 "Default page" "Default page2" "Default page3" "Dirlist" "Dirlist2" "Not Found" "SubRoot" "SubRoot2" "SubRoot3" > testout.log
 	@killall mwstest
+
+testwin: clean xwin32d
+	@echo ''
+	@echo ''
+	-@killall miniwebsvr.exe 2>/dev/null
+	wine miniwebsvr.exe --root test/www --port 8081 --interface 127.0.0.1 > miniwebsvrout.log &
+	perl test/test.pl 127.0.0.1 8081 "Default page" "Default page2" "Default page3" "Dirlist" "Dirlist2" "Not Found" "SubRoot" "SubRoot2" "SubRoot3" > testout.log
+	@killall miniwebsvr.exe
