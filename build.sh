@@ -1,12 +1,12 @@
 #!/bin/sh
 
-BVER=`cat Makefile | grep ^VERSION= | sed s/^VERSION=\"MiniWebSvr\\\/// | sed s/\"// | sed s/[\\\r\\\n]//g`
+BVER=`cat Makefile | grep ^VERSION= | sed s/^VERSION=\"MiniWebSvr\\\/// | sed s/\"// | sed s/[^\\\.a-zA-Z0-9]*\$//`
 VERSION="miniwebsvr_"$BVER"_"
 echo "For version MiniWebSvr/$BVER"
 
-function copypart {
+copypart () {
 	for item in $1; do
-		FILES=`cat Makefile | grep ^$item= | sed s/^$item=// | sed s/[\\\r\\\n]//g`
+		FILES=`cat Makefile | grep ^$item= | sed s/^$item=// | sed s/[^\\\.a-zA-Z0-9_]*\$//`
 		for file in $FILES ; do
 			`cp $file $VERSION$2/$file`
 			`chmod 664 $VERSION$2/$file`
@@ -15,7 +15,7 @@ function copypart {
 	cat src/config.h | sed s/\"MiniWebSvr\\\/[^\"].*/\"MiniWebSvr\\\/$BVER\"/ > $VERSION$2/src/config.h
 }
 
-function copyfiles {
+copyfiles () {
 	for file in $1; do
 		`cp $file $VERSION$2/$file`
 		`chmod 664 $VERSION$2/$file`
@@ -24,9 +24,9 @@ function copyfiles {
 
 
 # for src
-function do_src {
+do_src () {
 	echo $VERSION"src"
-	make clean
+	gmake clean
 	mkdir $VERSION"src"
 	mkdir $VERSION"src/src"
 	copypart "FILES HFILES S_FILES" "src"
@@ -43,9 +43,9 @@ function do_src {
 }
 
 # for linux
-function do_linux {
+do_linux () {
 	echo $VERSION"linux"
-	make clean release
+	gmake clean release
 	mkdir $VERSION"linux"
 	mkdir $VERSION"linux/src"
 	copypart "FILES HFILES S_FILES" "linux"
@@ -57,9 +57,9 @@ function do_linux {
 }
 
 # for win32
-function do_win32 {
+do_win32 () {
 	echo $VERSION"win32"
-	make clean xwin32 xwin32c
+	gmake clean xwin32 xwin32c
 	mkdir $VERSION"win32"
 	mkdir $VERSION"win32/src"
 	copypart "FILES HFILES S_FILES" "win32"
@@ -69,7 +69,7 @@ function do_win32 {
 }
 
 # for FreeBSD
-function do_freebsd {
+do_freebsd () {
 	echo $VERSION"freebsd"
 	gmake clean release
 	mkdir $VERSION"freebsd"
@@ -105,4 +105,4 @@ while shift; do
 	T=$1
 done
 
-make clean
+gmake clean
