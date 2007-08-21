@@ -88,14 +88,12 @@ int listener(char *interface, unsigned short port)
 	listen_socket = socket(AF_INET, SOCK_STREAM,0); // TCP socket
 
 	on = 1;
-	#ifdef _DEBUG
-	// Enable address reuse (Only on debug)
+	#if defined _DEBUG || !defined __WIN32__
+	// Enable address reuse (Only on debug & POSIX)
 	setsockopt( listen_socket, SOL_SOCKET, SO_REUSEADDR, (const char*)&on, sizeof(on) );
 	#else
-	#ifdef __WIN32__
 	// Enable stricter Win32 sockets security.
 	setsockopt( listen_socket, SOL_SOCKET, SO_EXCLUSIVEADDRUSE, (const char*)&on, sizeof(on) );
-	#endif
 	#endif
 
 	// Disable Nagle
