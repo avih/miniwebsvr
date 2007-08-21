@@ -50,6 +50,7 @@ while ($test) {
 		$response =~ s/\r\nLast-Modified:[^\r]*\r\n/\r\nLast-Modified:\r\n/;
 		$response =~ s/MiniWebSvr\/[0-9\.a-zA-Z]*/MiniWebSvr\//g;
 		$response =~ s/\r\nDate:[^\r]*\r\n/\r\nDate:\r\n/;
+		$response =~ s/\n[^\n]*\.svn[^\n]*\n/\n/;
 
 		if ($response ne $shouldbe) {
 			print STDERR "failed - Result mismatch\n";
