@@ -53,7 +53,7 @@ int sar(char *str,char chr)
 void getconfig(int argc, char **argv)
 {
 	int i;
-	struct stat statbuf;
+	struct structstat statbuf;
 	enum { next_param, next_port, next_logfile, next_root, next_interface, next_threads, next_defaultfile } next = next_param;
 
 	PORT=DEFAULT_PORT;
@@ -144,7 +144,7 @@ void getconfig(int argc, char **argv)
 		else if (next == next_root)
 		{
 			ROOT = argv[i];
-			if (!((0 == stat(ROOT, &statbuf)) && (statbuf.st_mode & S_IFDIR)))
+			if (!((0 == funcstat(ROOT, &statbuf)) && (statbuf.st_mode & S_IFDIR)))
 			{
 				Critical("Invalid root \"%s\". Must be a valid directory.\n",ROOT);
 				exit(0);

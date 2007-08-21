@@ -29,9 +29,12 @@
 	#include <windows.h>
 	#include <winsock2.h>
 
+	#define LTYPE "%I64d"
+	#define structstat _stati64
+
 	#define fseeko fseeko64
 	#define ftello ftello64
-	#define stat _stat64
+	#define funcstat _stati64
 	#define fopen fopen64
 
 	#define socklen_t int
@@ -58,25 +61,30 @@
 	#define SOCKET_ERROR -1
 	#define INVALID_SOCKET -1
 	#define HANDLE pthread_t
+	#define structstat stat
+	#define funcstat stat
 
 	#define SEND_FLAG MSG_NOSIGNAL
 
+	// Define the 64-bit integer used for seeking if not defined yet
+	#ifndef INT64
+	#ifdef __int64
+	#define INT64 __int64
+	#else // __int64
+	#ifdef __GNUC__
+	#define INT64 long long
+	#endif // __GNUC__
+	#endif // __int64
+	#endif // INT64
+
+	#ifndef INT64
+	#warning "No 64-bit type found, 2GB limit on files will apply"
+	#define INT64 long int
+	#define LTYPE "%ld"
+	#else
+	#define LTYPE "%lld"
+	#endif
+
 #endif // !__WINDOWS__
-
-// Define the 64-bit integer used for seeking if not defined yet
-#ifndef INT64
-#ifdef __int64
-#define INT64 __int64
-#else // __int64
-#ifdef __GNUC__
-#define INT64 long long
-#endif // __GNUC__
-#endif // __int64
-#endif // INT64
-
-#ifndef INT64
-#warning "No 64-bit type found, 2GB limit on files will apply"
-#define INT64 long int
-#endif
 
 #endif // OS_COMPAT_H
