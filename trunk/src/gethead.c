@@ -40,7 +40,7 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 	char Buffer[SEND_BUFFER_SIZE];
 	char FBuffer[FILENAME_SIZE];
 	char *cptr;
-	struct stat statbuf;
+	struct structstat statbuf;
 	int isdir,skip;
 
 	if (dirlen>FILENAME_SIZE) dirlen=FILENAME_SIZE;
@@ -80,7 +80,7 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 				if (strcmp(ent->d_name,"..")!=0)
 				{
 					strlcat(FBuffer,ent->d_name,FILENAME_SIZE);
-					stat(FBuffer, &statbuf);
+					funcstat(FBuffer, &statbuf);
 
 					if (statbuf.st_mode & S_IFDIR)
 					{
@@ -135,14 +135,14 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 	int retval,ret,blen,range;
 	INT64 contentlength,rangefrom,rangeto;
 	FILE *in;
-	struct stat statbuf;
+	struct structstat statbuf;
 	struct tm *loctime;
 	int statret;
 
 	in=NULL;
 	DebugMSG("1");
 
-	if ((statret=stat(filename, &statbuf)) == 0)
+	if ((statret=funcstat(filename, &statbuf)) == 0)
 	{
 		// Supports filestats
 		if (!((statbuf.st_mode & (S_IFREG | S_IFDIR)) && (statbuf.st_ctime != -1)))
@@ -179,7 +179,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 			strlcat(inst->logbuffer,DEFAULTFILE,SERVER_BUFFER_SIZE);
 			strlcat(inst->logbuffer,"]",SERVER_BUFFER_SIZE);
 			strlcat(filename,DEFAULTFILE,FILENAME_SIZE);
-			statret=stat(filename, &statbuf);
+			statret=funcstat(filename, &statbuf);
 			DebugMSG("Found %s",DEFAULTFILE);
 		}
 	 }
@@ -218,11 +218,11 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 				if (range1)
 				{
 //					rangeto=0;
-					sscanf(range1,"bytes=%lld-",&rangefrom);
+					sscanf(range1,"bytes="LTYPE"-",&rangefrom);
 					range2 = strstr(range1,"-");
 					if (range2)
-						sscanf(range2,"-%lld",&rangeto);
-					DebugMSG("RANGE: %s (%lld - %lld)",range1,rangefrom,rangeto);
+						sscanf(range2,"-"LTYPE,&rangeto);
+					DebugMSG("RANGE: %s ("LTYPE" - "LTYPE")",range1,rangefrom,rangeto);
 					range+=1;
 				}
 			}
@@ -302,7 +302,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 			INT64 rangeto2 = rangeto;
 			if (!rangeto2)
 				rangeto2 = contentlength-1;
-			blen+=snprintf(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Content-Range: bytes %lld-%lld/%lld\r\n",rangefrom,rangeto2,contentlength);
+			blen+=snprintf(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Content-Range: bytes "LTYPE"-"LTYPE"/"LTYPE"\r\n",rangefrom,rangeto2,contentlength);
 		}
 
 		if (range > 0)
@@ -316,7 +316,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 
 		if (contentlength > 0)
 		{
-			blen+=snprintf(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Content-Length: %lld\r\n",contentlength);
+			blen+=snprintf(GHBuffer+blen,SERVER_BUFFER_SIZE-blen,"Content-Length: "LTYPE"\r\n",contentlength);
 			fseeko(in,rangefrom,SEEK_SET);
 		}
 
@@ -347,7 +347,7 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 		{
 			// I know exactly how much I need to read
 			contentlength += blen; // Add existing buffer, and then only keep track of data sent over socket
-			DebugMSG("c+b: %lld",contentlength);
+			DebugMSG("c+b: "LTYPE,contentlength);
 			retval=fread(Buffer+blen, 1,SEND_BUFFER_SIZE-blen, in);
 			retval+=blen;
 			do
