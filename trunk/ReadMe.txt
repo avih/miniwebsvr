@@ -73,6 +73,8 @@ New Features:
 Bug Fixes:
 - Fixes a security issue where another application can hijack the listening
   port of the server
+- Fixed issue where miniwebserver lists dir or returns default page when
+  trailing slash is missing.
 
 Version 0.0.8: (2007-05-28)
 New Features:
