@@ -33,7 +33,7 @@ function do_src {
 	copyfiles "ChangeLog.txt Compiling.txt License.txt Makefile ReadMe.txt build.sh" "src"
 	cp -r test $VERSION"src"
 	find $VERSION"src/test" | fgrep .svn | xargs rm -fR  2> /dev/null
-	find miniwebsvr_0.0.9rc_src/test/ -type f | sed s/^/\\\"/ | sed s/\$/\\\"/ | xargs chmod 664
+	find $VERSION"src/test/" -type f | sed s/^/\\\"/ | sed s/\$/\\\"/ | xargs chmod 664
 	chmod 775 $VERSION"src/build.sh"
 	chmod 775 $VERSION"src/test/test.pl"
 	tar cpf $VERSION"src.tar" $VERSION"src"
