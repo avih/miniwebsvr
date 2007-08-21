@@ -29,16 +29,26 @@
 	#include <windows.h>
 	#include <winsock2.h>
 
+        #ifdef fseeko64
 	#define LTYPE "%I64d"
 	#define structstat _stati64
-
 	#define fseeko fseeko64
 	#define ftello ftello64
 	#define funcstat _stati64
 	#define fopen fopen64
-
-	#define socklen_t int
 	#define INT64 __int64
+        #else
+        #define LTYPE "%ld"
+        #define structstat stat
+        #define funcstat stat
+        #define fseeko fseek
+	#define ftello ftell
+	#define INT64 long
+        // Comment this error out if you think the 2GB limit is acceptable
+        #error "No 64-bit type found, 2GB limit on files will apply"
+        #endif
+
+       	#define socklen_t int
 
 	#define SEND_FLAG 0	// Windows does not have a similar flag?
 
@@ -78,7 +88,8 @@
 	#endif // INT64
 
 	#ifndef INT64
-	#warning "No 64-bit type found, 2GB limit on files will apply"
+        // Comment this error out if you think the 2GB limit is acceptable
+	#error "No 64-bit type found, 2GB limit on files will apply"
 	#define INT64 long int
 	#define LTYPE "%ld"
 	#else
