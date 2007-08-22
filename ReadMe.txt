@@ -55,7 +55,7 @@ MiniWebSvr is mostly developed by Nickolas Antonie Grigoriadis <grigi_ at users.
 
 --- Release Notes ---
 
-Version 0.0.9: ()
+Version 0.0.9: (2007-08-22)
 New Features:
 - Command-line options checking
   MiniWebSvr will now complain if an incorrect parameter is specified
