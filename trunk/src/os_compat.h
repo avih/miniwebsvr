@@ -28,8 +28,9 @@
 	#define WIN32_LEAN_AND_MEAN
 	#include <windows.h>
 	#include <winsock2.h>
+	#include <sys/stat.h>
 
-        #ifdef fseeko64
+        #ifdef _OFF64_T_
 	#define LTYPE "%I64d"
 	#define structstat _stati64
 	#define fseeko fseeko64
