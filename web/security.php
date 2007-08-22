@@ -3,6 +3,18 @@
 This page lists the security issues that the author knows about, and their resolutions.<br>
 
 <br>
+<h3>Version 0.0.8 and older:</h3>
+
+<b>Description:</b><br>
+On Windows platforms, the server port can be highjacked (another process can open a port on the used port, the server continues and gets no more requests.)<br>
+<b>Risk:</b><br>
+Low (Low chance and high visibility of exploitation)<br>
+<b>Credits to:</b><br>
+Christian Blackburn<br>
+<b>Resolution:</b><br>
+Fixed in 0.0.9<br>
+
+<br>
 <h3>Version 0.0.7:</h3>
 
 <b>Description:</b><br>

@@ -1,7 +1,7 @@
 <? include "lib.php"; startpage(); ?>
 <h2>Latest release:</h2>
-The latest release is version 0.0.8, available for download:
-<a href="http://sourceforge.net/project/showfiles.php?group_id=187000&package_id=218154&release_id=511741">MiniWebsvr version 0.0.8</a><br>
+The latest release is version 0.0.9, available for download:
+<a href="http://sourceforge.net/project/showfiles.php?group_id=187000&package_id=218154&release_id=533963">MiniWebsvr version 0.0.8</a><br>
 
 <br> 
 
@@ -31,11 +31,16 @@ Flags that affect compilation:
 Targets:'
   release       - Builds a release build of MiniWebSvr
   debug         - Builds a debug build of MiniWebSvr
-  xwin32        - Builds a release build of MiniWebSvr for Windows using mingw32-gcc cross compiler
+  xwin32c       - Builds a release build of MiniWebSvr (Console application) for Windows using mingw32-gcc cross compiler
+  xwin32        - Builds a release build of MiniWebSvr (Non-Console application) for Windows using mingw32-gcc cross compiler
   xwin32d       - Builds a debug build of MiniWebSvr for Windows using mingw32-gcc cross compiler
 
 Maintenance:
   clean         - Cleans up the files created by make
+
+Testing:
+  test          - Runs test suite
+  testwin       - Runs test suite for Windows server using wine
 </pre>
 <br>
 <?endpage();?>

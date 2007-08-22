@@ -47,9 +47,10 @@ Key:
 <li>Error checking with errors and/or warnings for command-line options
 <li>Under Win32 architectures you could hijack the port the server listens on - Fixed
 <li>Short versions of command-line parameter options
+<li>FreeBSD support
+<li>Large files (&gt;2GB) support
 
-
-<b>0.0.9</b><br>
+<b>0.0.9 Released (Aug 22 2007)</b><br>
 
 <ul>
 <li type=circle>Config system (Optional config file)

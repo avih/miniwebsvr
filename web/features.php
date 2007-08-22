@@ -16,6 +16,7 @@ Supports:<br>
 <li> Logging <sub>(Optional)</sub>
 <li> Some options to lock down the site a bit
 <li> Configurable default page
+<li> Large file &gt;2GB support
 </ul>
 * Saves on bandwidth!<br>
 <br>
