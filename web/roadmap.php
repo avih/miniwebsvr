@@ -49,6 +49,7 @@ Key:
 <li>Short versions of command-line parameter options
 <li>FreeBSD support
 <li>Large files (&gt;2GB) support
+</ul>
 
 <b>0.0.9 Released (Aug 22 2007)</b><br>
 
