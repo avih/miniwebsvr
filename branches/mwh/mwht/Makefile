@@ -76,3 +76,6 @@ xwin32d: $(FILES) $(HFILES) $(S_FILES)
 
 clean:
 	rm -f mwht mwht.exe
+
+go: clean release
+	time -p ./mwht
