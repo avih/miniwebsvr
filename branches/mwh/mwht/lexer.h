@@ -28,7 +28,7 @@ T_DEC,
 
 T_AND,                  T_OR,                   T_NOT,
 
-T_OPEN_PAR,             T_CLOSE_PAR,
+T_OPEN_PAR,             T_CLOSE_PAR
 };
 
 //extern const char* TSTR[];
