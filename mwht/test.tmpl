@@ -1,10 +1,10 @@
 Hello, the variable name=<TMPL_VAR name>
-<TMPL_IF name="baloogha">
+<TMPL_IF name!="">
 	Name is             not empty
 <TMPL_ELSE>
 	Name is empty
 </TMPL_IF>
-<TMPL_LOOP banana>
-	The banana <TMPL_VAR peels>.
+<TMPL_LOOP baNAna> <!-- Demonstrating case insensitivity on identifiers -->
+	The banana <TMPL_VAR peeLs>.
 	<TMPL_IF peels gt 5> too many!</TMPL_IF>
 </TMPL_LOOP>

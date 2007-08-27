@@ -78,16 +78,15 @@ private:
 	int GetID();
 	int GetInt(int off=0);
 	int GetDouble();
-	int GetSingle();
 	int GetWSpace();
 
 	void EatWSpace();
 	void EatComment();
 	void EatBigComment();
 	token* EatString();
-	token* EatIdentifier();
-	token* EatInteger();
-	token* EatDouble();
+	token* EatIdentifier(bool decase);
+	//token* EatInteger();
+	//token* EatDouble();
 
 	char Buf(int n);
 
@@ -96,6 +95,7 @@ private:
 	int max,maxno;
 	int size,pos,epos;
 	int line,linepos;
+	int lineoffset,newlinepos;
 	int prevtoken;
 	char* buf;
 	enum {NORMAL, MWHT} state;

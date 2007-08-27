@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include "lexer.h"
 
-
 lexer::lexer() {
   size=0;
   pos=0;
@@ -35,6 +34,8 @@ void lexer::SetBuffer(int psize, char* pbuf) {
   epos=-1;
   line=1;
   linepos=0;
+  lineoffset=0;
+  newlinepos=0;
   state=NORMAL;
   prevtoken=-1;
   buf=pbuf;
@@ -44,15 +45,6 @@ void lexer::SetBuffer(int psize, char* pbuf) {
    size=0;
    return;
   }
-  
-/*  bool dolow=true;
-  
-  for (int i=0;i<size;i++) {
-    if ((Buf(i-1)!='\\')&&(Buf(i)=='"')) dolow=!dolow;
-    if (dolow) {
-      if ((buf[i]>='A')&&(buf[i]<='Z')) buf[i]+='a'-'A';
-    }
-  }*/
   
 }
 
@@ -97,9 +89,11 @@ token* lexer::GetToken() {
     SetMax(Compare("<TMPL_LOOP"),T_TMPL_LOOP);
     SetMax(Compare("</TMPL_LOOP>"),T_UTMPL_LOOP);
 
-    //if (stripWS) SetMax(GetWSpace(),1006);
+    if (Compare('\n')) {
+      lineoffset++;
+      newlinepos=pos;
+    }
   } else if (state == MWHT) {
-
 
   SetMax(Compare("=="),T_EQUAL);
   SetMax(Compare("!="),T_NOT_EQUAL);
@@ -117,13 +111,14 @@ token* lexer::GetToken() {
   SetMax(Compare('"'),T_STRING);
   SetMax(GetID(),T_ID);
   SetMax(GetInt(),1004);
-  SetMax(GetDouble(),1004);
-//  SetMax(GetSingle(),1005);
+  SetMax(GetDouble(),1005);
   SetMax(GetWSpace(),1006);
+
+  SetMax(Compare('\n'),1002);
 
     SetMax(Compare('>'),T_TMPL_END);
   }
- 
+
 //  printf("epos=%d max=%d maxno=%d pos=%d char=%d\n",epos,max,maxno,pos,Buf(pos));
 
   if ((epos!=-1)&&(maxno!=-1)) {
@@ -141,13 +136,18 @@ bool stripped=0;
 	pos=oopos;
     }
     if (epos<pos) {
-	///TODO: strip duplicate whitespace in the following section
     tok=new token();
     tok->Token=T_CDATA;
     tok->line=line;
     tok->offset=epos-linepos;
     tok->content=new char[pos-epos+1+stripped];
     tok->content[0]=' ';
+    if (lineoffset) {
+	line+=lineoffset;
+	linepos=newlinepos;
+
+	lineoffset=0;
+    }
     memcpy(tok->content+stripped,&buf[epos],pos-epos);
     tok->content[pos-epos+stripped]=0;
     pos=opos;
@@ -156,9 +156,17 @@ bool stripped=0;
     } else {
 	pos=opos;
 	epos=-1; 
+
+	if (lineoffset) {
+	  line+=lineoffset;
+	  linepos=newlinepos;
+
+	  lineoffset=0;
+        }
     }
+
   }
-                                             
+
   switch (maxno) {
   case -1       : if (epos==-1) epos=pos;
                   pos++;
@@ -189,13 +197,11 @@ case T_TMPL_LOOP:
                   if ((maxno==T_ID)||(omax>max))
                   {
                     max=omax;
-                    tok=EatIdentifier();
+                    tok=EatIdentifier(true);
                   }}
-                  break;                           
+                  break; 
   case T_STRING : tok=EatString();
                   break;
-/*  case T_INTEGER: tok=EatInteger();
-                  break;       */
   case T_SUB    : switch (prevtoken) {
                   case T_EQUAL         :
                   case T_NOT_EQUAL     :
@@ -215,15 +221,15 @@ case T_TMPL_LOOP:
                   case T_NOT           :
                   case T_OPEN_PAR      : maxno=T_UMINUS;
                   };
-                  break;                          
+                  break; 
 /*  case 1000     : EatComment();
                   return GetToken();
   case 1001     : EatBigComment();         
-                  return GetToken();
+                  return GetToken();*/
   case 1002     : pos++;
                   NewLine();                             
                   return GetToken();
-  case 1003     : pos++;
+/*  case 1003     : pos++;
                   return GetToken();*/
 /*  case 1004     : tok=EatDouble();
                   maxno=T_FLOAT;
@@ -233,7 +239,8 @@ case T_TMPL_LOOP:
                   maxno=T_FLOAT;
                   max++;
                   break;*/
-  case 1004     : tok=EatIdentifier();
+  case 1004     :
+  case 1005     : tok=EatIdentifier(false);
 		  tok->Token=T_STRING;
 	          break;
   case 1006     : EatWSpace();         
@@ -275,6 +282,7 @@ int lexer::Compare(char* ps) {
 
 bool lexer::IsLetter(int off) {
   if ((Buf(off)>='a')&&(Buf(off)<='z')) return true;
+  if ((Buf(off)>='A')&&(Buf(off)<='Z')) return true;
   return false;
 }
 
@@ -302,12 +310,6 @@ int lexer::GetDouble() {
   int no=GetInt(0);
   if (no==0) return 0;
   if (Buf(pos+no)=='.') return GetInt(no+1);
-  return 0;
-}
-
-int lexer::GetSingle() {
-  int no=GetDouble();
-  if (Buf(pos+no)=='f') return no+1;
   return 0;
 }
 
@@ -359,7 +361,7 @@ token* lexer::EatString() {
   return tok;
 }
 
-token* lexer::EatIdentifier() {
+token* lexer::EatIdentifier(bool decase) {
   token* tok=new token();
   tok->Token=T_ID;
   tok->line=line;
@@ -368,6 +370,12 @@ token* lexer::EatIdentifier() {
   tok->content = new char[max+1];
   memcpy(tok->content,buf+pos,max);
   tok->content[max]=0;
+
+  if (decase) {
+    for (int i=0;i<max;i++) {
+      if ((tok->content[i]>='A')&&(tok->content[i]<='Z')) tok->content[i]+='a'-'A';
+    }
+  }
 
   pos+=max;
   return tok;
