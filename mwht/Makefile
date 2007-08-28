@@ -25,7 +25,7 @@ FILES=lexer.cpp
 # Common header files
 HFILES=lexer.h
 # Standalone executable source files
-S_FILES=mhwt.cpp
+S_FILES=template.cpp
 
 # POSIX-Style Libraries
 LIBS=
@@ -62,20 +62,20 @@ help:
 
 
 debug: $(FILES) $(HFILES) $(S_FILES)
-	$(CXX) -o mwht ${FILES} ${S_FILES} ${COMMONFLAGS} ${DEBUGFLAGS} ${LIBS} ${CFLAGS}
+	$(CXX) -o template ${FILES} ${S_FILES} ${COMMONFLAGS} ${DEBUGFLAGS} ${LIBS} ${CFLAGS}
 
 release: $(FILES) $(HFILES) $(S_FILES)
-	$(CXX) -o mwht ${FILES} ${S_FILES} ${COMMONFLAGS} ${RELEASEFLAGS} ${LIBS} ${CFLAGS}
+	$(CXX) -o template ${FILES} ${S_FILES} ${COMMONFLAGS} ${RELEASEFLAGS} ${LIBS} ${CFLAGS}
 
 xwin32: $(FILES) $(HFILES) $(S_FILES)
-	$(MINGW) -o mwht.exe -mwindows ${FILES} ${S_FILES} -DUSEWINMAIN ${COMMONFLAGS} ${RELEASEFLAGS} ${LIBSWIN} ${CFLAGS}
+	$(MINGW) -o template.exe -mwindows ${FILES} ${S_FILES} -DUSEWINMAIN ${COMMONFLAGS} ${RELEASEFLAGS} ${LIBSWIN} ${CFLAGS}
 #	-@upx --best -q miniwebsvr.exe
 
 xwin32d: $(FILES) $(HFILES) $(S_FILES)
-	$(MINGW) -o mwht.exe ${FILES} ${S_FILES} ${COMMONFLAGS} ${DEBUGFLAGS} ${LIBSWIN} ${CFLAGS}
+	$(MINGW) -o template.exe ${FILES} ${S_FILES} ${COMMONFLAGS} ${DEBUGFLAGS} ${LIBSWIN} ${CFLAGS}
 
 clean:
-	rm -f mwht mwht.exe
+	rm -f template template.exe
 
-go: clean release
-	time -p ./mwht
+go: clean debug
+	./template
