@@ -12,9 +12,9 @@ be cool too)
 Templates will be as follows:
 - Text files
 - Everything will be passed through AS-IS. (Optionally the template "parser"
-  may strip unneeded whitespace, but not now)
+  may strip unneeded whitespace)
 - It will not be type strict, like XSLT's. Everything will be treated as strings initially.
-- I will model it after the Perl module HTML::Template::Expr
+- I will model it after the excelent Perl module HTML::Template::Expr
 - It will have scope inheritance
 - It will only parse <MWHT_[command] [stuff]></MWHT_[command]> tags.
 - It will aim to be small, efficient library
