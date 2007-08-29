@@ -10,7 +10,7 @@ lexer::lexer() {
   stripWS=false;
 }
 
-lexer::lexer(int psize, char* pbuf) {
+lexer::lexer(const int psize, char* pbuf) {
   buf=NULL;
   SetBuffer(psize,pbuf);
 }
@@ -19,16 +19,16 @@ lexer::~lexer() {
   if (buf) delete[] buf;
 }
 
-char lexer::Buf(int n) {
+inline const char lexer::Buf(const int n) const {
   if ((n<0)||(n>=size)) return 0;
   return buf[n];
 }
 
-void lexer::StripWSpace(bool p_strip) {
+void lexer::StripWSpace(const bool p_strip) {
   stripWS=p_strip;
 }
 
-void lexer::SetBuffer(int psize, char* pbuf) {
+void lexer::SetBuffer(const int psize, char* pbuf) {
   size=psize;
   pos=0;
   epos=-1;
@@ -261,37 +261,38 @@ case T_TMPL_LOOP:
   return tok;
 }
 
-void lexer::SetMax(int pmax, int pno) {
+inline void lexer::SetMax(const int pmax, const int pno) {
   if (pmax>max) {
     max=pmax;
     maxno=pno;
   }
 }
 
-int lexer::Compare(char pc) {
+inline const int lexer::Compare(const char pc) const {
   return (pc==Buf(pos));
 }
 
-int lexer::Compare(char* ps) {
-  for (int i=0;i<(int)strlen(ps);i++) {
+inline const int lexer::Compare(const char* ps) const {
+  int len=strlen(ps); // This will get optimized away due to all the const-ness
+  for (int i=0;i<len;i++) {
     if (ps[i]!=Buf(pos+i)) return 0;
   }
   
-  return strlen(ps);
+  return len;
 }
 
-bool lexer::IsLetter(int off) {
+inline const bool lexer::IsLetter(const int off) const {
   if ((Buf(off)>='a')&&(Buf(off)<='z')) return true;
   if ((Buf(off)>='A')&&(Buf(off)<='Z')) return true;
   return false;
 }
 
-bool lexer::IsNumber(int off) {
+inline const bool lexer::IsNumber(const int off) const {
   if ((Buf(off)>='0')&&(Buf(off)<='9')) return true;
   return false;
 }    
 
-int lexer::GetID() {
+inline const int lexer::GetID() {
   int no=0;
   if (IsLetter(pos)) {
     no=1;
@@ -300,30 +301,30 @@ int lexer::GetID() {
   return no;
 }
 
-int lexer::GetInt(int off) {
+inline const int lexer::GetInt(const int off) {
   int no=off;
   while (IsNumber(pos+no)) no++;
   return no;
 }
 
-int lexer::GetDouble() {
+inline const int lexer::GetDouble() {
   int no=GetInt(0);
   if (no==0) return 0;
   if (Buf(pos+no)=='.') return GetInt(no+1);
   return 0;
 }
 
-int lexer::GetWSpace() {
+inline const int lexer::GetWSpace() {
   int no=0;
   while (Buf(pos+no)==' ' || Buf(pos+no)=='\t' || Buf(pos+no)=='\n' || Buf(pos+no)=='\r' ) no++;
   return no;
 }
 
-void lexer::EatWSpace() {
+inline void lexer::EatWSpace() {
   pos+=max;
 }
 
-void lexer::EatComment() {
+/*void lexer::EatComment() {
   while (pos<=size) {
     pos++;
     if (Buf(pos-1)=='\n') {
@@ -340,7 +341,7 @@ void lexer::EatBigComment() {
     if (Buf(pos)=='\n') NewLine();
     if (Buf(pos-2)=='*' && Buf(pos-1)=='/') return;
   }
-}
+}*/
 
 token* lexer::EatString() {
   token* tok=new token();
@@ -361,7 +362,7 @@ token* lexer::EatString() {
   return tok;
 }
 
-token* lexer::EatIdentifier(bool decase) {
+token* lexer::EatIdentifier(const bool decase) {
   token* tok=new token();
   tok->Token=T_ID;
   tok->line=line;
@@ -413,7 +414,7 @@ token* lexer::EatDouble() {
   return tok;
 }*/
 
-void lexer::NewLine() {
+inline void lexer::NewLine() {
   line++;
   linepos=pos;
 }

@@ -57,40 +57,40 @@ public:
 class lexer {
 public:
 	lexer();
-	lexer(int psize, char* pbuf);
+	lexer(const int psize, char* pbuf);
 	~lexer();
 
-	void SetBuffer(int psize, char* pbuf);
+	void SetBuffer(const int psize, char* pbuf);
 
 	void StripWSpace(bool p_strip);
 
 	token* GetToken();
 
 private:
-	void SetMax(int pmax, int pno);
+	inline void SetMax(const int pmax, const int pno);
 
-	int Compare(char pc);
-	int Compare(char* ps);
+	inline const int Compare(const char pc) const;
+	inline const int Compare(const char* ps) const;
 
-	bool IsLetter(int off);
-	bool IsNumber(int off);
+	inline const bool IsLetter(const int off) const;
+	inline const bool IsNumber(const int off) const;
 
-	int GetID();
-	int GetInt(int off=0);
-	int GetDouble();
-	int GetWSpace();
+	inline const int GetID();
+	inline const int GetInt(const int off=0);
+	inline const int GetDouble();
+	inline const int GetWSpace();
 
-	void EatWSpace();
-	void EatComment();
-	void EatBigComment();
+	inline void EatWSpace();
+	//void EatComment();
+	//void EatBigComment();
 	token* EatString();
-	token* EatIdentifier(bool decase);
+	token* EatIdentifier(const bool decase);
 	//token* EatInteger();
 	//token* EatDouble();
 
-	char Buf(int n);
+	inline const char Buf(const int n) const;
 
-	void NewLine();
+	inline void NewLine();
 
 	int max,maxno;
 	int size,pos,epos;
