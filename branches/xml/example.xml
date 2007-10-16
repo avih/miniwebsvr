@@ -1,0 +1,25 @@
+<?xml version="1.0"  encoding="UTF-8"?>
+<!-- MiniWebsvr simple xml test file-->
+<content>
+	<info author="FyreWolfe" date="16 October 2007" copyright="MiniWebsvr"/>
+	<test_elements description="Empty">
+		<element></element>
+		<element />
+		<element/>
+	</test_elements>
+	<test_elements description="Single Attribute or Content">
+		<element>Test4</element>
+		<element name="Element 5">Test5</element>
+	</test_elements>
+	<!-- Another comment test: <some>More Testing</some>-->
+	<test_elements description="Multi Attribute or Content">
+		<element name="Element 6" value="Test 6" />
+		<element name="Element 7" value="Test 7"/>
+		<element name="Element 8" value="Test 8">Gold Silver Bronze</element>
+	</test_elements>
+	<test_elements description="Mixed Content">
+		<element name="Element 9">
+			Test 9 <gold>$1.1</gold>/ounce &amp; <silver value='$2.2' unit="pound" /> &lt; <bronze value="$12.4"/>/kg &gt;
+		</element>
+	</test_elements>
+</content>
