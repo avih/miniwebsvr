@@ -26,8 +26,8 @@ struct xmlDoc xml;
 
 int main() 
 {
-    sprintf(xml.version,"");
-    sprintf(xml.encoding,"");
+    xml.version=0;
+    xml.encoding=0;
     
     //TODO: read lines from file
     char line[] = "<?xml version=\"1.0\" encoding='UTF-8'?>\n<!--Comment-->\n<root>\n<main color=\"#FF9900\">Main Value</main>\n<woof meeaw /></root>\n";
