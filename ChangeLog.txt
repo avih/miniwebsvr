@@ -1,3 +1,8 @@
+Thu Nov 01 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- Fixed up wrong-type-of-long code for MinGW using GCC 4
+	- Test framework is now a little more verbose
+	- Cleanued up Makefile a bit regarding test framework
+
 Wed Aug 22 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Released 0.0.9
 
