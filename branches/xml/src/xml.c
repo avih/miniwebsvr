@@ -19,17 +19,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
-#include <stdio.h>
 
 #include "xml.h"
 
-#ifndef APP_DEBUG
-#define APP_DEBUG
-#endif
-
 int aTask = 0;
 
-char lang_delimiters[] = "><\n?";
+char lang_delimiters[] = "><\r\n?";
 char ws_delimeters[] = "<\n\"' ";
 
 char* subp(char* aSubject,int aStart, int aLength)
@@ -64,7 +59,7 @@ int parseXml(char* aLine, char* xPath)
                 //Get XML Declaration
                 char * pch;
                 pch = strstr(aline[i],"xml");
-                 #ifdef APP_DEBUG
+                 #ifdef XML_DEBUG
                      if(pch != 0) 
                      {
                       printf(">>> xml declaration found <<<\n");
@@ -77,7 +72,7 @@ int parseXml(char* aLine, char* xPath)
             }break;
             case 1:
             {
-             #ifdef APP_DEBUG
+             #ifdef XML_DEBUG
                   printf("TODO: Parse Element\n");
                   printf("Line: %s\n",aline[i]);
              #endif
@@ -132,7 +127,7 @@ char** explode(char* delimeters,char* string, int* aSize)
             //assert(tmpArr);
             if(tmpArr == 0)
             {
-              #ifdef APP_DEBUG
+              #ifdef XML_DEBUG
                   printf("Memory Error in explode('%s','%s','%d') on tmpArr\n",delimeters,string,aSize);
               #endif
               return(0);
@@ -144,7 +139,7 @@ char** explode(char* delimeters,char* string, int* aSize)
             //assert(stringArray);
             if(stringArray == 0)
             {
-              #ifdef APP_DEBUG
+              #ifdef XML_DEBUG
                   printf("Memory Error in explode('%s','%s','%d') on stringArray\n",delimeters,string,aSize);
               #endif
               return(0);
@@ -156,7 +151,7 @@ char** explode(char* delimeters,char* string, int* aSize)
             //assert(tmpbuff);
             if(tmpbuff == 0)
             {
-              #ifdef APP_DEBUG
+              #ifdef XML_DEBUG
                   printf("Memory Error in explode('%s','%s','%d') on tmpbuff\n",delimeters,string,aSize);
               #endif
               return(0);
@@ -170,7 +165,7 @@ char** explode(char* delimeters,char* string, int* aSize)
               //assert(tmpbuff);
               if(tmpbuff == 0)
               {
-                #ifdef APP_DEBUG
+                #ifdef XML_DEBUG
                 printf("Memory Error in explode('%s','%s','%d') on tmpbuff\n",delimeters,string,aSize);
                 #endif
               }
@@ -183,5 +178,26 @@ char** explode(char* delimeters,char* string, int* aSize)
 
         *aSize = aCount-1;
         return stringArray;
+}
+
+FILE* xmlOpen(int argc, char **argv)
+{
+    char* aFile = DEFAULT_XMLFILE;
+    
+	int i=0;
+	for(i=0;i<argc;i++)
+	{
+		if((0 == strcmp(argv[i], "--xml")))
+		{
+			if(i+1 > argc) break;
+			
+			aFile = argv[i+1];
+			break;
+		}
+	}
+	#ifdef XML_DEBUG
+	       printf("XML FILE:%s\n",aFile);
+	#endif
+	return 	fopen(aFile,"r");
 }
 

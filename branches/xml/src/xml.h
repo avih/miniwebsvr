@@ -20,6 +20,14 @@
 #ifndef XML_H
 #define XML_H
 
+#ifndef XML_DEBUG
+        #define XML_DEBUG
+#endif
+
+#include <stdio.h>
+
+#define DEFAULT_XMLFILE "example.xml"
+
     struct xml_attribute
     {
        char* name;
@@ -51,5 +59,7 @@
     void freeArray(char**,int);
     
     void xmlCleanup(struct xmlDoc*);
+	
+	FILE* xmlOpen(int, char **);
     
 #endif
