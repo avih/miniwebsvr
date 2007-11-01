@@ -20,26 +20,53 @@
 
 struct xmlDoc xml;
 
-#ifndef APP_DEBUG
-#define APP_DEBUG
-#endif
-
-int main() 
+int main(int argc, char **argv) 
 {
     xml.version=0;
     xml.encoding=0;
     
-    //TODO: read lines from file
-    char line[] = "<?xml version=\"1.0\" encoding='UTF-8'?>\n<!--Comment-->\n<root>\n<main color=\"#FF9900\">Main Value</main>\n<woof meeaw /></root>\n";
-    #ifdef APP_DEBUG    
-        printf("Size of line: %d\n",sizeof(line));
-        printf("String Length: %d\n\n",strlen(line));        
-    #endif
-    
-    parseXml(line,0);
-    //cleanup    
-    xmlCleanup(&xml);
-    
+    //read file
+	FILE* pFile = xmlOpen(argc,argv);
+	
+	if(!pFile) printf("XML file not found");
+	if(pFile)
+	{
+	    char* line = 0;
+        fseek (pFile , 0 , SEEK_END);
+        int fSize = ftell(pFile);
+        rewind (pFile);
+
+        line = (char*) malloc (sizeof(char)*fSize);
+        
+        if(!line)
+        {
+            #ifdef XML_DEBUG
+                    printf("Memory Error in main() with malloc()%d",fSize);
+            #endif
+        }
+        if(line)
+        {       
+            int result = fread (line,1,fSize,pFile);
+            
+            if(result != fSize)
+            {
+    	    #ifdef XML_DEBUG    
+                printf("Error reading file data from file. Length %d vs %d (%d)\n",result,fSize,sizeof(char));
+                printf("String Length: %d\n\n",strlen(line));
+                printf("%s\n\n",line);        
+    	    #endif
+            }
+    	    
+    	    parseXml(line,0);
+    	    
+    	    fclose(pFile);
+    	    //cleanup    
+    	    xmlCleanup(&xml);
+       	    free(line);
+       	    line = 0;
+        }
+	}
+	
     int input = 0;
     scanf("%d",&input);
     
