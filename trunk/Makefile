@@ -32,6 +32,10 @@ LIBS=-lpthread
 # Win32 Libraries
 LIBSWIN=-lws2_32
 
+# Tests to run
+TESTS="Default page" "Default page2" "Default page3" "Dirlist" "Dirlist2" "Not Found" "SubRoot" "SubRoot2" "SubRoot3"
+
+
 COMMONFLAGS=-Wall -Wextra -DVERSION='${VERSION}'
 RELEASEFLAGS=-Os -s
 DEBUGFLAGS=-O0 -g -D_DEBUG -pedantic -std=gnu99
@@ -92,7 +96,8 @@ test: clean debug
 	-@killall mwstest 2>/dev/null
 	@cp miniwebsvr mwstest
 	./mwstest --root test/www --port 8081 --interface 127.0.0.1 > miniwebsvrout.log &
-	perl test/test.pl 127.0.0.1 8081 "Default page" "Default page2" "Default page3" "Dirlist" "Dirlist2" "Not Found" "SubRoot" "SubRoot2" "SubRoot3" > testout.log
+	@sleep 1
+	perl test/test.pl 127.0.0.1 8081 ${TESTS} > testout.log
 	@killall mwstest
 
 testwin: clean xwin32d
@@ -100,5 +105,6 @@ testwin: clean xwin32d
 	@echo ''
 	-@killall miniwebsvr.exe 2>/dev/null
 	wine miniwebsvr.exe --root test/www --port 8081 --interface 127.0.0.1 > miniwebsvrout.log &
-	perl test/test.pl 127.0.0.1 8081 "Default page" "Default page2" "Default page3" "Dirlist" "Dirlist2" "Not Found" "SubRoot" "SubRoot2" "SubRoot3" > testout.log
+	@sleep 1
+	perl test/test.pl 127.0.0.1 8081 ${TESTS} > testout.log
 	@killall miniwebsvr.exe

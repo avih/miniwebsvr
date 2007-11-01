@@ -31,7 +31,11 @@
 	#include <sys/stat.h>
 
         #ifdef _OFF64_T_
+	#ifdef __GNUC__
+	#define LTYPE "%lld"
+	#else
 	#define LTYPE "%I64d"
+	#endif //__GNUC__
 	#define structstat _stati64
 	#define fseeko fseeko64
 	#define ftello ftello64
