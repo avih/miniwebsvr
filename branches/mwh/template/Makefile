@@ -21,9 +21,9 @@
 VERSION="MWH Template/0.0.1svn"
 
 # Common source files
-FILES=lexer.cpp
+FILES=lexer.cpp parser.cpp
 # Common header files
-HFILES=lexer.h
+HFILES=lexer.h parser.h
 # Standalone executable source files
 S_FILES=template.cpp
 

@@ -5,9 +5,13 @@
 using namespace std;
 
 #include "lexer.h"
+#include "parser.h"
 
 string blank("");
 
+/**
+ * The Token names
+ */
 const char* TSTR[] = {
 "T_EOF",
 
@@ -35,6 +39,9 @@ const char* TSTR[] = {
 "T_OPEN_PAR",             "T_CLOSE_PAR",
 };
 
+/**
+ * A string->string name->value pair
+ */
 class variable {
 public:
 	variable(const string &p_name,const string &p_value) {
@@ -46,6 +53,9 @@ public:
 	string value;
 };
 
+/** 
+ * A very unpotimized & simple string->string hash implementation
+ */
 class hash {
 public:
 	const string gethash(const string &p_name) const {
@@ -63,6 +73,7 @@ public:
 private:
 	vector<variable> vars;
 };
+
 
 void Parse(const string &p_filename) {
 	FILE *in;
