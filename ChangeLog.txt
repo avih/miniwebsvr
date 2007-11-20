@@ -1,5 +1,6 @@
 Tue Nov 20 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Fixed 2 off-by-one buffer overflow/underflow errors
+	- Released 0.0.9a
 
 Thu Nov 01 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Fixed up wrong-type-of-long code for MinGW using GCC 4
