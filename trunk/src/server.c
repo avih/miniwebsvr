@@ -131,7 +131,7 @@ int server_readln(struct server_struct *inst, char *str, const int strsize)
 	}
 
 	// remove \r if present just before the \n
-	if (str[strpos] == '\r')
+	if (strpos && (str[strpos-1] == '\r'))
 		--strpos;
 
 	// Set the NULL terminator for the string
