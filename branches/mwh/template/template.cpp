@@ -92,7 +92,7 @@ void Parse(const string &p_filename) {
 			buf = (char*)malloc(contentlength);
 			if (buf) {
 				fread(buf,contentlength,1,in);
-				lex.SetBuffer(contentlength,buf);
+				lex.SetBuffer(contentlength,buf,true);
 				lex.StripWSpace(true);
 
 				cout << "Parsing start:" << endl;
