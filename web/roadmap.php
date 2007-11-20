@@ -54,6 +54,12 @@ Key:
 <b>0.0.9 Released (Aug 22 2007)</b><br>
 
 <ul>
+<li>Fixed off-by-one buffer overflow/underflow problem
+</ul>
+
+<b>0.0.9a Released (Nov 20 2007)</b><br>
+
+<ul>
 <li type=circle>Config system (Optional config file)
 <li type=circle>Implement XML parser for Config system
 <li type=circle>Running as service for Win32 version
