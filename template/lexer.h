@@ -57,12 +57,14 @@ public:
 class lexer {
 public:
 	lexer();
-	lexer(const int psize, char* pbuf);
+	lexer(const int psize, char* pbuf, bool pautofree);
 	~lexer();
 
-	void SetBuffer(const int psize, char* pbuf);
+	void SetBuffer(const int psize, char* pbuf, bool pautofree);
 
 	void StripWSpace(bool p_strip);
+
+	void FreeBuffer();
 
 	token* GetToken();
 
@@ -100,6 +102,7 @@ private:
 	char* buf;
 	enum {NORMAL, MWHT} state;
 	bool stripWS;
+	bool autofree;
 };
 
 #endif // LEXER_H

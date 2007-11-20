@@ -8,15 +8,16 @@ lexer::lexer() {
   pos=0;
   buf=NULL;
   stripWS=false;
+  autofree=false;
 }
 
-lexer::lexer(const int psize, char* pbuf) {
+lexer::lexer(const int psize, char* pbuf, bool pautofree) {
   buf=NULL;
-  SetBuffer(psize,pbuf);
+  SetBuffer(psize,pbuf,pautofree);
 }
 
 lexer::~lexer() {
-  if (buf) delete[] buf;
+  FreeBuffer();
 }
 
 inline const char lexer::Buf(const int n) const {
@@ -28,7 +29,9 @@ void lexer::StripWSpace(const bool p_strip) {
   stripWS=p_strip;
 }
 
-void lexer::SetBuffer(const int psize, char* pbuf) {
+void lexer::SetBuffer(const int psize, char* pbuf, bool pautofree) {
+  FreeBuffer();
+
   size=psize;
   pos=0;
   epos=-1;
@@ -40,12 +43,20 @@ void lexer::SetBuffer(const int psize, char* pbuf) {
   prevtoken=-1;
   buf=pbuf;
   stripWS=false;
+  autofree=pautofree;
   
   if (buf==NULL) {
    size=0;
    return;
   }
   
+}
+
+void lexer::FreeBuffer() {
+  if (autofree && buf) {
+    free(buf);
+    buf=NULL;
+  }
 }
 
 token* lexer::GetToken() {
@@ -71,6 +82,10 @@ token* lexer::GetToken() {
     tok->Token=T_EOF;
     tok->line=line;
     tok->offset=pos-linepos;
+
+    // Free buffer since it is useless from this point onwards.
+    FreeBuffer();
+
     return tok;
   }
 
