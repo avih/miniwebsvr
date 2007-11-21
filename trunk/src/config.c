@@ -38,15 +38,25 @@ char* LOGFILE;
 char* ROOT;
 char* DEFAULTFILE;
 
-int sar(char *str,char chr)
+#define arg(x) (i==argc?"":argv[x])
+
+int sar(char *str,char *chr)
 {
-	if (strlen(str)!=2) 
-		return 0;
-	if ((str[0] == '-') || (str[0] == '/'))
+	int in=0;
+
+	if (str[0] == '/')
+		in=1;
+	if (str[0] == '-')
 	{
-		if (str[1] == chr)
-			return 1;
+		if (str[1] == '-')
+			in=2;
+		else
+			in=1;
 	}
+
+	if (in && (0==strcmp(str+in,chr)))
+		return 1;
+
 	return 0;
 }
 
@@ -72,27 +82,27 @@ void getconfig(int argc, char **argv)
 	{
 		if (next == next_param)
 		{
-			if ((0 == strcmp(argv[i], "--port")) || (sar(argv[i],'p')))
+			if ((sar(arg(i), "port")) || (sar(arg(i),"p")))
 				next = next_port;
-			else if ((0 == strcmp(argv[i], "--log")) || (sar(argv[i],'l')))
+			else if ((sar(arg(i), "log")) || (sar(arg(i),"l")))
 				next = next_logfile;
-			else if ((0 == strcmp(argv[i], "--root")) || (sar(argv[i],'r')))
+			else if ((sar(arg(i), "root")) || (sar(arg(i),"r")))
 				next = next_root;
-			else if ((0 == strcmp(argv[i], "--interface")) || (sar(argv[i],'i')))
+			else if ((sar(arg(i), "interface")) || (sar(arg(i),"i")))
 				next = next_interface;
-			else if (0 == strcmp(argv[i], "--nolog"))
+			else if ((sar(arg(i), "nolog")) || (sar(arg(i),"nl")))
 				DOLOG = 0;
-			else if (0 == strcmp(argv[i], "--nodirlist"))
+			else if ((sar(arg(i), "nodirlist")) || (sar(arg(i),"nd")))
 				NODIRLIST = 1;
-			else if ((0 == strcmp(argv[i], "--default")) || (sar(argv[i],'d')))
+			else if ((sar(arg(i), "default")) || (sar(arg(i),"d")))
 				next = next_defaultfile;
-			else if (0 == strcmp(argv[i], "--noname"))
+			else if ((sar(arg(i), "noname")) || (sar(arg(i),"nn")))
 				LISTSERVER = 0;
 #ifdef THREAD_POOL
-			else if (0 == strcmp(argv[i], "--threads"))
+			else if (sar(arg(i), "threads"))
 				next = next_threads;
 #endif
-			else if ((0 == strcmp(argv[i], "--help")) || (sar(argv[i],'?')) | (sar(argv[i],'h')))
+			else if ((sar(arg(i), "help")) || (sar(arg(i),"?")) || (sar(arg(i),"h")))
 			{
 				#ifdef USEWINMAIN
 				char buf[8192];
@@ -105,11 +115,11 @@ void getconfig(int argc, char **argv)
 					" -p, --port <port>        Listen on port <port> (default %d)\n" 
 					" -i, --interface <ip>     Specify the interface the server listens on (default: ALL)\n" 
 					" -l, --log <file>         Save the log file as <file> (default: %s)\n" 
-					" --nolog                  Disables logging, overrides any '--log' setting\n" 
+					" -nl, --nolog             Disables logging, overrides any '--log' setting\n" 
 					" -r, --root <path>        Specify the document root directory (default: %s)\n" 
 					" -d, --default <filename> Specify the default document filename in a directory (default: %s)\n" 
-					" --nodirlist              Do not do any directory listings, just return a '404 File not found'\n" 
-					" --noname                 Do not specify server name in directory listings or HTTP headers\n" 
+					" -nd, --nodirlist         Do not do any directory listings, just return a '404 File not found'\n" 
+					" -nn, --noname            Do not specify server name in directory listings or HTTP headers\n" 
 #ifdef THREAD_POOL
 					" --threads <thread_nos>   Specify number of threads in thread pool (default %d)\n" 
 #endif
@@ -126,24 +136,27 @@ void getconfig(int argc, char **argv)
 			}
 			else
 			{
-				Critical("Unknown parameter \"%s\". Type \"%s --help\" for more info.\n",argv[i],argv[0]);
+				Critical("Unknown parameter \"%s\". Type \"%s --help\" for more info.\n",arg(i),argv[0]);
 				exit(0);
 			}
-			continue;
+
+			if (next != next_param)
+				i += 1;
 		}
+		
 		if (next == next_logfile)
-			LOGFILE = argv[i];
+			LOGFILE = arg(i);
 		else if (next == next_port)
 		{
-			PORT = atoi(argv[i]);
+			PORT = atoi(arg(i));
 			if ((PORT<1) || (PORT>65535)) {
-				Critical("Bad port \"%s\". Must be integer from 1 to 65535.\n",argv[i]);
+				Critical("Bad port \"%s\". Must be integer from 1 to 65535.\n",arg(i));
 				exit(0);
 			}
 		}
 		else if (next == next_root)
 		{
-			ROOT = argv[i];
+			ROOT = arg(i);
 			if (!((0 == funcstat(ROOT, &statbuf)) && (statbuf.st_mode & S_IFDIR)))
 			{
 				Critical("Invalid root \"%s\". Must be a valid directory.\n",ROOT);
@@ -151,15 +164,15 @@ void getconfig(int argc, char **argv)
 			}
 		}
 		else if (next == next_interface)
-			INTERFACE = argv[i];
+			INTERFACE = arg(i);
 		else if (next == next_defaultfile)
-			DEFAULTFILE = argv[i];
+			DEFAULTFILE = arg(i);
 #ifdef THREAD_POOL
 		else if (next == next_threads)
 		{
-			THREAD_POOL_SIZE = atoi(argv[i]);
+			THREAD_POOL_SIZE = atoi(arg(i));
 			if ((THREAD_POOL_SIZE<1) || (THREAD_POOL_SIZE>32)) {
-				Critical("Bad thread pool size \"%s\". Must be positive integer from 1 to 32.\n",argv[i]);
+				Critical("Bad thread pool size \"%s\". Must be positive integer from 1 to 32.\n",arg(i));
 				exit(0);
 			}
 		}

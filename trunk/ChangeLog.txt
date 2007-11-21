@@ -1,3 +1,11 @@
+Wed Nov 21 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- Added short versions of nodirlist,noname & nolog (nd,nn & nl)
+	- Made all parameters have the option of having '-' , '--' & '/' as
+	  leading indicating that a parameter command follows.
+	- Fixed an issue where if the value to a parameter is omitted at the
+	  end of the parameter string, it catches the error properly, rather
+	  than continue as-if the parameter was never specified.
+
 Tue Nov 20 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Fixed 2 off-by-one buffer overflow/underflow errors
 	- Released 0.0.9a
