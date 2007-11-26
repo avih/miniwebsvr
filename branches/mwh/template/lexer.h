@@ -22,16 +22,14 @@ T_LESS_EQUAL,           T_GREATER,              T_GREATER_EQUAL,
 
 T_UMINUS,
 
-T_ADD,                  T_SUB,                  T_MUL,
-T_DIV,                  T_MOD,                  T_INC,
-T_DEC,
+T_ADD,                  T_SUB,
+T_MUL,                  T_DIV,                  T_MOD,                  
 
 T_AND,                  T_OR,                   T_NOT,
 
 T_OPEN_PAR,             T_CLOSE_PAR
 };
 
-//extern const char* TSTR[];
 
 //---------------------------------------------------------------------------
 

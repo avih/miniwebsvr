@@ -229,8 +229,6 @@ case T_TMPL_LOOP:
                   case T_MUL           :
                   case T_DIV           :
                   case T_MOD           :
-                  case T_INC           :
-                  case T_DEC           :
                   case T_AND           :
                   case T_OR            :
                   case T_NOT           :
