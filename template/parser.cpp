@@ -53,8 +53,9 @@ void parser::gettok() {
 	newtok = lex->GetToken();
 }
 
-void parser::error(const char* msg) {
+int parser::error(const char* msg) {
 	cout << "Error: " << msg << " \"" << Token_STR[newtok->Token] << "\", line " << newtok->line << " offset " << newtok->offset << endl;
+	return 0;
 }
 
 int parser::accept(TERMINAL T) {
@@ -76,6 +77,10 @@ int parser::p_string() {
 	if (accept(T_ID)) {
 		return 1;
 	} else if (accept(T_STRING)) {
+		return 1;
+	} else if (accept(T_OPEN_PAR)) {
+		p_expression();
+		expect(T_CLOSE_PAR);
 		return 1;
 	}
 	error("Expected string or variable, instead of");
@@ -124,19 +129,20 @@ int parser::p_b_factor() {
 int parser::p_relation() {
 	if (p_expression()) {
 		if (accept(T_EQUAL)) {
-			return p_relation();
+			return p_expression();
 		} else if (accept(T_NOT_EQUAL)) {
-			return p_relation();
+			return p_expression();
 		} else if (accept(T_LESS)) {
-			return p_relation();
+			return p_expression();
 		} else if (accept(T_LESS_EQUAL)) {
-			return p_relation();
+			return p_expression();
 		} else if (accept(T_GREATER)) {
-			return p_relation();
+			return p_expression();
 		} else if (accept(T_GREATER_EQUAL)) {
-			return p_relation();
+			return p_expression();
 		}
-		return 1;
+		error("Expects comparison to create boolean");
+		return 0;
 	}
 	return 0;
 }
@@ -180,7 +186,7 @@ int parser::p_s_factor() {
 int parser::p_varprint() {
 	if (accept(T_TMPL_VAR)) {
 		cout << "varprint" << endl;
-		p_string();
+		p_expression();
 		expect(T_TMPL_END);
 		return 1;
 	}
