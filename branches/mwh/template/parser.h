@@ -8,6 +8,7 @@
  * string
  * 	: T_ID 
  * 	| T_STRING
+ * 	| T_OPEN_PAR expression T_CLOSE_PAR
  *
  * b_expression
  * 	: b_term [T_OR b_expression]* 
@@ -25,7 +26,7 @@
  * 	| relation
  *
  * relation
- * 	: expression [(T_EQUAL|T_NOT_EQUAL|T_LESS|T_LESS_EQUAL|T_GREATER|T_GREATER_EQUAL) expression]*
+ * 	: expression (T_EQUAL|T_NOT_EQUAL|T_LESS|T_LESS_EQUAL|T_GREATER|T_GREATER_EQUAL) expression
  * 
  * expression
  * 	: term [(T_ADD|T_SUB) expression]*
@@ -38,7 +39,7 @@
  * 	| string
  *
  * varprint
- * 	: T_TMPL_VAR string T_TMPL_END 
+ * 	: T_TMPL_VAR expression T_TMPL_END 
  *
  *
  * elseif
@@ -46,7 +47,7 @@
  * 	| T_TMPL_ELSE statement_list T_UTMPL_IF
  *
  * if
- * 	: T_TMPL_IF expression T_TMPL_END statement_list elseif 
+ * 	: T_TMPL_IF b_expression T_TMPL_END statement_list elseif 
  *
  * loop
  * 	: T_TMPL_LOOP T_ID T_TMPL_END statement_list T_UTMPL_LOOP
@@ -77,7 +78,7 @@ public:
 private:
 	void gettok();
 
-	void error(const char* msg);
+	int error(const char* msg);
 
 	int accept(TERMINAL T);
 	int expect(TERMINAL T);
