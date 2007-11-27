@@ -33,6 +33,7 @@ const char* Token_STR[30] = {
 "T_OPEN_PAR",             "T_CLOSE_PAR",
 };
 
+#define retbad(x) if (!x) return 0;
 
 parser::parser() {
 }
@@ -40,6 +41,7 @@ parser::parser() {
 void parser::parse(lexer *p_lex) {
 	lex = p_lex;
 	tok = NULL;
+	firsterror = false;
 
 	gettok();
 	p_statement_list();
@@ -54,7 +56,9 @@ void parser::gettok() {
 }
 
 int parser::error(const char* msg) {
+	if (firsterror) return 0;
 	cout << "Error: " << msg << " \"" << Token_STR[newtok->Token] << "\", line " << newtok->line << " offset " << newtok->offset << endl;
+	firsterror=true;
 	return 0;
 }
 
@@ -79,11 +83,10 @@ int parser::p_string() {
 	} else if (accept(T_STRING)) {
 		return 1;
 	} else if (accept(T_OPEN_PAR)) {
-		p_expression();
-		expect(T_CLOSE_PAR);
+		retbad(p_expression());
+		retbad(expect(T_CLOSE_PAR));
 		return 1;
 	}
-	error("Expected string or variable, instead of");
 	return 0;
 }
 
@@ -94,7 +97,7 @@ int parser::p_b_expression() {
 		}
 		return 1;
 	}
-	error("Expected an Expression, halted at");
+	error("Expected a binary expression, halted at");
 	return 0;
 }
 
@@ -156,6 +159,7 @@ int parser::p_expression() {
 		}
 		return 1;
 	}
+	error("Expected an expression, halted at");
 	return 0;
 }
 
@@ -186,8 +190,8 @@ int parser::p_s_factor() {
 int parser::p_varprint() {
 	if (accept(T_TMPL_VAR)) {
 		cout << "varprint" << endl;
-		p_expression();
-		expect(T_TMPL_END);
+		retbad(p_expression());
+		retbad(expect(T_TMPL_END));
 		return 1;
 	}
 	return 0;
@@ -196,8 +200,8 @@ int parser::p_varprint() {
 int parser::p_elseif() {
 	if (accept(T_TMPL_ELSE)) {
 		cout << "else clause" << endl;
-		p_statement_list();
-		expect(T_UTMPL_IF);
+		retbad(p_statement_list());
+		retbad(expect(T_UTMPL_IF));
 		return 1;
 	} else if(expect(T_UTMPL_IF)) {
 		return 1;
@@ -208,10 +212,10 @@ int parser::p_elseif() {
 int parser::p_if() {
 	if (accept(T_TMPL_IF)) {
 		cout << "if statement" << endl;
-		p_b_expression();
-		expect(T_TMPL_END);
-		p_statement_list();
-		p_elseif();
+		retbad(p_b_expression());
+		retbad(expect(T_TMPL_END));
+		retbad(p_statement_list());
+		retbad(p_elseif());
 		cout << "if end" << endl;
 	}
 	return 0;
@@ -220,10 +224,10 @@ int parser::p_if() {
 int parser::p_loop() {
 	if (accept(T_TMPL_LOOP)) {
 		cout << "loop statement" << endl;
-		expect(T_ID);
-		expect(T_TMPL_END);
-		p_statement_list();
-		expect(T_UTMPL_LOOP);
+		retbad(expect(T_ID));
+		retbad(expect(T_TMPL_END));
+		retbad(p_statement_list());
+		retbad(expect(T_UTMPL_LOOP));
 		cout << "loop end" << endl;
 		return 1;
 	}

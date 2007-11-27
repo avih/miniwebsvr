@@ -99,10 +99,11 @@ private:
 	int p_statement();
 	int p_statement_list();
 
-
 	lexer *lex;
 	token *newtok;
 	token *tok;
+
+	bool firsterror;
 };
 
 #endif // PARSER_H
