@@ -217,6 +217,7 @@ int parser::p_if() {
 		retbad(p_statement_list());
 		retbad(p_elseif());
 		cout << "if end" << endl;
+		return 1;
 	}
 	return 0;
 }
