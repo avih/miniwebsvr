@@ -1,2 +1,2 @@
-GET /images/..%c0%af../..%c0%af../ HTTP/1.1
+GET /images/..%c0%af../..%c0%af../something HTTP/1.1
 

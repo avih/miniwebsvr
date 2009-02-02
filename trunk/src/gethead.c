@@ -67,7 +67,11 @@ void server_dirlist(struct server_struct *inst,int headeronly,char *dirname,int 
 			return;
 		}
 
+#ifdef USE_UNICODE
+		bufpos+=snprintf(Buffer+bufpos,SEND_BUFFER_SIZE-bufpos,"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n<HTML><HEAD><META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"><TITLE>Index of %s</TITLE></HEAD><BODY><H1>Index of %s</H1><PRE><HR>\n",dirname+2,dirname+2);
+#else
 		bufpos+=snprintf(Buffer+bufpos,SEND_BUFFER_SIZE-bufpos,"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">\n<HTML><HEAD><TITLE>Index of %s</TITLE></HEAD><BODY><H1>Index of %s</H1><PRE><HR>\n",dirname+2,dirname+2);
+#endif		
 		send(inst->sock,Buffer,bufpos,SEND_FLAG);
 
 		while ((ent = readdir(dir)) != NULL)
@@ -141,6 +145,8 @@ void GETHEAD(struct server_struct *inst,int headeronly,char *filename,int filebu
 
 	in=NULL;
 	DebugMSG("1");
+
+	memset(&statbuf,0,sizeof(statbuf));
 
 	if ((statret=funcstat(filename, &statbuf)) == 0)
 	{
