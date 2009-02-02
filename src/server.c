@@ -198,6 +198,7 @@ void* server(struct server_struct *inst)
 
 		goto serverquit;
 	}
+
 	if (filename[2] == 0)
 	{
 		snprintf(inst->logbuffer,SERVER_BUFFER_SIZE,"\"%s:%d\"",inet_ntoa(inst->sin_addr),htons(inst->sin_port));
@@ -213,7 +214,7 @@ void* server(struct server_struct *inst)
 
 	// Check for sub-root hacking, If found send a forbidden.
 	tstr=strstr(filename,"..");
-	if (((tstr!=NULL) && ((tstr[2] == 0) || (tstr[2] == '/') || (tstr[2] == '\\'))) && ((tstr==filename) || (*(tstr-1) == '/') || (*(tstr-1) == '\\')))
+	if (tstr!=NULL)
 	{
 		strlcat(inst->logbuffer," ;",SERVER_BUFFER_SIZE);
 		setHeader_respval(inst,403);  // Forbidden

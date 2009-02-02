@@ -1,3 +1,13 @@
+Mon Feb 02 2009 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- Changes to patch to conform better to existing coding style.
+	- Fixed security bug where memory was not blanked before use.
+	- Fixed 2 possible off-by-one buffer overflows.
+	- Made sub-root checking pedantic
+
+Sat Jan 31 2009 JackieKu <jackieku at users.sourceforge.net>
+	- Patched win32 target to support UTF-8 encoding, significantly
+	  enhancing usability for east Asian users.
+
 Wed Nov 21 2007 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Added short versions of nodirlist,noname & nolog (nd,nn & nl)
 	- Made all parameters have the option of having '-' , '--' & '/' as

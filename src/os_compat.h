@@ -57,6 +57,9 @@
 
 	#define SEND_FLAG 0	// Windows does not have a similar flag?
 
+	// Define that I want unicode support
+	#define USE_UNICODE
+
 #else // !_WINDOWS__
 	// Compile for UNIX Sockets
 	#include <sys/types.h>
@@ -102,5 +105,11 @@
 	#endif
 
 #endif // !__WINDOWS__
+
+#ifdef USE_UNICODE
+	// Unicode layer (Currently only implemented for WIN32 target)
+	#include <stdlib.h>
+	#include "utf8_layer.h"
+#endif
 
 #endif // OS_COMPAT_H

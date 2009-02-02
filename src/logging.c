@@ -126,7 +126,7 @@ void Error(const char *format, ...)
 	vsnprintf(buffer+7,MESSAGE_BUFFER-7, format, argptr);
 	va_end(argptr);
 
-	buffer[MESSAGE_BUFFER]=0;
+	buffer[MESSAGE_BUFFER-1]=0;
 	Log(buffer);
 }
 
@@ -140,7 +140,7 @@ void Critical(const char *format, ...)
 	vsnprintf(buffer+10,MESSAGE_BUFFER-10, format, argptr);
 	va_end(argptr);
 
-	buffer[MESSAGE_BUFFER]=0;
+	buffer[MESSAGE_BUFFER-1]=0;
 	Log(buffer);
 #ifndef USEWINMAIN
 	fprintf(stderr,"%s\n",buffer);

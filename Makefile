@@ -21,9 +21,9 @@
 VERSION="MiniWebSvr/0.0.10svn"
 
 # Common source files
-FILES=src/config.c src/gethead.c src/header.c src/listener.c src/logging.c src/options.c src/server.c src/strl.c src/url.c
+FILES=src/config.c src/gethead.c src/header.c src/listener.c src/logging.c src/options.c src/server.c src/strl.c src/url.c src/utf8_layer.c
 # Common header files
-HFILES=src/config.h src/gethead.h src/header.h src/listener.h src/logging.h src/options.h src/os_compat.h src/server.h src/strl.h src/url.h
+HFILES=src/config.h src/gethead.h src/header.h src/listener.h src/logging.h src/options.h src/os_compat.h src/server.h src/strl.h src/url.h src/utf8_layer.h
 # Standalone executable source files
 S_FILES=src/main.c
 
