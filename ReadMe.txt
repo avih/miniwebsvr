@@ -51,9 +51,27 @@ MiniWebSvr is mostly developed by Nickolas Antonie Grigoriadis <grigi_ at users.
 - Daniel John Walker <djwalker at users.sourceforge.net>
 - Johan Strydom <fyrewolfe at users.sourceforge.net>
 - Sergey Sytchewoj <brumal at users.sourceforge.net>
+- Jackie Ku <jackieku at users.sourceforge.net>
 
 
 --- Release Notes ---
+
+Version 0.0.10: (2009-02-02)
+New Features:
+- Changed Licence to X11/MIT
+- Win32 target now supports UTF-8 (Courtesy of Jackie Ku)
+- Improved Command-line options
+  - Added short versions of nodirlist,noname & nolog (nd,nn & nl)
+  - Made all parameters have the option of having '-' , '--' & '/' as
+    leading indicating that a parameter command follows.
+  - Fixed an issue where if the value to a parameter is omitted at the
+    end of the parameter string, it catches the error properly, rather
+    than continue as-if the parameter was never specified.
+Bug Fixes:
+- Fixes several off-by-one overflow/underflow bugs
+- Fixes an issue where not clearing memory before use
+- Made sub-root checking pedantic
+
 
 Version 0.0.9: (2007-08-22)
 New Features:
