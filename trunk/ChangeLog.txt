@@ -3,8 +3,10 @@ Mon Feb 02 2009 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Fixed security bug where memory was not blanked before use.
 	- Fixed 2 possible off-by-one buffer overflows.
 	- Made sub-root checking pedantic
+	- Changed Licence to X11/MIT
+	- Released 0.0.10
 
-Sat Jan 31 2009 JackieKu <jackieku at users.sourceforge.net>
+Sat Jan 31 2009 Jackie Ku <jackieku at users.sourceforge.net>
 	- Patched win32 target to support UTF-8 encoding, significantly
 	  enhancing usability for east Asian users.
 
