@@ -32,6 +32,10 @@
 #define ssize_t int
 #endif
 
+#if !defined(ssize_t)
+#define ssize_t size_t
+#endif
+
 struct server_struct
 {
 	// Tempory recieve/send buffer

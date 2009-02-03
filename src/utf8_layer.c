@@ -84,7 +84,7 @@ int utf8_stat(const char *path, struct structstat *buffer) {
 	wpath = _w(path);
 
 	ret =
-#ifdef _OFF64_T_
+#ifdef _stati64
 		_wstati64
 #else
 		_wstat
