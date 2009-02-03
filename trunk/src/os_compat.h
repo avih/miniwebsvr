@@ -27,6 +27,10 @@
 #define _FILE_OFFSET_BITS 64
 #define _LARGE_FILES
 
+#ifdef _WIN32
+#define __WIN32__
+#endif
+
 #ifdef __WIN32__
 	// Compile for Windows(R) Sockets
 	#define WIN32_LEAN_AND_MEAN
@@ -34,7 +38,7 @@
 	#include <winsock2.h>
 	#include <sys/stat.h>
 
-        #ifdef _OFF64_T_
+	#ifdef _stati64
 	#ifdef __GNUC__
 	#define LTYPE "%lld"
 	#else
@@ -43,21 +47,27 @@
 	#define structstat _stati64
 	#define fseeko fseeko64
 	#define ftello ftello64
-	#define funcstat _stati64
+	#define funcstat stati64
 	#define fopen fopen64
 	#define INT64 __int64
-        #else
-        #define LTYPE "%ld"
-        #define structstat stat
-        #define funcstat stat
-        #define fseeko fseek
+	#else
+	#define LTYPE "%ld"
+	#define structstat stat
+	#define funcstat stat
+	#define fseeko fseek
 	#define ftello ftell
 	#define INT64 long
-        // Comment this error out if you think the 2GB limit is acceptable
-        #error "No 64-bit type found, 2GB limit on files will apply"
-        #endif
+	// Comment this error out if you think the 2GB limit is acceptable
+	#error "No 64-bit type found, 2GB limit on files will apply"
+	#endif
 
-       	#define socklen_t int
+	#ifdef _MSC_VER
+	#define snprintf _snprintf
+	#define fseeko64 _fseeki64
+	#define ftello64 _ftelli64
+	#endif
+
+	#define socklen_t int
 
 	#define SEND_FLAG 0	// Windows does not have a similar flag?
 

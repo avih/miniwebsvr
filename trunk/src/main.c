@@ -27,7 +27,7 @@
 #include <signal.h>
 
 #ifdef __WIN32__
-#include <dir.h>
+#include <direct.h>
 #endif
 
 #include "config.h"
@@ -155,6 +155,6 @@ int main(int argc, char **argv)
 	BIGMessage("--- E-Mail: %s",EMAIL);
 
 // chdir to the document root
-	chdir(ROOT);
+	_chdir(ROOT);
 	return listener(INTERFACE,PORT);
 }

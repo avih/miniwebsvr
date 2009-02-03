@@ -24,10 +24,15 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <dirent.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <time.h>
+
+#ifdef _MSC_VER
+#include "dirent_win.h"
+#else
+#include <dirent.h>
+#endif
 
 #include "config.h"
 #include "header.h"
