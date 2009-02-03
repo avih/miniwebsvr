@@ -27,7 +27,7 @@
 #define _FILE_OFFSET_BITS 64
 #define _LARGE_FILES
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(__WIN32__)
 #define __WIN32__
 #endif
 
@@ -38,7 +38,7 @@
 	#include <winsock2.h>
 	#include <sys/stat.h>
 
-	#ifdef _stati64
+	#if defined(_stati64) || defined(_OFF64_T_)
 	#ifdef __GNUC__
 	#define LTYPE "%lld"
 	#else
@@ -47,9 +47,10 @@
 	#define structstat _stati64
 	#define fseeko fseeko64
 	#define ftello ftello64
-	#define funcstat stati64
+	#define funcstat _stati64
 	#define fopen fopen64
 	#define INT64 __int64
+	#define wstat _wstati64
 	#else
 	#define LTYPE "%ld"
 	#define structstat stat
@@ -57,6 +58,7 @@
 	#define fseeko fseek
 	#define ftello ftell
 	#define INT64 long
+	#define wstat _wstat
 	// Comment this error out if you think the 2GB limit is acceptable
 	#error "No 64-bit type found, 2GB limit on files will apply"
 	#endif
@@ -65,6 +67,7 @@
 	#define snprintf _snprintf
 	#define fseeko64 _fseeki64
 	#define ftello64 _ftelli64
+	#define chdir _chdir
 	#endif
 
 	#define socklen_t int

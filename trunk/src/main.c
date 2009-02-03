@@ -155,6 +155,6 @@ int main(int argc, char **argv)
 	BIGMessage("--- E-Mail: %s",EMAIL);
 
 // chdir to the document root
-	_chdir(ROOT);
+	chdir(ROOT);
 	return listener(INTERFACE,PORT);
 }

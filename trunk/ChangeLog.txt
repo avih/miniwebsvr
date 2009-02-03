@@ -1,10 +1,14 @@
+Tue Feb 03 2009 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
+	- Fixed compilation in VS2005
+	- Fixed wrong wstat 32/64 bit usage in utf8_stat
+	- Release 0.0.10
+
 Mon Feb 02 2009 Nickolas Grigoriadis <grigi_ at users.sourceforge.net>
 	- Changes to patch to conform better to existing coding style.
 	- Fixed security bug where memory was not blanked before use.
 	- Fixed 2 possible off-by-one buffer overflows.
 	- Made sub-root checking pedantic
 	- Changed Licence to X11/MIT
-	- Released 0.0.10
 
 Sat Jan 31 2009 Jackie Ku <jackieku at users.sourceforge.net>
 	- Patched win32 target to support UTF-8 encoding, significantly
